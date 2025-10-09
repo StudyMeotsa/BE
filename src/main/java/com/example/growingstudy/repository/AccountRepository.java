@@ -12,6 +12,5 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
     @Query("select a from Account a where a.username = :username")
     Optional<Account> findByUsername(@Param("username") String username);
 
-    @Query("select a from Account a where a.username = :username")
     boolean existsByUsername(@Param("username") String username);
 }
