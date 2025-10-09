@@ -1,6 +1,6 @@
 package com.example.growingstudy.controller;
 
-import com.example.growingstudy.domain.Account;
+import com.example.growingstudy.dto.RegisterErrorDto;
 import com.example.growingstudy.dto.RegisterRequestDto;
 import com.example.growingstudy.exception.RegisterFailException;
 import com.example.growingstudy.service.AuthService;
@@ -26,13 +26,20 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequestDto request) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
+        logger.info("회원가입 요청 처리 시작");
+
         try {
             authService.register(request);
         } catch (RegisterFailException e) {
-            return ResponseEntity.badRequest().build();
+            logger.error("회원가입 중 오류 발생: {}", e.getMessage());
+            RegisterErrorDto body = new RegisterErrorDto();
+            body.setError(e.getMessage());
+            logger.info("에러 DTO에 설정된 오류 메시지: {}", body.getError());
+            return ResponseEntity.badRequest().body(body);
         }
 
+        logger.info("회원가입 요청 처리 성공");
         return ResponseEntity.accepted().build();
     }
 }
