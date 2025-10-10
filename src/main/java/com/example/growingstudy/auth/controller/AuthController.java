@@ -1,9 +1,9 @@
-package com.example.growingstudy.controller;
+package com.example.growingstudy.auth.controller;
 
-import com.example.growingstudy.dto.RegisterErrorDto;
-import com.example.growingstudy.dto.RegisterRequestDto;
-import com.example.growingstudy.exception.RegisterFailException;
-import com.example.growingstudy.service.AuthService;
+import com.example.growingstudy.auth.dto.RegisterErrorDto;
+import com.example.growingstudy.auth.dto.RegisterRequestDto;
+import com.example.growingstudy.auth.exception.RegisterFailException;
+import com.example.growingstudy.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

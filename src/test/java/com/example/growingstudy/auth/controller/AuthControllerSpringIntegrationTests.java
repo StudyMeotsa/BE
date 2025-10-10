@@ -1,28 +1,22 @@
-package com.example.growingstudy.controller;
+package com.example.growingstudy.auth.controller;
 
-import com.example.growingstudy.dto.RegisterRequestDto;
-import com.example.growingstudy.exception.UserAlreadyExistsException;
-import com.example.growingstudy.service.AuthService;
+import com.example.growingstudy.auth.controller.AuthController;
+import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
-public class AuthControllerUnitTests {
+@SpringBootTest
+@Transactional
+public class AuthControllerSpringIntegrationTests {
 
-    @Mock
-    private AuthService authService;
-
-    @InjectMocks
+    @Autowired
     private AuthController authController;
 
     @Test
@@ -38,29 +32,25 @@ public class AuthControllerUnitTests {
         ResponseEntity<?> response = authController.register(request);
 
         // then
-        verify(authService).register(request); // 회원가입 호출 여부
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
     }
 
     @Test
-    @DisplayName("이미 유저 존재하여 회원가입 실패")
-    public void failedRegisterByUserAlreadyExists() {
+    @DisplayName("이미 유저 존재하여 2번째 회원가입 실패")
+    public void failedSecondRegisterByUserAlreadyExists() {
         RegisterRequestDto request = new RegisterRequestDto();
         request.setUsername("username");
         request.setPassword("password");
         request.setPasswordConfirm("password");
         request.setNickname("nickname");
-
-        // given
-        willThrow(new UserAlreadyExistsException())
-                .given(authService).register(request);
+        ResponseEntity<?> firstResponse = authController.register(request); // 회원가입 진행
+        assertEquals(HttpStatus.ACCEPTED, firstResponse.getStatusCode()); // 아무 것도 없으므로 성공해야 함
 
         // when
-        ResponseEntity<?> response = authController.register(request);
+        ResponseEntity<?> secondResponse = authController.register(request); // 같은 내용으로 회원가입 진행
 
         // then
-        verify(authService).register(request);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, secondResponse.getStatusCode());
     }
 
     @Test
@@ -72,15 +62,10 @@ public class AuthControllerUnitTests {
         request.setPasswordConfirm("passworld");
         request.setNickname("nickname");
 
-        // given
-        willThrow(new UserAlreadyExistsException())
-                .given(authService).register(request);
-
         // when
         ResponseEntity<?> response = authController.register(request);
 
         // then
-        verify(authService).register(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }

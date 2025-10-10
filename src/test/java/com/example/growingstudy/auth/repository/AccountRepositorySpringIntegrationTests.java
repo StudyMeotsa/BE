@@ -1,6 +1,7 @@
-package com.example.growingstudy.repository;
+package com.example.growingstudy.auth.repository;
 
-import com.example.growingstudy.domain.Account;
+import com.example.growingstudy.auth.domain.Account;
+import com.example.growingstudy.auth.repository.AccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

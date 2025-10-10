@@ -1,10 +1,10 @@
-package com.example.growingstudy.service;
+package com.example.growingstudy.auth.service;
 
-import com.example.growingstudy.domain.Account;
-import com.example.growingstudy.dto.RegisterRequestDto;
-import com.example.growingstudy.exception.PasswordConfirmIncorrectException;
-import com.example.growingstudy.exception.UserAlreadyExistsException;
-import com.example.growingstudy.repository.AccountRepository;
+import com.example.growingstudy.auth.domain.Account;
+import com.example.growingstudy.auth.dto.RegisterRequestDto;
+import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
+import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
+import com.example.growingstudy.auth.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

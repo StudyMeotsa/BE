@@ -1,4 +1,4 @@
-package com.example.growingstudy.exception;
+package com.example.growingstudy.auth.exception;
 
 public class UserAlreadyExistsException extends RegisterFailException {
 

@@ -1,6 +1,7 @@
-package com.example.growingstudy.service;
+package com.example.growingstudy.auth.service;
 
-import com.example.growingstudy.dto.RegisterRequestDto;
+import com.example.growingstudy.auth.dto.RegisterRequestDto;
+import com.example.growingstudy.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.example.growingstudy.dto;
+package com.example.growingstudy.auth.dto;
 
 public class RegisterRequestDto {
 

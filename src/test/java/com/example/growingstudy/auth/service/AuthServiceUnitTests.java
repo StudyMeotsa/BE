@@ -1,9 +1,10 @@
-package com.example.growingstudy.service;
+package com.example.growingstudy.auth.service;
 
-import com.example.growingstudy.dto.RegisterRequestDto;
-import com.example.growingstudy.exception.PasswordConfirmIncorrectException;
-import com.example.growingstudy.exception.UserAlreadyExistsException;
-import com.example.growingstudy.repository.AccountRepository;
+import com.example.growingstudy.auth.dto.RegisterRequestDto;
+import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
+import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
+import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
