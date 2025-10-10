@@ -1,6 +1,5 @@
 package com.example.growingstudy.auth.controller;
 
-import com.example.growingstudy.auth.controller.AuthController;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

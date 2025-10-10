@@ -4,7 +4,6 @@ import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
 import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
 import com.example.growingstudy.auth.repository.AccountRepository;
-import com.example.growingstudy.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
