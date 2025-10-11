@@ -1,6 +1,6 @@
 package com.example.growingstudy.auth.service;
 
-import com.example.growingstudy.auth.domain.Account;
+import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
 import com.example.growingstudy.auth.exception.UserAlreadyExistsException;

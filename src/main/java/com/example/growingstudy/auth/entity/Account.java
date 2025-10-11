@@ -1,4 +1,4 @@
-package com.example.growingstudy.auth.domain;
+package com.example.growingstudy.auth.entity;
 
 import jakarta.persistence.*;
 

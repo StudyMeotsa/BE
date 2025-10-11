@@ -1,6 +1,6 @@
 package com.example.growingstudy.auth.repository;
 
-import com.example.growingstudy.auth.domain.Account;
+import com.example.growingstudy.auth.entity.Account;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
