@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.controller;
 
+import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RegisterErrorDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.RegisterFailException;
@@ -23,6 +24,12 @@ public class AuthController {
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponseDto> login() {
+        JwtResponseDto body = authService.generateJwtToken();
+        return ResponseEntity.accepted().body(body);
     }
 
     @PostMapping("/register")
