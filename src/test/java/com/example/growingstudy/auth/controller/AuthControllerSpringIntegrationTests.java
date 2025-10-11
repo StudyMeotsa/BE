@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.controller;
 
+import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -66,5 +67,20 @@ public class AuthControllerSpringIntegrationTests {
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("로그인 성공하여 JWT 발급")
+    public void successfulLogin() {
+
+        // when
+        ResponseEntity<?> response = authController.login();
+
+        // then
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        assertInstanceOf(JwtResponseDto.class, response.getBody());
+        JwtResponseDto responseDto = (JwtResponseDto) response.getBody();
+        assertNotNull(responseDto.getAccessToken());
+        assertNotNull(responseDto.getRefreshToken());
     }
 }

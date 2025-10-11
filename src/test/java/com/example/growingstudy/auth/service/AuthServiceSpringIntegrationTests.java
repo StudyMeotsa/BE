@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.service;
 
+import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
 import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
@@ -9,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -55,5 +55,14 @@ public class AuthServiceSpringIntegrationTests {
         request.setNickname("nickname");
 
         assertThrows(PasswordConfirmIncorrectException.class, () -> authService.register(request));
+    }
+
+    @Test
+    @DisplayName("JWT 발급되는지 테스트")
+    public void generateTokens() {
+        JwtResponseDto jwt = authService.generateJwtToken();
+
+        assertNotNull(jwt.getAccessToken());
+        assertNotNull(jwt.getRefreshToken());
     }
 }

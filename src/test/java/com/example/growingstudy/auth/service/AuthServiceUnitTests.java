@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.service;
 
+import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
 import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
@@ -11,10 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceUnitTests {
@@ -24,6 +26,9 @@ public class AuthServiceUnitTests {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private AuthService authService;
@@ -112,5 +117,35 @@ public class AuthServiceUnitTests {
         request.setNickname("nickname");
 
         assertThrows(PasswordConfirmIncorrectException.class, () -> authService.register(request));
+    }
+
+    @Test
+    @DisplayName("JWT 발급되는지 테스트")
+    public void generateTokens() {
+        // given
+        given(jwtService.generateAccessToken())
+                .willReturn(Jwt
+                        .withTokenValue("access")
+                        .header("testHeader", "")
+                        .claim("testClaim", "")
+                        .build());
+        given(jwtService.generateRefreshToken())
+                .willReturn(Jwt
+                        .withTokenValue("refresh")
+                        .header("testHeader", "")
+                        .claim("testClaim", "")
+                        .build());
+
+        // when
+        JwtResponseDto jwt = authService.generateJwtToken();
+
+        // then
+        // 호출 여부 테스트
+        verify(jwtService).generateAccessToken();
+        verify(jwtService).generateRefreshToken();
+
+        // 토큰 값 테스트
+        assertEquals("access", jwt.getAccessToken());
+        assertEquals("refresh", jwt.getRefreshToken());
     }
 }

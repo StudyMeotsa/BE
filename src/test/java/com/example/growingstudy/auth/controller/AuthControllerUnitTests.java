@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.controller;
 
+import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
 import com.example.growingstudy.auth.service.AuthService;
@@ -12,7 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
@@ -82,5 +84,27 @@ public class AuthControllerUnitTests {
         // then
         verify(authService).register(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("로그인 성공하여 JWT 발급")
+    public void successfulLogin() {
+        // given
+        JwtResponseDto dto = new JwtResponseDto();
+        dto.setAccessToken("accessToken");
+        dto.setRefreshToken("refreshToken");
+
+        given(authService.generateJwtToken())
+                .willReturn(dto);
+
+        // when
+        ResponseEntity<?> response = authController.login();
+
+        // then
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        assertInstanceOf(JwtResponseDto.class, response.getBody());
+        JwtResponseDto responseDto = (JwtResponseDto) response.getBody();
+        assertNotNull(responseDto.getAccessToken());
+        assertNotNull(responseDto.getRefreshToken());
     }
 }
