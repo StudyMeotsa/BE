@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -68,6 +69,7 @@ public class JwtService {
     }
 
     // 현재 리프레쉬 토큰을 블랙리스트에 추가하고, 리프레쉬 토큰 대상 유저의 username 반환
+    @Transactional
     public String consumeRefreshToken(String refreshToken) {
         Jwt jwt = decodeTokenString(refreshToken);
         refreshTokenBlackListRepository.save(new RefreshTokenBlackList(jwt.getId()));
