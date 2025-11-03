@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.security.converter.RsaKeyConverters;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +42,11 @@ public class JwtConfig {
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(rsaKey));
 
         return new NimbusJwtEncoder(jwkSource);
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder() throws IOException {
+        return NimbusJwtDecoder.withPublicKey(getRsaPublicKey(publicKeyPem)).build();
     }
 
     private RSAPrivateKey getRsaPrivateKey(Resource resource) throws IOException {

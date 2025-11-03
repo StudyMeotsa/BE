@@ -2,10 +2,8 @@ package com.example.growingstudy.auth.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -21,9 +19,12 @@ public class JwtService {
 
     private final Logger logger = LoggerFactory.getLogger(JwtService.class);
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
-    public JwtService(JwtEncoder jwtEncoder) {
+    @Autowired
+    public JwtService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public Jwt generateAccessToken(String username) {
@@ -56,5 +57,10 @@ public class JwtService {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
         logger.info("리프레쉬 토큰 발급 완료");
         return jwtEncoder.encode(jwtEncoderParameters);
+    }
+
+    public Jwt decodeTokenString(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt;
     }
 }

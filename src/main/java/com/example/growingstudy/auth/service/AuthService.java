@@ -70,4 +70,12 @@ public class AuthService {
 
         return jwtResponseDto;
     }
+
+    public JwtResponseDto refreshTokens(String refreshToken) {
+        logger.info("토큰 재발급 시작");
+        Jwt refreshJwt = jwtService.decodeTokenString(refreshToken);
+        String username = refreshJwt.getSubject();
+
+        return generateJwtToken(username);
+    }
 }

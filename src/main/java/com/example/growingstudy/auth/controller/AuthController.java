@@ -46,4 +46,11 @@ public class AuthController {
         logger.info("회원가입 요청 처리 성공");
         return ResponseEntity.accepted().build();
     }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<JwtResponseDto> refreshTokens(@RequestHeader("Authorization") String authHeader) {
+        String refreshString = authHeader.substring("Bearer ".length());
+        JwtResponseDto body = authService.refreshTokens(refreshString);
+        return ResponseEntity.accepted().body(body);
+    }
 }
