@@ -1,0 +1,19 @@
+package com.example.growingstudy.auth.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "RefreshToken_BlackList")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RefreshTokenBlackList {
+
+    @Id
+    private String jid;
+}

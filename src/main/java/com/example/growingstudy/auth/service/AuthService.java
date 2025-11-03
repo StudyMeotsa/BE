@@ -68,13 +68,15 @@ public class AuthService {
         jwtResponseDto.setAccessToken(accessToken.getTokenValue());
         jwtResponseDto.setRefreshToken(refreshToken.getTokenValue());
 
+        logger.info("JWT 토큰 발급 완료");
+
         return jwtResponseDto;
     }
 
     public JwtResponseDto refreshTokens(String refreshToken) {
-        logger.info("토큰 재발급 시작");
-        Jwt refreshJwt = jwtService.decodeTokenString(refreshToken);
-        String username = refreshJwt.getSubject();
+        logger.info("리프레쉬 토큰 사용");
+        String username = jwtService.consumeRefreshToken(refreshToken);
+        logger.info("리프레쉬 토큰 사용 완료");
 
         return generateJwtToken(username);
     }
