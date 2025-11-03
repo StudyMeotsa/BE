@@ -1,6 +1,7 @@
 package com.example.growingstudy.auth.controller;
 
 import com.example.growingstudy.auth.dto.JwtResponseDto;
+import com.example.growingstudy.auth.dto.RefreshOrLogoutRequestDto;
 import com.example.growingstudy.auth.dto.RegisterErrorDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.exception.RegisterFailException;
@@ -47,10 +48,18 @@ public class AuthController {
         return ResponseEntity.accepted().build();
     }
 
-    @GetMapping("/refresh")
-    public ResponseEntity<JwtResponseDto> refreshTokens(@RequestHeader("Authorization") String authHeader) {
-        String refreshString = authHeader.substring("Bearer ".length());
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponseDto> refreshTokens(@RequestBody RefreshOrLogoutRequestDto request) {
+        String refreshString = request.getRefreshToken();
         JwtResponseDto body = authService.refreshTokens(refreshString);
         return ResponseEntity.accepted().body(body);
+    }
+
+    // 아직 정상 작동 안하는 엔드포인트
+    @PostMapping("/logout")
+    public ResponseEntity logout(@RequestBody RefreshOrLogoutRequestDto request) {
+        String refreshString = request.getRefreshToken();
+        authService.logout(refreshString);
+        return ResponseEntity.accepted().build();
     }
 }

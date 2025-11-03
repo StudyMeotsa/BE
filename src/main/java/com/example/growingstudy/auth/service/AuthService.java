@@ -80,4 +80,11 @@ public class AuthService {
 
         return generateJwtToken(username);
     }
+
+    // 로그아웃: 현재 리프레쉬 토큰을 블랙리스트에 추가
+    public void logout(String refreshToken) {
+        logger.info("로그아웃 처리");
+        jwtService.consumeRefreshToken(refreshToken);
+        logger.info("로그아웃 완료");
+    }
 }
