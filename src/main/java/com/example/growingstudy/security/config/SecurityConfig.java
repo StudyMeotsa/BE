@@ -3,6 +3,8 @@ package com.example.growingstudy.security.config;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
 import com.example.growingstudy.security.service.AccountRepositoryUserDetailsService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -36,6 +39,15 @@ public class SecurityConfig {
                 new DaoAuthenticationProvider(userDetailsService(repository));
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
+    }
+
+
+    // H2 콘솔에 대해 시큐리티 미적용 설정 (로컬 테스트용)
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+    WebSecurityCustomizer disableSecurityforh2Console() {
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console());
     }
 
     @Bean
