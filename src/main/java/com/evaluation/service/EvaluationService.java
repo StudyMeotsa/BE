@@ -3,7 +3,7 @@ package com.evaluation.service;
 import com.evaluation.dto.EvaluationRequest;
 import com.evaluation.dto.EvaluationResponse;
 import com.checklist.entity.Checklist;
-import com.evaluation.entity.Evaluation;
+import com.evaluation.entity.evaluation;
 import com.checklist.repository.ChecklistRepository;
 import com.evaluation.repository.EvaluationRepository;
 
@@ -26,7 +26,7 @@ public class EvaluationService {
     public void createEvaluation(EvaluationRequest request) {
         Checklist checklist = checklistRepository.findById(request.getChecklistId()).orElseThrow();
 
-        Evaluation evaluation = new Evaluation();
+        evaluation evaluation = new evaluation();
         evaluation.setScore(request.getScore());
         evaluation.setComment(request.getComment());
         evaluation.setUserId(request.getUserId());

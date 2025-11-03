@@ -1,4 +1,4 @@
-package com.checklist;
+package com.checklist.service;
 
 import com.checklist.dto.ChecklistRequest;
 import com.checklist.dto.ChecklistResponse;

@@ -1,5 +1,6 @@
 package com.evaluation.entity;
 
+import com.checklist.entity.Checklist;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,16 +9,16 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Evaluation {
-
+public class evaluation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int score;           // 평가 점수 (예: 1~5)
-    private String comment;      // 평가 코멘트
-    private Long userId;         // 평가한 사용자 ID
+    private int score;
+    private String comment;
+    private Long userId;
 
     @OneToOne
-    private Checklist checklist; // 평가 대상 체크리스트
+    @JoinColumn(name = "checklist_id")
+    private Checklist checklist;
 }
