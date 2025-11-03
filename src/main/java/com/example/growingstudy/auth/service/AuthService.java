@@ -59,10 +59,10 @@ public class AuthService {
         }
     }
 
-    public JwtResponseDto generateJwtToken() {
+    public JwtResponseDto generateJwtToken(String username) {
         logger.info("JWT 토큰 발급 시작");
-        Jwt accessToken = jwtService.generateAccessToken();
-        Jwt refreshToken = jwtService.generateRefreshToken();
+        Jwt accessToken = jwtService.generateAccessToken(username);
+        Jwt refreshToken = jwtService.generateRefreshToken(username);
 
         JwtResponseDto jwtResponseDto = new JwtResponseDto();
         jwtResponseDto.setAccessToken(accessToken.getTokenValue());

@@ -26,14 +26,14 @@ public class JwtService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public Jwt generateAccessToken() {
+    public Jwt generateAccessToken(String username) {
         logger.info("액세스 토큰 발급 시작");
         JwtClaimsSet jwtClaimsSet =
                 JwtClaimsSet
                         .builder()
                         .issuer(ISSUER)
                         .issuedAt(Instant.now())
-                        .subject("anonymous")
+                        .subject(username)
                         .expiresAt(Instant.now().plus(Duration.ofMinutes(ACCESS_TOKEN_DURATION_MINUTES)))
                         .build();
 
@@ -42,14 +42,14 @@ public class JwtService {
         return jwtEncoder.encode(jwtEncoderParameters);
     }
 
-    public Jwt generateRefreshToken() {
+    public Jwt generateRefreshToken(String username) {
         logger.info("리프레쉬 토큰 발급 시작");
         JwtClaimsSet jwtClaimsSet =
                 JwtClaimsSet
                         .builder()
                         .issuer(ISSUER)
                         .issuedAt(Instant.now())
-                        .subject("anonymous")
+                        .subject(username)
                         .expiresAt(Instant.now().plus(Duration.ofHours(REFRESH_TOKEN_DURATION_HOURS)))
                         .build();
 
