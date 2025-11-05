@@ -74,6 +74,10 @@ public class JwtService {
     @Transactional
     public String consumeRefreshToken(String refreshToken) {
         Jwt jwt = decodeTokenString(refreshToken);
+
+        if (!jwt.getClaim("type").equals("refresh")) {
+            throw new RuntimeException("Not a refresh token");
+        }
         refreshTokenBlackListRepository.save(new RefreshTokenBlackList(jwt.getId()));
         logger.info("현재 리프레쉬 토큰을 블랙리스트에 추가 완료");
 
