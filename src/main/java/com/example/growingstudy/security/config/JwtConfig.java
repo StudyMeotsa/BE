@@ -1,5 +1,7 @@
 package com.example.growingstudy.security.config;
 
+import com.example.growingstudy.auth.repository.RefreshTokenBlackListRepository;
+import com.example.growingstudy.security.validator.JwtRefreshTokenBlackListValidator;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -10,12 +12,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.security.converter.RsaKeyConverters;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.UUID;
 
 @Configuration
@@ -45,8 +50,17 @@ public class JwtConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder() throws IOException {
-        return NimbusJwtDecoder.withPublicKey(getRsaPublicKey(publicKeyPem)).build();
+    JwtDecoder jwtDecoder(RefreshTokenBlackListRepository repository) throws IOException {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(getRsaPublicKey(publicKeyPem)).build();
+
+        OAuth2TokenValidator<Jwt> customValidator = new DelegatingOAuth2TokenValidator<>(
+                new JwtTimestampValidator(Duration.ofSeconds(60)),
+                new JwtIssuerValidator("http://example.com"),
+                new JwtRefreshTokenBlackListValidator(repository)
+        );
+
+        jwtDecoder.setJwtValidator(customValidator);
+        return jwtDecoder;
     }
 
     private RSAPrivateKey getRsaPrivateKey(Resource resource) throws IOException {

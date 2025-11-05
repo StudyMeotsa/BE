@@ -40,6 +40,7 @@ public class JwtService {
                 JwtClaimsSet
                         .builder()
                         .id(UUID.randomUUID().toString())
+                        .claim("type", "access")
                         .issuer(ISSUER)
                         .issuedAt(Instant.now())
                         .subject(username)
@@ -57,6 +58,7 @@ public class JwtService {
                 JwtClaimsSet
                         .builder()
                         .id(UUID.randomUUID().toString())
+                        .claim("type", "refresh")
                         .issuer(ISSUER)
                         .issuedAt(Instant.now())
                         .subject(username)
