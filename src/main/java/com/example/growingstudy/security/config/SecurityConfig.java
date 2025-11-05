@@ -1,8 +1,11 @@
 package com.example.growingstudy.security.config;
 
 import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.auth.service.JwtService;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
+import com.example.growingstudy.security.handler.ExpireRefreshTokenOnLogoutHandler;
 import com.example.growingstudy.security.service.AccountRepositoryUserDetailsService;
+import com.example.growingstudy.security.util.ServletRequestConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -52,11 +56,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AccountRepository repository) throws Exception {
+    WebSecurityCustomizer disableSecurityforSwagger() {
+        return web -> web.ignoring()
+                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**");
+    }
+
+    LogoutHandler logoutHandler(JwtService jwtService) {
+        return new ExpireRefreshTokenOnLogoutHandler(new ServletRequestConverter(), jwtService);
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AccountRepository repository, JwtService jwtService) throws Exception {
         return http
                 .csrf((csrf) -> csrf.disable())
                 .logout((logout) -> logout
                         .logoutUrl("/auth/logout")
+                        .addLogoutHandler(logoutHandler(jwtService))
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                         .permitAll()
                 )

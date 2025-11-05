@@ -55,11 +55,9 @@ public class AuthController {
         return ResponseEntity.accepted().body(body);
     }
 
-    // 아직 정상 작동 안하는 엔드포인트
+    // 로그아웃 엔드포인트: 실제로 이 메소드가 호출되진 않으나, 일관성 및 Swagger 위해 추가
     @PostMapping("/logout")
-    public ResponseEntity logout(@RequestBody RefreshOrLogoutRequestDto request) {
-        String refreshString = request.getRefreshToken();
-        authService.logout(refreshString);
+    public ResponseEntity<Void> logout(@RequestBody RefreshOrLogoutRequestDto request) {
         return ResponseEntity.accepted().build();
     }
 }
