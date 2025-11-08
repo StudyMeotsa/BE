@@ -1,6 +1,6 @@
 package com.example.growingstudy.security.config;
 
-import com.example.growingstudy.auth.repository.RefreshTokenBlackListRepository;
+import com.example.growingstudy.auth.repository.RefreshTokenRepository;
 import com.example.growingstudy.security.validator.JwtRefreshTokenBlackListValidator;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -50,7 +50,7 @@ public class JwtConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder(RefreshTokenBlackListRepository repository) throws IOException {
+    JwtDecoder jwtDecoder(RefreshTokenRepository repository) throws IOException {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(getRsaPublicKey(publicKeyPem)).build();
 
         OAuth2TokenValidator<Jwt> customValidator = new DelegatingOAuth2TokenValidator<>(

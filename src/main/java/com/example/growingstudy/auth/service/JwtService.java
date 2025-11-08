@@ -1,7 +1,7 @@
 package com.example.growingstudy.auth.service;
 
-import com.example.growingstudy.auth.entity.RefreshTokenBlackList;
-import com.example.growingstudy.auth.repository.RefreshTokenBlackListRepository;
+import com.example.growingstudy.auth.entity.RefreshToken;
+import com.example.growingstudy.auth.repository.RefreshTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,14 @@ public class JwtService {
     private final Logger logger = LoggerFactory.getLogger(JwtService.class);
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
-    private final RefreshTokenBlackListRepository refreshTokenBlackListRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     public JwtService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder,
-                      RefreshTokenBlackListRepository refreshTokenBlackListRepository) {
+                      RefreshTokenRepository refreshTokenRepository) {
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
-        this.refreshTokenBlackListRepository = refreshTokenBlackListRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public Jwt generateAccessToken(String username) {
@@ -66,11 +66,14 @@ public class JwtService {
                         .build();
 
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
+
+        Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
         logger.info("리프레쉬 토큰 발급 완료");
-        return jwtEncoder.encode(jwtEncoderParameters);
+        refreshTokenRepository.save(new RefreshToken(refreshToken.getId())); // 리프레쉬 토큰을 DB에 저장
+        return refreshToken;
     }
 
-    // 현재 리프레쉬 토큰을 블랙리스트에 추가하고, 리프레쉬 토큰 대상 유저의 username 반환
+    // 현재 리프레쉬 토큰을 리스트에서 삭제하고, 리프레쉬 토큰 대상 유저의 username 반환
     @Transactional
     public String consumeRefreshToken(String refreshToken) {
         Jwt jwt = decodeTokenString(refreshToken);
@@ -78,8 +81,8 @@ public class JwtService {
         if (!jwt.getClaim("type").equals("refresh")) {
             throw new RuntimeException("Not a refresh token");
         }
-        refreshTokenBlackListRepository.save(new RefreshTokenBlackList(jwt.getId()));
-        logger.info("현재 리프레쉬 토큰을 블랙리스트에 추가 완료");
+        refreshTokenRepository.deleteById(jwt.getId());
+        logger.info("리프레쉬 토큰 만료 처리 완료");
 
         String username = jwt.getSubject();
         return username;

@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "RefreshToken_BlackList")
+@Table(name = "RefreshToken")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshTokenBlackList {
+public class RefreshToken {
 
     @Id
     private String jid;
