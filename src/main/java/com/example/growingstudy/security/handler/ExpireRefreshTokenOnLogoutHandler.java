@@ -26,7 +26,7 @@ public class ExpireRefreshTokenOnLogoutHandler implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
-            logger.info("리프레쉬 토큰 만료 처리");
+            logger.debug("리프레쉬 토큰 만료 처리");
             String requestString = converter.convertRequestToString(request);
             RefreshOrLogoutRequestDto dto = converter.mapJsonToDto(requestString, RefreshOrLogoutRequestDto.class);
 

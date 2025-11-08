@@ -26,32 +26,37 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponseDto> login(@RequestAttribute("username") String username) {
+        logger.debug("로그인 후 토큰 발급 처리 시작");
         JwtResponseDto body = authService.generateJwtToken(username);
+        logger.debug("로그인 후 토큰 발급 처리 성공");
+        logger.info("유저 {}가 로그인", username);
         return ResponseEntity.accepted().body(body);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
-        logger.info("회원가입 요청 처리 시작");
+        logger.debug("회원가입 요청 처리 시작");
 
         try {
             authService.register(request);
         } catch (RegisterFailException e) {
-            logger.error("회원가입 중 오류 발생: {}", e.getMessage());
+            logger.debug("회원가입 중 오류 발생: {}", e.getMessage());
             RegisterErrorDto body = new RegisterErrorDto();
             body.setError(e.getMessage());
-            logger.info("에러 DTO에 설정된 오류 메시지: {}", body.getError());
+            logger.debug("에러 DTO에 설정된 오류 메시지: {}", body.getError());
             return ResponseEntity.badRequest().body(body);
         }
 
-        logger.info("회원가입 요청 처리 성공");
+        logger.info("유저 {}가 회원가입", request.getUsername());
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<JwtResponseDto> refreshTokens(@RequestBody RefreshOrLogoutRequestDto request) {
+        logger.debug("토큰 재발급 처리 시작");
         String refreshString = request.getRefreshToken();
         JwtResponseDto body = authService.refreshTokens(refreshString);
+        logger.debug("토큰 재발급 처리 성공");
         return ResponseEntity.accepted().body(body);
     }
 
