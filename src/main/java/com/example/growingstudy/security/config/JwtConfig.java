@@ -1,7 +1,7 @@
 package com.example.growingstudy.security.config;
 
 import com.example.growingstudy.auth.repository.RefreshTokenRepository;
-import com.example.growingstudy.security.validator.JwtRefreshTokenBlackListValidator;
+import com.example.growingstudy.security.validator.JwtRegisteredRefreshTokenValidator;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -56,7 +56,7 @@ public class JwtConfig {
         OAuth2TokenValidator<Jwt> customValidator = new DelegatingOAuth2TokenValidator<>(
                 new JwtTimestampValidator(Duration.ofSeconds(60)),
                 new JwtIssuerValidator("http://example.com"),
-                new JwtRefreshTokenBlackListValidator(repository)
+                new JwtRegisteredRefreshTokenValidator(repository)
         );
 
         jwtDecoder.setJwtValidator(customValidator);

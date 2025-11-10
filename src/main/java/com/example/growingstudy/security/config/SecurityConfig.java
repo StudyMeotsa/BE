@@ -2,6 +2,7 @@ package com.example.growingstudy.security.config;
 
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.auth.service.JwtService;
+import com.example.growingstudy.security.filter.CheckAccessTokenFilter;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
 import com.example.growingstudy.security.handler.ExpireRefreshTokenOnLogoutHandler;
 import com.example.growingstudy.security.service.AccountRepositoryUserDetailsService;
@@ -21,7 +22,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -84,6 +88,7 @@ public class SecurityConfig {
                         new JsonAuthenticationProcessingFilter("/auth/login", authenticationManager(repository)),
                         UsernamePasswordAuthenticationFilter.class
                 )
+                .addFilterBefore(new CheckAccessTokenFilter(jwtService), BearerTokenAuthenticationFilter.class)
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(Customizer.withDefaults())
                 )

@@ -98,7 +98,7 @@ public class JwtService {
         return username;
     }
 
-    private Jwt decodeTokenString(String token) {
+    public Jwt decodeTokenString(String token) {
         logger.debug("토큰 문자열 디코딩 시작");
         Jwt jwt = jwtDecoder.decode(token);
         logger.debug("토큰 문자열 디코딩 성공");

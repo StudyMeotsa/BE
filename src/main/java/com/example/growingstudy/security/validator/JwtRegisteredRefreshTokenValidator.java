@@ -6,10 +6,10 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-public class JwtRefreshTokenBlackListValidator implements OAuth2TokenValidator<Jwt> {
+public class JwtRegisteredRefreshTokenValidator implements OAuth2TokenValidator<Jwt> {
     private final RefreshTokenRepository repository;
 
-    public JwtRefreshTokenBlackListValidator(RefreshTokenRepository repository) {
+    public JwtRegisteredRefreshTokenValidator(RefreshTokenRepository repository) {
         this.repository = repository;
     }
 
