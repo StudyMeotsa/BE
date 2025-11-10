@@ -2,10 +2,15 @@ package com.checklist.controller;
 
 import com.checklist.dto.ChecklistRequest;
 import com.checklist.dto.ChecklistResponse;
+import com.checklist.dto.ChecklistUpdateRequest;
+import com.checklist.entity.Checklist;
 import com.checklist.service.ChecklistService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,19 +24,34 @@ public class ChecklistController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createChecklist(@RequestBody ChecklistRequest request) {
-        service.createChecklist(request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> createChecklist(@Valid @RequestBody ChecklistRequest request, @AuthenticationPrincipal Long userId) {
+        Checklist checklist = service.createChecklist(request, userId);
+        return ResponseEntity.created(URI.create("/api/checklists/" + checklist.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ChecklistResponse>> getChecklist(@RequestParam Long userId) {
+    public ResponseEntity<List<ChecklistResponse>> getMyChecklists(@AuthenticationPrincipal Long userId) {
         return ResponseEntity.ok(service.getChecklistByUser(userId));
     }
 
     @PatchMapping("/{id}/complete")
-    public ResponseEntity<Void> markComplete(@PathVariable Long id) {
-        service.markComplete(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> markComplete(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
+        service.markComplete(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteChecklist(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
+        service.deleteChecklist(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateChecklist(
+            @PathVariable Long id,
+            @Valid @RequestBody ChecklistUpdateRequest request,
+            @AuthenticationPrincipal Long userId) {
+        service.updateChecklist(id, request, userId);
+        return ResponseEntity.noContent().build();
     }
 }
