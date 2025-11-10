@@ -12,7 +12,7 @@ import java.io.IOException;
 
 // 토큰이 액세스 타입의 토큰인지 확인함
 public class CheckAccessTokenFilter extends OncePerRequestFilter {
-    private final String authURIPrefix = "/auth";
+    private final String authURIPrefix = "/api/auth";
     private final JwtService jwtService;
 
     public CheckAccessTokenFilter(JwtService jwtService) {

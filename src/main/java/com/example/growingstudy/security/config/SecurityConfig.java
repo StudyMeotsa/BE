@@ -74,18 +74,18 @@ public class SecurityConfig {
         return http
                 .csrf((csrf) -> csrf.disable())
                 .logout((logout) -> logout
-                        .logoutUrl("/auth/logout")
+                        .logoutUrl("/api/auth/logout")
                         .addLogoutHandler(logoutHandler(jwtService))
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                         .permitAll()
                 )
                 .formLogin((form) -> form.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("**").authenticated()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/**").authenticated()
                 )
                 .addFilterAt(
-                        new JsonAuthenticationProcessingFilter("/auth/login", authenticationManager(repository)),
+                        new JsonAuthenticationProcessingFilter("/api/auth/login", authenticationManager(repository)),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(new CheckAccessTokenFilter(jwtService), BearerTokenAuthenticationFilter.class)
