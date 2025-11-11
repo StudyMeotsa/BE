@@ -29,8 +29,6 @@ public class CheckAccessTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Jwt token = jwtService.decodeTokenString(request.getHeader("Authorization").substring(6));
         if (!token.getClaim("type").equals("access")) throw new RuntimeException("액세스 토큰이 아님");
-
-        request.setAttribute("username", token.getSubject());
         filterChain.doFilter(request, response);
     }
 }
