@@ -7,64 +7,105 @@ import com.checklist.entity.Checklist;
 import com.checklist.entity.User;
 import com.checklist.repository.ChecklistRepository;
 import com.checklist.repository.UserRepository;
+import com.checklist.repository.SubmissionRepository; 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
 public class ChecklistService {
 
     private final ChecklistRepository repository;
-    private final UserRepository userRepository;
+    private final UserRepository userRepository; 
+    private final SubmissionRepository submissionRepository; 
+    private final TimerService timerService; 
 
-    public ChecklistService(ChecklistRepository repository, UserRepository userRepository) {
+    public ChecklistService(ChecklistRepository repository, UserRepository userRepository,
+                            SubmissionRepository submissionRepository, TimerService timerService) { 
         this.repository = repository;
         this.userRepository = userRepository;
+        this.submissionRepository = submissionRepository;
+        this.timerService = timerService;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChecklistResponse> getChecklistByUser(Long userId) {
+        List<Checklist> checklists = repository.findByUserId(userId);
+        if (checklists.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> checklistIds = checklists.stream().map(Checklist::getId).collect(Collectors.toList());
+        
+        // N+1 최적화된 명수 카운트 조회
+        Map<Long, Long> participantCounts = submissionRepository.countSubmissionsByChecklistIds(checklistIds).stream()
+                .collect(Collectors.toMap(
+                        result -> ((Number) result[0]).longValue(),
+                        result -> ((Number) result[1]).longValue() 
+                ));
+
+        return checklists.stream()
+                .map(checklist -> {
+                    Long participantCount = participantCounts.getOrDefault(checklist.getId(), 0L);
+                    
+                    Long durationMinutes = timerService.calculateDurationMinutes(
+                            checklist.getStartTime(), checklist.getEndTime()); 
+                            
+                    return ChecklistResponse.from(checklist, participantCount, durationMinutes);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public Checklist createChecklist(ChecklistRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
+
         Checklist checklist = Checklist.builder()
                 .content(request.getContent())
+                .description(request.getDescription())
                 .user(user)
                 .build();
-        return repository.save(checklist); // 생성 시 completed는 builder에서 false로 자동 설정됩니다.
-    }
 
-    @Transactional(readOnly = true)
-    public List<ChecklistResponse> getChecklistByUser(Long userId) {
-        return repository.findByUserId(userId).stream()
-                .map(ChecklistResponse::from)
-                .collect(Collectors.toList());
+        return repository.save(checklist);
     }
 
     @Transactional
-    public void markComplete(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
-        checklist.complete(); // 엔티티의 비즈니스 메소드 호출
+    public void updateChecklist(Long id, ChecklistUpdateRequest request, Long userId) {
+        Checklist checklist = findChecklistByIdAndOwner(id, userId);
+        checklist.updateContent(request.getContent());
+        checklist.updateDescription(request.getDescription());
     }
 
     @Transactional
-    public void deleteChecklist(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
+    public void markComplete(Long id, Long userId) {
+        Checklist checklist = findChecklistByIdAndOwner(id, userId);
+        checklist.complete();
+    }
+
+    @Transactional
+    public void deleteChecklist(Long id, Long userId) {
+        Checklist checklist = findChecklistByIdAndOwner(id, userId);
         repository.delete(checklist);
     }
 
     @Transactional
-    public void updateChecklist(Long checklistId, ChecklistUpdateRequest request, Long userId) {
+    public void startChecklistSession(Long checklistId, Long userId) {
         Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
-        checklist.updateContent(request.getContent());
+        checklist.startSession();
     }
 
-    /**
-     * 체크리스트 ID와 사용자 ID로 리소스를 조회하고 소유권을 검증합니다.
-     * 리소스가 없거나 소유권이 다르면 예외를 발생시킵니다.
-     */
+    @Transactional
+    public void endChecklistSession(Long checklistId, Long userId) {
+        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
+        checklist.endSession();
+    }
+    
     private Checklist findChecklistByIdAndOwner(Long checklistId, Long userId) {
         return repository.findById(checklistId)
                 .filter(checklist -> checklist.getUser().getId().equals(userId))

@@ -6,15 +6,22 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 public class ChecklistResponse {
-    private Long id;          // 항목 ID
-    private String content;   // 할 일 내용
-    private boolean completed;// 완료 여부
+    private Long id; 
+    private String content; 
+    private String description;
+    private boolean completed;
+    
+    private Long participantCount; // 명수 카운트
+    private Long durationMinutes;  // 세션 경과 시간 (분 단위)
 
-    public static ChecklistResponse from(Checklist checklist) {
+    public static ChecklistResponse from(Checklist checklist, Long count, Long duration) {
         return new ChecklistResponse(
                 checklist.getId(),
                 checklist.getContent(),
-                checklist.isCompleted()
+                checklist.getDescription(),
+                checklist.isCompleted(),
+                count, 
+                duration
         );
     }
 }

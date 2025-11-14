@@ -6,5 +6,7 @@ import lombok.Getter;
 @Getter
 public class ChecklistRequest {
     @NotBlank(message = "내용을 입력해주세요.")
-    private String content;   // 할 일 내용
+    private String content; 
+    
+    private String description; // 과제 상세 설명 필드
 }

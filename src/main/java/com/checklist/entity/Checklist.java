@@ -2,6 +2,9 @@ package com.checklist.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,35 +16,42 @@ public class Checklist {
     private Long id;
 
     @Column(nullable = false)
-    private String content;       // 할 일 내용
+    private String content;
+
+    @Column(columnDefinition = "TEXT") 
+    private String description; 
 
     @Column(nullable = false)
-    private boolean completed;    // 완료 여부
+    private boolean completed;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // User 엔티티와 관계 매핑
+    private User user;
+
+    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Submission> submissions = new ArrayList<>(); 
+
+    private LocalDateTime startTime; 
+    private LocalDateTime endTime;   
 
     @Builder
-    public Checklist(String content, User user) {
+    public Checklist(String content, String description, User user) {
         this.content = content;
-        this.completed = false; // 생성 시 항상 false로 초기화
+        this.description = description;
+        this.completed = false;
         this.user = user;
     }
 
-    /**
-     * 체크리스트를 완료 상태로 변경하는 비즈니스 메서드
-     */
-    public void complete() {
-        if (!this.completed) {
-            this.completed = true;
-        }
+    // --- 엔티티 비즈니스 로직 ---
+    public void updateContent(String content) { this.content = content; }
+    public void updateDescription(String description) { this.description = description; }
+    public void complete() { this.completed = true; } 
+
+    public void startSession() { 
+        if (this.startTime == null) { this.startTime = LocalDateTime.now(); }
     }
 
-    /**
-     * 체크리스트 내용을 수정하는 비즈니스 메서드
-     */
-    public void updateContent(String content) {
-        this.content = content;
+    public void endSession() {
+        if (this.endTime == null && this.startTime != null) { this.endTime = LocalDateTime.now(); }
     }
 }
