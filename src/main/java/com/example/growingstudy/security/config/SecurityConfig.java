@@ -1,0 +1,100 @@
+package com.example.growingstudy.security.config;
+
+import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.auth.service.JwtService;
+import com.example.growingstudy.security.filter.CheckAccessTokenFilter;
+import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
+import com.example.growingstudy.security.handler.ExpireRefreshTokenOnLogoutHandler;
+import com.example.growingstudy.security.service.AccountRepositoryUserDetailsService;
+import com.example.growingstudy.security.util.ServletRequestConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    UserDetailsService userDetailsService(AccountRepository repository) {
+        return new AccountRepositoryUserDetailsService(repository);
+    }
+
+    AuthenticationManager authenticationManager(AccountRepository repository) {
+        DaoAuthenticationProvider daoAuthenticationProvider =
+                new DaoAuthenticationProvider(userDetailsService(repository));
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(daoAuthenticationProvider);
+    }
+
+
+    // H2 콘솔에 대해 시큐리티 미적용 설정 (로컬 테스트용)
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+    WebSecurityCustomizer disableSecurityforh2Console() {
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console());
+    }
+
+    @Bean
+    WebSecurityCustomizer disableSecurityforSwagger() {
+        return web -> web.ignoring()
+                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**");
+    }
+
+    LogoutHandler logoutHandler(JwtService jwtService) {
+        return new ExpireRefreshTokenOnLogoutHandler(new ServletRequestConverter(), jwtService);
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AccountRepository repository, JwtService jwtService) throws Exception {
+        return http
+                .csrf((csrf) -> csrf.disable())
+                .logout((logout) -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .addLogoutHandler(logoutHandler(jwtService))
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                        .permitAll()
+                )
+                .formLogin((form) -> form.disable())
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/**").authenticated()
+                )
+                .addFilterAt(
+                        new JsonAuthenticationProcessingFilter("/api/auth/login", authenticationManager(repository)),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(new CheckAccessTokenFilter(jwtService), BearerTokenAuthenticationFilter.class)
+                .oauth2ResourceServer((oauth2) -> oauth2
+                        .jwt(Customizer.withDefaults())
+                )
+                .sessionManagement((session) -> session.
+                        sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .build();
+    }
+}
