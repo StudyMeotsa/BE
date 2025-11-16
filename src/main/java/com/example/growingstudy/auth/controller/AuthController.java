@@ -4,7 +4,7 @@ import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RefreshOrLogoutRequestDto;
 import com.example.growingstudy.auth.dto.RegisterErrorDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
-import com.example.growingstudy.auth.exception.RegisterFailException;
+import com.example.growingstudy.auth.exception.RegisterFailedException;
 import com.example.growingstudy.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class AuthController {
 
         try {
             authService.register(request);
-        } catch (RegisterFailException e) {
+        } catch (RegisterFailedException e) {
             logger.debug("회원가입 중 오류 발생: {}", e.getMessage());
             RegisterErrorDto body = new RegisterErrorDto();
             body.setError(e.getMessage());

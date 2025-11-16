@@ -3,8 +3,8 @@ package com.example.growingstudy.auth.service;
 import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
-import com.example.growingstudy.auth.exception.PasswordConfirmIncorrectException;
-import com.example.growingstudy.auth.exception.UserAlreadyExistsException;
+import com.example.growingstudy.auth.enums.RegisterFailedType;
+import com.example.growingstudy.auth.exception.RegisterFailedException;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +56,14 @@ public class AuthService {
         logger.trace("유저 중복 여부 확인");
         if (accountRepository.existsByUsername(request.getUsername())) {
             logger.debug("이미 해당 유저가 존재");
-            throw new UserAlreadyExistsException("이미 해당 username을 사용하는 유저가 존재합니다.");
+            throw new RegisterFailedException(RegisterFailedType.USERNAME_NOT_UNIQUE);
         }
 
         // 패스워드 일치 확인
         logger.trace("비밀번호와 비밀번호 확인의 일치 여부 확인");
         if (!request.getPassword().equals(request.getPasswordConfirm())) {
             logger.debug("비밀번호와 비밀번호 확인이 불일치");
-            throw new PasswordConfirmIncorrectException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            throw new RegisterFailedException(RegisterFailedType.PASSWORD_CONFIRM);
         }
     }
 
