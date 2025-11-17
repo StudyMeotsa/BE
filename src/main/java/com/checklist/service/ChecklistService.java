@@ -1,115 +1,75 @@
 package com.checklist.service;
 
-import com.checklist.dto.ChecklistRequest;
-import com.checklist.dto.ChecklistUpdateRequest;
-import com.checklist.dto.ChecklistResponse;
 import com.checklist.entity.Checklist;
-import com.checklist.entity.User;
 import com.checklist.repository.ChecklistRepository;
-import com.checklist.repository.UserRepository;
-import com.checklist.repository.SubmissionRepository; 
+import com.submission.repository.SubmissionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ChecklistService {
 
-    private final ChecklistRepository repository;
-    private final UserRepository userRepository; 
-    private final SubmissionRepository submissionRepository; 
-    private final TimerService timerService; 
+    private final ChecklistRepository checklistRepository;
+    private final SubmissionRepository submissionRepository;
 
-    public ChecklistService(ChecklistRepository repository, UserRepository userRepository,
-                            SubmissionRepository submissionRepository, TimerService timerService) { 
-        this.repository = repository;
-        this.userRepository = userRepository;
+    public ChecklistService(ChecklistRepository checklistRepository, SubmissionRepository submissionRepository) {
+        this.checklistRepository = checklistRepository;
         this.submissionRepository = submissionRepository;
-        this.timerService = timerService;
     }
 
-    @Transactional(readOnly = true)
-    public List<ChecklistResponse> getChecklistByUser(Long userId) {
-        List<Checklist> checklists = repository.findByUserId(userId);
-        if (checklists.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Long> checklistIds = checklists.stream().map(Checklist::getId).collect(Collectors.toList());
-        
-        // N+1 최적화된 명수 카운트 조회
-        Map<Long, Long> participantCounts = submissionRepository.countSubmissionsByChecklistIds(checklistIds).stream()
-                .collect(Collectors.toMap(
-                        result -> ((Number) result[0]).longValue(),
-                        result -> ((Number) result[1]).longValue() 
-                ));
-
-        return checklists.stream()
-                .map(checklist -> {
-                    Long participantCount = participantCounts.getOrDefault(checklist.getId(), 0L);
-                    
-                    Long durationMinutes = timerService.calculateDurationMinutes(
-                            checklist.getStartTime(), checklist.getEndTime()); 
-                            
-                    return ChecklistResponse.from(checklist, participantCount, durationMinutes);
-                })
-                .collect(Collectors.toList());
+    public Checklist createChecklist(Checklist checklist) {
+        return checklistRepository.save(checklist);
     }
 
-    @Transactional
-    public Checklist createChecklist(ChecklistRequest request, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
-
-        Checklist checklist = Checklist.builder()
-                .content(request.getContent())
-                .description(request.getDescription())
-                .user(user)
-                .build();
-
-        return repository.save(checklist);
+    public List<Checklist> getChecklists(Long groupId) {
+        return checklistRepository.findByGroupId(groupId);
     }
 
-    @Transactional
-    public void updateChecklist(Long id, ChecklistUpdateRequest request, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(id, userId);
-        checklist.updateContent(request.getContent());
-        checklist.updateDescription(request.getDescription());
-    }
-
-    @Transactional
-    public void markComplete(Long id, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(id, userId);
+    public void markComplete(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
         checklist.complete();
     }
 
-    @Transactional
-    public void deleteChecklist(Long id, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(id, userId);
-        repository.delete(checklist);
-    }
-
-    @Transactional
-    public void startChecklistSession(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
+    public void startSession(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
         checklist.startSession();
     }
 
-    @Transactional
-    public void endChecklistSession(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
+    public void endSession(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
         checklist.endSession();
     }
-    
-    private Checklist findChecklistByIdAndOwner(Long checklistId, Long userId) {
-        return repository.findById(checklistId)
-                .filter(checklist -> checklist.getUser().getId().equals(userId))
-                .orElseThrow(() -> new NoSuchElementException(
-                        "Checklist not found with id: " + checklistId + " for the current user"));
+
+    // 분 단위로 타이머 값 변환
+    public Long calculateDurationMinutes(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+
+        LocalDateTime start = checklist.getStartTime();
+        LocalDateTime end = checklist.getEndTime();
+
+        if (start == null) return 0L;
+        LocalDateTime actualEnd = (end != null) ? end : LocalDateTime.now();
+        return Duration.between(start, actualEnd).toMinutes();
+    }
+
+    // MaxMember 값을 가져와 스터디 전체 목표 달성률 계산 
+    public int calculateProgressRate(Long checklistId) {
+        Checklist checklist = checklistRepository.findById(checklistId)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+
+        long submittedCount = submissionRepository.countByChecklistId(checklistId);
+        int totalMembers = Integer.parseInt(checklist.getGroup().getMaxMember());
+
+        if (totalMembers == 0) return 0;
+        return (int) ((double) submittedCount / totalMembers * 100);
     }
 }

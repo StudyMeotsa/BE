@@ -1,57 +1,35 @@
 package com.checklist.entity;
 
+import com.group.entity.Group;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 public class Checklist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String content;
-
-    @Column(columnDefinition = "TEXT") 
-    private String description; 
-
-    @Column(nullable = false)
+    private String description;
     private boolean completed;
 
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
-    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Submission> submissions = new ArrayList<>(); 
-
-    private LocalDateTime startTime; 
-    private LocalDateTime endTime;   
-
-    @Builder
-    public Checklist(String content, String description, User user) {
-        this.content = content;
-        this.description = description;
-        this.completed = false;
-        this.user = user;
-    }
-
-    // --- 엔티티 비즈니스 로직 ---
-    public void updateContent(String content) { this.content = content; }
-    public void updateDescription(String description) { this.description = description; }
-    public void complete() { this.completed = true; } 
-
-    public void startSession() { 
-        if (this.startTime == null) { this.startTime = LocalDateTime.now(); }
-    }
-
-    public void endSession() {
-        if (this.endTime == null && this.startTime != null) { this.endTime = LocalDateTime.now(); }
-    }
+    public void complete() { this.completed = true; }
+    public void startSession() { this.startTime = LocalDateTime.now(); }
+    public void endSession() { this.endTime = LocalDateTime.now(); }
 }
