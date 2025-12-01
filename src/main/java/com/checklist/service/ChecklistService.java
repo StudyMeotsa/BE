@@ -1,74 +1,75 @@
 package com.checklist.service;
 
-import com.checklist.dto.ChecklistRequest;
-import com.checklist.dto.ChecklistUpdateRequest;
-import com.checklist.dto.ChecklistResponse;
 import com.checklist.entity.Checklist;
-import com.checklist.entity.User;
 import com.checklist.repository.ChecklistRepository;
-import com.checklist.repository.UserRepository;
+import com.submission.repository.SubmissionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ChecklistService {
 
-    private final ChecklistRepository repository;
-    private final UserRepository userRepository;
+    private final ChecklistRepository checklistRepository;
+    private final SubmissionRepository submissionRepository;
 
-    public ChecklistService(ChecklistRepository repository, UserRepository userRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
+    public ChecklistService(ChecklistRepository checklistRepository, SubmissionRepository submissionRepository) {
+        this.checklistRepository = checklistRepository;
+        this.submissionRepository = submissionRepository;
     }
 
-    @Transactional
-    public Checklist createChecklist(ChecklistRequest request, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
-        Checklist checklist = Checklist.builder()
-                .content(request.getContent())
-                .user(user)
-                .build();
-        return repository.save(checklist); // 생성 시 completed는 builder에서 false로 자동 설정됩니다.
+    public Checklist createChecklist(Checklist checklist) {
+        return checklistRepository.save(checklist);
     }
 
-    @Transactional(readOnly = true)
-    public List<ChecklistResponse> getChecklistByUser(Long userId) {
-        return repository.findByUserId(userId).stream()
-                .map(ChecklistResponse::from)
-                .collect(Collectors.toList());
+    public List<Checklist> getChecklists(Long groupId) {
+        return checklistRepository.findByGroupId(groupId);
     }
 
-    @Transactional
-    public void markComplete(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
-        checklist.complete(); // 엔티티의 비즈니스 메소드 호출
+    public void markComplete(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+        checklist.complete();
     }
 
-    @Transactional
-    public void deleteChecklist(Long checklistId, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
-        repository.delete(checklist);
+    public void startSession(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+        checklist.startSession();
     }
 
-    @Transactional
-    public void updateChecklist(Long checklistId, ChecklistUpdateRequest request, Long userId) {
-        Checklist checklist = findChecklistByIdAndOwner(checklistId, userId);
-        checklist.updateContent(request.getContent());
+    public void endSession(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+        checklist.endSession();
     }
 
-    /**
-     * 체크리스트 ID와 사용자 ID로 리소스를 조회하고 소유권을 검증합니다.
-     * 리소스가 없거나 소유권이 다르면 예외를 발생시킵니다.
-     */
-    private Checklist findChecklistByIdAndOwner(Long checklistId, Long userId) {
-        return repository.findById(checklistId)
-                .filter(checklist -> checklist.getUser().getId().equals(userId))
-                .orElseThrow(() -> new NoSuchElementException(
-                        "Checklist not found with id: " + checklistId + " for the current user"));
+    // 분 단위로 타이머 값 변환
+    public Long calculateDurationMinutes(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+
+        LocalDateTime start = checklist.getStartTime();
+        LocalDateTime end = checklist.getEndTime();
+
+        if (start == null) return 0L;
+        LocalDateTime actualEnd = (end != null) ? end : LocalDateTime.now();
+        return Duration.between(start, actualEnd).toMinutes();
+    }
+
+    // MaxMember 값을 가져와 스터디 전체 목표 달성률 계산 
+    public int calculateProgressRate(Long checklistId) {
+        Checklist checklist = checklistRepository.findById(checklistId)
+            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+
+        long submittedCount = submissionRepository.countByChecklistId(checklistId);
+        int totalMembers = Integer.parseInt(checklist.getGroup().getMaxMember());
+
+        if (totalMembers == 0) return 0;
+        return (int) ((double) submittedCount / totalMembers * 100);
     }
 }

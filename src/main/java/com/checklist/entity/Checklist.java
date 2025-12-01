@@ -1,47 +1,35 @@
 package com.checklist.entity;
 
+import com.group.entity.Group;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 public class Checklist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String content;       // 할 일 내용
+    private String content;
+    private String description;
+    private boolean completed;
 
-    @Column(nullable = false)
-    private boolean completed;    // 완료 여부
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // User 엔티티와 관계 매핑
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
-    @Builder
-    public Checklist(String content, User user) {
-        this.content = content;
-        this.completed = false; // 생성 시 항상 false로 초기화
-        this.user = user;
-    }
-
-    /**
-     * 체크리스트를 완료 상태로 변경하는 비즈니스 메서드
-     */
-    public void complete() {
-        if (!this.completed) {
-            this.completed = true;
-        }
-    }
-
-    /**
-     * 체크리스트 내용을 수정하는 비즈니스 메서드
-     */
-    public void updateContent(String content) {
-        this.content = content;
-    }
+    public void complete() { this.completed = true; }
+    public void startSession() { this.startTime = LocalDateTime.now(); }
+    public void endSession() { this.endTime = LocalDateTime.now(); }
 }
