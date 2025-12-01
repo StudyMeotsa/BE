@@ -1,5 +1,6 @@
 package com.example.growingstudy.group.controller;
 
+import com.example.growingstudy.group.dto.GroupListDto;
 import com.example.growingstudy.group.entity.Group;
 import com.example.growingstudy.group.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class GroupController {
     @Autowired
     public GroupController(GroupService groupService) {this.groupService = groupService;}
 
+    // 로그인 사용자 정보 주입 방법
     @PostMapping
     public ResponseEntity<String> createGroup(@RequestBody Group group) {
         try {
@@ -32,15 +34,22 @@ public class GroupController {
     }
 
     @GetMapping
-    public List<Group> listGroups() {
-        return groupService.findGroups();
+    public List<GroupListDto> listGroups() {
+        return groupService.findGroups()
+                .stream()
+                .map(GroupListDto::new)
+                .toList();
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<Group> getGroupById(@PathVariable("groupId") Long groupId) {
+    public ResponseEntity<GroupListDto> getGroupById(@PathVariable("groupId") Long groupId) {
+
         Optional<Group> group = groupService.findOne(groupId);
 
-        return group.map(g -> new ResponseEntity<>(g, HttpStatus.OK))
+        return group.map(g -> new ResponseEntity<>(
+                        new GroupListDto(g),
+                        HttpStatus.OK
+                ))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
