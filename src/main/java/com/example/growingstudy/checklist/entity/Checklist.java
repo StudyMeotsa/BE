@@ -1,6 +1,6 @@
-package com.checklist.entity;
+package com.example.growingstudy.checklist.entity;
 
-import com.group.entity.Group;
+import com.example.growingstudy.group.entity.Group;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

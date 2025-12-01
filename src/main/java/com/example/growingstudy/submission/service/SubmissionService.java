@@ -1,7 +1,7 @@
-package com.submission.service;
+package com.example.growingstudy.submission.service;
 
-import com.submission.entity.Submission;
-import com.submission.repository.SubmissionRepository;
+import com.example.growingstudy.submission.entity.Submission;
+import com.example.growingstudy.submission.repository.SubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

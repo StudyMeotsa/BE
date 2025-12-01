@@ -1,8 +1,8 @@
-package com.checklist.service;
+package com.example.growingstudy.checklist.service;
 
-import com.checklist.entity.Checklist;
-import com.checklist.repository.ChecklistRepository;
-import com.submission.repository.SubmissionRepository;
+import com.example.growingstudy.checklist.entity.Checklist;
+import com.example.growingstudy.checklist.repository.ChecklistRepository;
+import com.example.growingstudy.submission.repository.SubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
