@@ -1,5 +1,7 @@
 package com.example.growingstudy.checklist.controller;
 
+import com.example.growingstudy.checklist.dto.ChecklistCreateDto;
+import com.example.growingstudy.checklist.dto.ChecklistResponseDto;
 import com.example.growingstudy.checklist.entity.Checklist;
 import com.example.growingstudy.checklist.service.ChecklistService;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +19,11 @@ public class ChecklistController {
     }
 
     @PostMapping
-    public Checklist create(@RequestBody Checklist checklist) {
-        return service.createChecklist(checklist);
+    public ChecklistResponseDto create(@RequestBody ChecklistCreateDto dto) {
+
+        Checklist savedChecklist = service.createChecklist(dto);
+
+        return ChecklistResponseDto.from(savedChecklist);
     }
 
     @GetMapping("/group/{groupId}")

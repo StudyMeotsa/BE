@@ -1,7 +1,10 @@
 package com.example.growingstudy.checklist.service;
 
+import com.example.growingstudy.checklist.dto.ChecklistCreateDto;
 import com.example.growingstudy.checklist.entity.Checklist;
 import com.example.growingstudy.checklist.repository.ChecklistRepository;
+import com.example.growingstudy.group.entity.Group;
+import com.example.growingstudy.group.repository.JpaGroupRepository;
 import com.example.growingstudy.submission.repository.SubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,22 @@ public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
     private final SubmissionRepository submissionRepository;
+    private final JpaGroupRepository jpaGroupRepository;
 
-    public ChecklistService(ChecklistRepository checklistRepository, SubmissionRepository submissionRepository) {
+    public ChecklistService(ChecklistRepository checklistRepository, SubmissionRepository submissionRepository, JpaGroupRepository jpaGroupRepository) {
         this.checklistRepository = checklistRepository;
         this.submissionRepository = submissionRepository;
+        this.jpaGroupRepository = jpaGroupRepository;
     }
 
-    public Checklist createChecklist(Checklist checklist) {
+    public Checklist createChecklist(ChecklistCreateDto dto) {
+
+        Long groupId = dto.getGroupId();
+        Group existingGroup = jpaGroupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalStateException("Group not found with ID: " + groupId));
+
+        Checklist checklist = dto.toEntity(existingGroup);
+
         return checklistRepository.save(checklist);
     }
 
