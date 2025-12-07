@@ -2,14 +2,14 @@ package com.example.growingstudy.auth.controller;
 
 import com.example.growingstudy.auth.dto.JwtResponseDto;
 import com.example.growingstudy.auth.dto.RefreshOrLogoutRequestDto;
-import com.example.growingstudy.auth.dto.RegisterErrorDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
-import com.example.growingstudy.auth.exception.RegisterFailedException;
 import com.example.growingstudy.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,21 +34,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
+    public ResponseEntity<Void> register(@Validated @RequestBody RegisterRequestDto request) {
         logger.debug("회원가입 요청 처리 시작");
 
-        try {
-            authService.register(request);
-        } catch (RegisterFailedException e) {
-            logger.debug("회원가입 중 오류 발생: {}", e.getMessage());
-            RegisterErrorDto body = new RegisterErrorDto();
-            body.setError(e.getMessage());
-            logger.debug("에러 DTO에 설정된 오류 메시지: {}", body.getError());
-            return ResponseEntity.badRequest().body(body);
-        }
-
+        authService.register(request);
         logger.info("유저 {}가 회원가입", request.getUsername());
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/refresh")
