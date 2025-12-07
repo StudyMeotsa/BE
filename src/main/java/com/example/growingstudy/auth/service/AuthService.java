@@ -35,7 +35,7 @@ public class AuthService {
         logger.debug("회원가입 서비스 로직 시작");
 
         logger.trace("회원가입 유효성을 검증");
-        validate(request);
+        validateUniqueness(request);
         logger.trace("유효성 검증 성공");
         logger.trace("새 회원 데이터를 생성");
         Account account = new Account();
@@ -48,8 +48,8 @@ public class AuthService {
         accountRepository.save(account);
     }
 
-    // 유저 중복 확인, 패스워드 일치 확인
-    public void validate(RegisterRequestDto request) {
+    // 유저 중복 확인 등의 unique 검사
+    public void validateUniqueness(RegisterRequestDto request) {
         logger.debug("회원가입 유효성 검증 시작");
 
         // 유저 중복 확인
@@ -57,13 +57,6 @@ public class AuthService {
         if (accountRepository.existsByUsername(request.getUsername())) {
             logger.debug("이미 해당 유저가 존재");
             throw new RegisterFailedException(RegisterFailedType.USERNAME_NOT_UNIQUE);
-        }
-
-        // 패스워드 일치 확인
-        logger.trace("비밀번호와 비밀번호 확인의 일치 여부 확인");
-        if (!request.getPassword().equals(request.getPasswordConfirm())) {
-            logger.debug("비밀번호와 비밀번호 확인이 불일치");
-            throw new RegisterFailedException(RegisterFailedType.PASSWORD_CONFIRM);
         }
     }
 
