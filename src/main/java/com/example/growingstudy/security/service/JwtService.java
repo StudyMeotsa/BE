@@ -1,7 +1,8 @@
-package com.example.growingstudy.auth.service;
+package com.example.growingstudy.security.service;
 
 import com.example.growingstudy.auth.entity.RefreshToken;
 import com.example.growingstudy.auth.repository.RefreshTokenRepository;
+import com.example.growingstudy.security.dto.JwtResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,54 +35,31 @@ public class JwtService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public Jwt generateAccessToken(String username) {
-        logger.debug("액세스 토큰 발급 시작");
-        logger.trace("토큰의 헤더와 클레임 설정");
-        JwtClaimsSet jwtClaimsSet =
-                JwtClaimsSet
-                        .builder()
-                        .id(UUID.randomUUID().toString())
-                        .claim("type", "access")
-                        .issuer(ISSUER)
-                        .issuedAt(Instant.now())
-                        .subject(username)
-                        .expiresAt(Instant.now().plus(Duration.ofMinutes(ACCESS_TOKEN_DURATION_MINUTES)))
-                        .build();
+    // userId를 subject로 하는 액세스 토큰과 리프레쉬 토큰을 생성하여 반환
+    @Transactional
+    public JwtResponseDto generateTokens(long userId) {
+        Jwt accessToken = generateAccessToken(userId);
+        Jwt refreshToken = generateRefreshToken(userId);
 
-        logger.trace("클레임 셋으로 인코딩 정보 생성");
-        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
-        logger.debug("액세스 토큰 발급 성공");
-        return jwtEncoder.encode(jwtEncoderParameters);
+        JwtResponseDto jwtResponseDto = new JwtResponseDto();
+        jwtResponseDto.setAccessToken(accessToken.getTokenValue());
+        jwtResponseDto.setRefreshToken(refreshToken.getTokenValue());
+
+        return jwtResponseDto;
     }
 
+    // 리프레쉬 토큰을 받아서, 토큰 재생성하여 반환
     @Transactional
-    public Jwt generateRefreshToken(String username) {
-        logger.debug("리프레쉬 토큰 발급 시작");
-        logger.trace("토큰의 헤더와 클레임 설정");
-        JwtClaimsSet jwtClaimsSet =
-                JwtClaimsSet
-                        .builder()
-                        .id(UUID.randomUUID().toString())
-                        .claim("type", "refresh")
-                        .issuer(ISSUER)
-                        .issuedAt(Instant.now())
-                        .subject(username)
-                        .expiresAt(Instant.now().plus(Duration.ofHours(REFRESH_TOKEN_DURATION_HOURS)))
-                        .build();
+    public JwtResponseDto refreshTokens(String refreshToken) {
+        long userId = consumeRefreshToken(refreshToken);
 
-        logger.trace("클레임 셋으로 인코딩 정보 생성");
-        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
-
-        Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
-        logger.trace("발급한 리프레쉬 토큰의 ID를 DB에 저장");
-        refreshTokenRepository.save(new RefreshToken(refreshToken.getId())); // 리프레쉬 토큰을 DB에 저장
-        logger.debug("리프레쉬 토큰 발급 성공");
-        return refreshToken;
+        JwtResponseDto jwtResponseDto = generateTokens(userId);
+        return jwtResponseDto;
     }
 
-    // 현재 리프레쉬 토큰을 리스트에서 삭제하고, 리프레쉬 토큰 대상 유저의 username 반환
+    // 현재 리프레쉬 토큰을 리스트에서 삭제하고, 리프레쉬 토큰 대상 유저의 userId 반환
     @Transactional
-    public String consumeRefreshToken(String refreshToken) {
+    public long consumeRefreshToken(String refreshToken) {
         logger.debug("리프레쉬 토큰 만료 처리 시작");
         logger.trace("토큰 문자열로 토큰 객체 생성");
         Jwt jwt = decodeTokenString(refreshToken);
@@ -94,8 +72,55 @@ public class JwtService {
         refreshTokenRepository.deleteById(jwt.getId());
         logger.debug("리프레쉬 토큰 만료 처리 성공");
 
-        String username = jwt.getSubject();
-        return username;
+        long userId = Long.parseLong(jwt.getSubject());
+        return userId;
+    }
+
+    // 유저의 id를 바탕으로 액세스 토큰 생성
+    protected Jwt generateAccessToken(long userId) {
+        logger.debug("액세스 토큰 발급 시작");
+        logger.trace("토큰의 헤더와 클레임 설정");
+        JwtClaimsSet jwtClaimsSet =
+                JwtClaimsSet
+                        .builder()
+                        .id(UUID.randomUUID().toString())
+                        .claim("type", "access")
+                        .issuer(ISSUER)
+                        .issuedAt(Instant.now())
+                        .subject(String.valueOf(userId))
+                        .expiresAt(Instant.now().plus(Duration.ofMinutes(ACCESS_TOKEN_DURATION_MINUTES)))
+                        .build();
+
+        logger.trace("클레임 셋으로 인코딩 정보 생성");
+        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
+        logger.debug("액세스 토큰 발급 성공");
+        return jwtEncoder.encode(jwtEncoderParameters);
+    }
+
+    // 유저의 id를 바탕으로 리프레쉬 토큰 생성
+    @Transactional
+    protected Jwt generateRefreshToken(long userId) {
+        logger.debug("리프레쉬 토큰 발급 시작");
+        logger.trace("토큰의 헤더와 클레임 설정");
+        JwtClaimsSet jwtClaimsSet =
+                JwtClaimsSet
+                        .builder()
+                        .id(UUID.randomUUID().toString())
+                        .claim("type", "refresh")
+                        .issuer(ISSUER)
+                        .issuedAt(Instant.now())
+                        .subject(String.valueOf(userId))
+                        .expiresAt(Instant.now().plus(Duration.ofHours(REFRESH_TOKEN_DURATION_HOURS)))
+                        .build();
+
+        logger.trace("클레임 셋으로 인코딩 정보 생성");
+        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
+
+        Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
+        logger.trace("발급한 리프레쉬 토큰의 ID를 DB에 저장");
+        refreshTokenRepository.save(new RefreshToken(refreshToken.getId())); // 리프레쉬 토큰을 DB에 저장
+        logger.debug("리프레쉬 토큰 발급 성공");
+        return refreshToken;
     }
 
     public Jwt decodeTokenString(String token) {
