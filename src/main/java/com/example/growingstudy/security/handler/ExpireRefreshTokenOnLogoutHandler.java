@@ -25,8 +25,8 @@ public class ExpireRefreshTokenOnLogoutHandler implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
             logger.debug("리프레쉬 토큰 만료 처리");
-            String requestString = converter.convertRequestToString(request);
-            RefreshOrLogoutRequestDto dto = converter.mapJsonToDto(requestString, RefreshOrLogoutRequestDto.class);
+            String requestString = ServletRequestConverter.convertRequestToString(request);
+            RefreshOrLogoutRequestDto dto = ServletRequestConverter.mapJsonToDto(requestString, RefreshOrLogoutRequestDto.class);
 
             jwtService.consumeRefreshToken(dto.getRefreshToken());
         } catch (IOException e) {
