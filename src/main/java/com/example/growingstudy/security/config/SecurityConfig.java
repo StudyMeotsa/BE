@@ -2,6 +2,7 @@ package com.example.growingstudy.security.config;
 
 import com.example.growingstudy.security.filter.CheckAccessTokenFilter;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
+import com.example.growingstudy.security.filter.RegenerateTokensFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -25,13 +26,15 @@ public class SecurityConfig {
     private final LogoutHandler logoutHandler; // 로그아웃 핸들러 (리프레쉬 토큰 무효화)
     private final JsonAuthenticationProcessingFilter jsonAuthenticationProcessingFilter; // JSON 방식의 로그인 필터
     private final CheckAccessTokenFilter checkAccessTokenFilter; // 액세스 토큰 여부 확인 필터
+    private final RegenerateTokensFilter regenerateTokensFilter; // 토큰 재발급 필터
 
     @Autowired
     public SecurityConfig(LogoutHandler logoutHandler, JsonAuthenticationProcessingFilter jsonAuthenticationProcessingFilter,
-                          CheckAccessTokenFilter checkAccessTokenFilter) {
+                          CheckAccessTokenFilter checkAccessTokenFilter, RegenerateTokensFilter regenerateTokensFilter) {
         this.logoutHandler = logoutHandler;
         this.jsonAuthenticationProcessingFilter = jsonAuthenticationProcessingFilter;
         this.checkAccessTokenFilter = checkAccessTokenFilter;
+        this.regenerateTokensFilter = regenerateTokensFilter;
     }
 
     // H2 콘솔 및 스웨거에 대해 시큐리티 미적용 설정 (로컬 테스트용)
@@ -66,6 +69,7 @@ public class SecurityConfig {
                 )
                 .addFilterAt(jsonAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(checkAccessTokenFilter, BearerTokenAuthenticationFilter.class)
+                .addFilterBefore(regenerateTokensFilter, JsonAuthenticationProcessingFilter.class)
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(Customizer.withDefaults())
                 )

@@ -3,6 +3,7 @@ package com.example.growingstudy.security.config;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.security.filter.CheckAccessTokenFilter;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
+import com.example.growingstudy.security.filter.RegenerateTokensFilter;
 import com.example.growingstudy.security.handler.ExpireRefreshTokenOnLogoutHandler;
 import com.example.growingstudy.security.handler.LoginSuccessHandler;
 import com.example.growingstudy.security.service.AccountRepositoryUserDetailsService;
@@ -61,6 +62,11 @@ public class AuthConfig {
         return new CheckAccessTokenFilter(jwtService);
     }
 
+    @Bean
+    RegenerateTokensFilter regenerateTokensFilter(JwtService jwtService) {
+        return new RegenerateTokensFilter(jwtService);
+    }
+
     // 필터 이중 등록 방지를 위한 FilterRegistrationBean 설정
 
     @Bean
@@ -73,6 +79,13 @@ public class AuthConfig {
     @Bean
     public FilterRegistrationBean<CheckAccessTokenFilter> checkAccessTokenFilterRegistration(CheckAccessTokenFilter filter) {
         FilterRegistrationBean<CheckAccessTokenFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RegenerateTokensFilter> regenerateTokensFilterRegistration(RegenerateTokensFilter filter) {
+        FilterRegistrationBean<RegenerateTokensFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
     }
