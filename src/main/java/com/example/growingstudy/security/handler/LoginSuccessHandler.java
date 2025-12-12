@@ -3,6 +3,7 @@ package com.example.growingstudy.security.handler;
 import com.example.growingstudy.security.dto.JwtResponseDto;
 import com.example.growingstudy.security.entity.UserDetailsWithId;
 import com.example.growingstudy.security.service.JwtService;
+import com.example.growingstudy.security.util.JsonResponseWriter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,10 +28,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         long userId = userDetails.getUserId();
 
         JwtResponseDto jwtResponseDto = jwtService.generateTokens(userId);
-
-        // TODO: 응답에 객체 쓰기
+        JsonResponseWriter.writeResponseWithDto(response, jwtResponseDto);
     }
 
+    // 사용 안함
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
