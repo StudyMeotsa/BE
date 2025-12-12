@@ -3,6 +3,7 @@ package com.example.growingstudy.security.config;
 import com.example.growingstudy.security.filter.CheckAccessTokenFilter;
 import com.example.growingstudy.security.filter.JsonAuthenticationProcessingFilter;
 import com.example.growingstudy.security.filter.RegenerateTokensFilter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -64,6 +65,7 @@ public class SecurityConfig {
                 )
                 .formLogin((form) -> form.disable())
                 .authorizeHttpRequests((authorize) -> authorize
+                        .dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/**").authenticated()
                 )
