@@ -41,23 +41,20 @@ public class JsonAuthenticationProcessingFilter extends AbstractAuthenticationPr
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         logger.debug("인증 프로세스 시작");
-        try {
-            String jsonString = ServletRequestConverter.convertRequestToString(request);
-            LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-            String username = obtainUsername(loginRequest);
-            String password = obtainPassword(loginRequest);
+        String jsonString = ServletRequestConverter.convertRequestToString(request);
+        LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-            UsernamePasswordAuthenticationToken token =
-                    UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        String username = obtainUsername(loginRequest);
+        String password = obtainPassword(loginRequest);
 
-            Authentication result = this.getAuthenticationManager().authenticate(token);
-            logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+        UsernamePasswordAuthenticationToken token =
+                UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Authentication result = this.getAuthenticationManager().authenticate(token);
+        logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+
+        return result;
     }
 
     @Override
