@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 회원가입과 같은 회원 관련 메소드를 제공하는 서비스 클래스
+ */
 @Service
 public class AuthService {
 
@@ -25,6 +28,10 @@ public class AuthService {
         this.accountRepository = accountRepository;
     }
 
+    /**
+     * 회원가입 요청 데이터를 받아 DB 레벨에서의 유효성 검증 후 계정을 생성 및 DB에 저장
+     * @param request 회원가입 요청 DTO
+     */
     @Transactional
     public void register(RegisterRequestDto request) {
         logger.debug("회원가입 서비스 로직 시작");
@@ -43,7 +50,10 @@ public class AuthService {
         accountRepository.save(account);
     }
 
-    // 유저 중복 확인 등의 unique 검사
+    /**
+     * 유저 중복 여부 확인과 같은 DB 레벨에서의 유효성 검증
+     * @param request 회원가입 요청 DTO
+     */
     public void validateUniqueness(RegisterRequestDto request) {
         logger.debug("회원가입 유효성 검증 시작");
 
