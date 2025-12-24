@@ -1,7 +1,6 @@
 package com.example.growingstudy.security.filter;
 
-import com.example.growingstudy.auth.dto.LoginRequestDto;
-import com.example.growingstudy.security.handler.LoginSuccessHandler;
+import com.example.growingstudy.security.dto.LoginRequestDto;
 import com.example.growingstudy.security.util.ServletRequestConverter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,41 +14,47 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import java.io.IOException;
 
 public class JsonAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private final Logger logger = LoggerFactory.getLogger(JsonAuthenticationProcessingFilter.class);
-    private final ServletRequestConverter converter = new ServletRequestConverter();
-    private final AuthenticationSuccessHandler successHandler = new LoginSuccessHandler();
+    private final AuthenticationSuccessHandler successHandler;
 
+    // 핸들러가 없을 경우 부모 클래스의 정의를 따름
     public JsonAuthenticationProcessingFilter(String defaultFilterProcessesUrl,
                                               AuthenticationManager authenticationManager) {
+        this(defaultFilterProcessesUrl, authenticationManager, new SavedRequestAwareAuthenticationSuccessHandler());
+    }
+
+    // 시큐리티 설정에서 생성자 주입
+    public JsonAuthenticationProcessingFilter(String defaultFilterProcessesUrl,
+                                              AuthenticationManager authenticationManager,
+                                              AuthenticationSuccessHandler successHandler) {
         super(defaultFilterProcessesUrl, authenticationManager);
+        this.successHandler = successHandler;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         logger.debug("인증 프로세스 시작");
-        try {
-            String jsonString = converter.convertRequestToString(request);
-            LoginRequestDto loginRequest = converter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-            String username = obtainUsername(loginRequest);
-            String password = obtainPassword(loginRequest);
+        String jsonString = ServletRequestConverter.convertRequestToString(request);
+        LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-            UsernamePasswordAuthenticationToken token =
-                    UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        String username = obtainUsername(loginRequest);
+        String password = obtainPassword(loginRequest);
 
-            Authentication result = this.getAuthenticationManager().authenticate(token);
-            logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+        UsernamePasswordAuthenticationToken token =
+                UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Authentication result = this.getAuthenticationManager().authenticate(token);
+        logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+
+        return result;
     }
 
     @Override
