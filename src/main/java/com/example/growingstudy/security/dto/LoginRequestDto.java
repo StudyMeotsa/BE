@@ -1,4 +1,4 @@
-package com.example.growingstudy.auth.dto;
+package com.example.growingstudy.security.dto;
 
 import lombok.Getter;
 import lombok.Setter;
