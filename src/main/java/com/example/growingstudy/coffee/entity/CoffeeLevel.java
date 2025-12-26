@@ -14,13 +14,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Coffee {
+public class CoffeeLevel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-    private String image_url;
+    private Long level;
     private Integer requiredBeans;
+    private String imagePath;
 }
