@@ -1,6 +1,6 @@
 package com.example.growingstudy.security.filter;
 
-import com.example.growingstudy.auth.service.JwtService;
+import com.example.growingstudy.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

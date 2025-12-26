@@ -2,9 +2,9 @@ package com.example.growingstudy.security.service;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.security.entity.UserDetailsWithId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,8 +27,12 @@ public class AccountRepositoryUserDetailsService implements UserDetailsService {
                         .orElseThrow(() -> new UsernameNotFoundException(username));
 
         logger.info("UserDetails 빌드");
-        UserDetails user
-                = User.withUsername(username).password(account.getPassword()).build();
+        UserDetails user =
+                UserDetailsWithId.builder()
+                        .username(username)
+                        .password(account.getPassword())
+                        .userId(account.getId())
+                        .build();
 
         account.setPassword(null);
 
