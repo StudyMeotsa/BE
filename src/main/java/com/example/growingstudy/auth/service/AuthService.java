@@ -3,6 +3,7 @@ package com.example.growingstudy.auth.service;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.enums.RegisterFailedType;
+import com.example.growingstudy.auth.enums.SexEnum;
 import com.example.growingstudy.auth.exception.RegisterFailedException;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -40,10 +41,13 @@ public class AuthService {
         validateUniqueness(request);
         logger.trace("유효성 검증 성공");
         logger.trace("새 회원 데이터를 생성");
-        Account account = new Account();
-        account.setUsername(request.getUsername());
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        account.setNickname(request.getNickname());
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .sex(SexEnum.valueOf(request.getSex()))
+                .build();
+
         logger.trace("새 회원 데이터 생성됨");
 
         logger.trace("DB에 회원 데이터를 저장");
@@ -59,7 +63,7 @@ public class AuthService {
 
         // 유저 중복 확인
         logger.trace("유저 중복 여부 확인");
-        if (accountRepository.existsByUsername(request.getUsername())) {
+        if (accountRepository.existsByEmail(request.getEmail())) {
             logger.debug("이미 해당 유저가 존재");
             throw new RegisterFailedException(RegisterFailedType.USERNAME_NOT_UNIQUE);
         }

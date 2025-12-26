@@ -27,7 +27,7 @@ public class AuthController {
         logger.debug("회원가입 요청 처리 시작");
 
         authService.register(request);
-        logger.info("유저 {}가 회원가입", request.getUsername());
+        logger.info("유저 {}가 회원가입", request.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
