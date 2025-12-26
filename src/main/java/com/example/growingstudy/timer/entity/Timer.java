@@ -1,6 +1,7 @@
-package com.example.growingstudy.group.entity;
+package com.example.growingstudy.timer.entity;
 
 import com.example.growingstudy.auth.entity.Account;
+import com.example.growingstudy.group.entity.Group;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,13 +13,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupMember {
+public class Timer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String nickname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -27,4 +26,7 @@ public class GroupMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Account member;
+
+    private Integer time;
+
 }
