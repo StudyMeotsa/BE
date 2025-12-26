@@ -34,7 +34,7 @@ public class GroupListDto {
 
         if (group.getOwner() != null) {
             this.ownerId = group.getOwner().getId();
-            this.ownerUsername = group.getOwner().getUsername();
+            this.ownerUsername = group.getOwner().getEmail();
         }
     }
 }
