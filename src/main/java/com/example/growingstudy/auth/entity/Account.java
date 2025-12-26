@@ -1,25 +1,27 @@
 package com.example.growingstudy.auth.entity;
 
+import com.example.growingstudy.auth.enums.SexEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "account")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
 
-    // 필드들은 대략적인 것으로, 나중에 변경될 수 있음
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; // H2에서 AtomicLong 오류 나서 long으로 뒀음
-    private String username;
+    // JPA의 권장 사항에 따라 id에 원시 자료형 대신 래퍼 클래스 사용
+    private Long id; // H2에서 AtomicLong 오류 나서 long으로 뒀음
+
+    private String email;
     private String password;
-    private String nickname;
+    private String name;
+    @Enumerated(EnumType.STRING) private SexEnum sex;
+
+    @Column(name = "image_path")
+    private String imagePath;
 }
