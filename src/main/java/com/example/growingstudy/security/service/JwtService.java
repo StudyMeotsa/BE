@@ -83,11 +83,16 @@ public class JwtService {
             logger.debug("리프레쉬 토큰이 아님");
             throw new RuntimeException("Not a refresh token");
         }
+
+        String jid = jwt.getId();
+
+        logger.trace("해당 리프레쉬 토큰의 유저 id 획득");
+        long userId = refreshTokenRepository.findUidByJid(jid).getUid();
+
         logger.trace("해당 리프레쉬 토큰 ID를 DB에서 삭제");
-        refreshTokenRepository.deleteById(jwt.getId());
+        refreshTokenRepository.deleteById(jid);
         logger.debug("리프레쉬 토큰 만료 처리 성공");
 
-        long userId = Long.parseLong(jwt.getSubject());
         return userId;
     }
 
