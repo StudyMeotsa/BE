@@ -141,7 +141,7 @@ public class JwtService {
 
         Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
         logger.trace("발급한 리프레쉬 토큰의 ID를 DB에 저장");
-        refreshTokenRepository.save(new RefreshToken(refreshToken.getId())); // 리프레쉬 토큰을 DB에 저장
+        refreshTokenRepository.save(new RefreshToken(refreshToken.getId(), userId)); // 리프레쉬 토큰을 DB에 저장
         logger.debug("리프레쉬 토큰 발급 성공");
         return refreshToken;
     }

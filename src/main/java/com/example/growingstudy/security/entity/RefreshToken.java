@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @RedisHash(value = "refresh_token", timeToLive = 3600)
 @Getter
@@ -15,5 +16,8 @@ import org.springframework.data.redis.core.RedisHash;
 public class RefreshToken {
 
     @Id
-    private String jid;
+    private String jid; // 토큰 문자열
+
+    @Indexed
+    private long uid; // 유저 id
 }
