@@ -1,4 +1,4 @@
-package com.example.growingstudy.auth.entity;
+package com.example.growingstudy.security.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.example.growingstudy.security.validator;
 
-import com.example.growingstudy.auth.repository.RefreshTokenRepository;
+import com.example.growingstudy.security.repository.RefreshTokenRepository;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;

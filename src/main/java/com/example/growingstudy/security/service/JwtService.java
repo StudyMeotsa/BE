@@ -1,7 +1,7 @@
 package com.example.growingstudy.security.service;
 
-import com.example.growingstudy.auth.entity.RefreshToken;
-import com.example.growingstudy.auth.repository.RefreshTokenRepository;
+import com.example.growingstudy.security.entity.RefreshToken;
+import com.example.growingstudy.security.repository.RefreshTokenRepository;
 import com.example.growingstudy.security.dto.JwtResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

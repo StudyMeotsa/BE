@@ -1,6 +1,6 @@
-package com.example.growingstudy.auth.repository;
+package com.example.growingstudy.security.repository;
 
-import com.example.growingstudy.auth.entity.RefreshToken;
+import com.example.growingstudy.security.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
 /**

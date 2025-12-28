@@ -1,6 +1,6 @@
 package com.example.growingstudy.security.config;
 
-import com.example.growingstudy.auth.repository.RefreshTokenRepository;
+import com.example.growingstudy.security.repository.RefreshTokenRepository;
 import com.example.growingstudy.security.validator.JwtRegisteredRefreshTokenValidator;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
