@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -145,6 +146,10 @@ public class JwtService {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
 
         Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
+
+        logger.trace("기존에 존재하는 리프레쉬 토큰들 삭제");
+        removePreexistingRefreshTokens(userId);
+
         logger.trace("발급한 리프레쉬 토큰의 ID를 DB에 저장");
         refreshTokenRepository.save(new RefreshToken(refreshToken.getId(), userId)); // 리프레쉬 토큰을 DB에 저장
         logger.debug("리프레쉬 토큰 발급 성공");
@@ -161,5 +166,15 @@ public class JwtService {
         Jwt jwt = jwtDecoder.decode(token);
         logger.debug("토큰 문자열 디코딩 성공");
         return jwt;
+    }
+
+    /**
+     * 해당 유저 id를 subject로 하는 이미 존재하는 리프레쉬 토큰들 제거
+     * @param userId 유저 id
+     */
+    @Transactional
+    protected void removePreexistingRefreshTokens(long userId) {
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findAllByUid(userId);
+        refreshTokenRepository.deleteAll(refreshTokens);
     }
 }
