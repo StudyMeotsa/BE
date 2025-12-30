@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +24,9 @@ public class Group {
     private String name;
 
     @Column(nullable = false)
+    private LocalDateTime startDay;
+
+    @Column(nullable = false)
     private Integer weekSession;
 
     @Column(nullable = false)
@@ -32,7 +36,7 @@ public class Group {
     private Integer maxMember;
 
     @Column(nullable = false)
-    private Integer studyHour;
+    private Integer sessionHour;
 
     @Column(nullable = false)
     private String description;
@@ -46,11 +50,12 @@ public class Group {
     private Account owner;
 
 // 생성하기 시
-    public Group(String name, Integer weekSession, Integer totalWeek, Integer studyHour, Integer maxMember, String description, Account account) {
+    public Group(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
         this.name = name;
         this.weekSession = weekSession;
+        this.startDay = startDay;
         this.totalWeek = totalWeek;
-        this.studyHour = studyHour;
+        this.sessionHour = sessionHour;
         this.maxMember = maxMember;
         this.description = description;
         this.code = UUID.randomUUID().toString().substring(0, 8);

@@ -29,9 +29,6 @@ public class GroupNotice {
 
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    private Integer pinned;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private GroupMember member;
@@ -43,7 +40,6 @@ public class GroupNotice {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.pinned = this.pinned == null ? 0 : this.pinned;
     }
 
     @PreUpdate
