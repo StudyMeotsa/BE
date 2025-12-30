@@ -1,7 +1,7 @@
 package com.example.growingstudy.security.service;
 
-import com.example.growingstudy.auth.entity.RefreshToken;
-import com.example.growingstudy.auth.repository.RefreshTokenRepository;
+import com.example.growingstudy.security.entity.RefreshToken;
+import com.example.growingstudy.security.repository.RefreshTokenRepository;
 import com.example.growingstudy.security.dto.JwtResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -83,11 +84,16 @@ public class JwtService {
             logger.debug("리프레쉬 토큰이 아님");
             throw new RuntimeException("Not a refresh token");
         }
+
+        String jid = jwt.getId();
+
+        logger.trace("해당 리프레쉬 토큰의 유저 id 획득");
+        long userId = refreshTokenRepository.findUidByJid(jid).getUid();
+
         logger.trace("해당 리프레쉬 토큰 ID를 DB에서 삭제");
-        refreshTokenRepository.deleteById(jwt.getId());
+        refreshTokenRepository.deleteById(jid);
         logger.debug("리프레쉬 토큰 만료 처리 성공");
 
-        long userId = Long.parseLong(jwt.getSubject());
         return userId;
     }
 
@@ -140,8 +146,12 @@ public class JwtService {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwtClaimsSet);
 
         Jwt refreshToken = jwtEncoder.encode(jwtEncoderParameters);
+
+        logger.trace("기존에 존재하는 리프레쉬 토큰들 삭제");
+        removePreexistingRefreshTokens(userId);
+
         logger.trace("발급한 리프레쉬 토큰의 ID를 DB에 저장");
-        refreshTokenRepository.save(new RefreshToken(refreshToken.getId())); // 리프레쉬 토큰을 DB에 저장
+        refreshTokenRepository.save(new RefreshToken(refreshToken.getId(), userId)); // 리프레쉬 토큰을 DB에 저장
         logger.debug("리프레쉬 토큰 발급 성공");
         return refreshToken;
     }
@@ -156,5 +166,15 @@ public class JwtService {
         Jwt jwt = jwtDecoder.decode(token);
         logger.debug("토큰 문자열 디코딩 성공");
         return jwt;
+    }
+
+    /**
+     * 해당 유저 id를 subject로 하는 이미 존재하는 리프레쉬 토큰들 제거
+     * @param userId 유저 id
+     */
+    @Transactional
+    protected void removePreexistingRefreshTokens(long userId) {
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findAllByUid(userId);
+        refreshTokenRepository.deleteAll(refreshTokens);
     }
 }
