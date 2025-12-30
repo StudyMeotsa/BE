@@ -1,19 +1,18 @@
 package com.example.growingstudy.group.entity;
 
-import com.example.growingstudy.coffee.entity.Coffee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
-@Table(name = "group")
+@Table(name = "groups")
 public class Group {
 
     @Id
@@ -21,33 +20,45 @@ public class Group {
     private Long id;
 
     // 생성 시 입력 사항
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private LocalDateTime startDay;
+
+    @Column(nullable = false)
     private Integer weekSession;
+
+    @Column(nullable = false)
     private Integer totalWeek;
+
+    @Column(nullable = false)
     private Integer maxMember;
-    private Integer minHour;
+
+    @Column(nullable = false)
+    private Integer sessionHour;
+
+    @Column(nullable = false)
     private String description;
 
     // UUID활용, 8자리
-    private String code = UUID.randomUUID().toString().substring(0, 8);
+    @Column(nullable = false)
+    private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="owner_id")
+    @JoinColumn(name="owner_id", nullable = false)
     private Account owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="coffee_id")
-    private Coffee coffee;
-
-
 // 생성하기 시
-    public Group(String name, Integer weekSession, Integer totalWeek, Integer minHour, Integer maxMember, String description, Account account) {
+    public Group(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
         this.name = name;
         this.weekSession = weekSession;
+        this.startDay = startDay;
         this.totalWeek = totalWeek;
-        this.minHour = minHour;
+        this.sessionHour = sessionHour;
         this.maxMember = maxMember;
         this.description = description;
+        this.code = UUID.randomUUID().toString().substring(0, 8);
         this.owner = account; // 로그인 정보 활용으로 변경 필요
     }
 }
