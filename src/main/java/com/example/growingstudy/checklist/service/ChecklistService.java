@@ -74,14 +74,14 @@ public class ChecklistService {
     }
 
     // MaxMember 값을 가져와 스터디 전체 목표 달성률 계산 
-    public int calculateProgressRate(Long checklistId) {
-        Checklist checklist = checklistRepository.findById(checklistId)
-            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
-
-        long submittedCount = submissionRepository.countByChecklistId(checklistId);
-        int totalMembers = Integer.parseInt(checklist.getGroup().getMaxMember());
-
-        if (totalMembers == 0) return 0;
-        return (int) ((double) submittedCount / totalMembers * 100);
-    }
+//    public int calculateProgressRate(Long checklistId) {
+//        Checklist checklist = checklistRepository.findById(checklistId)
+//            .orElseThrow(() -> new IllegalStateException("Checklist not found"));
+//
+//        long submittedCount = submissionRepository.countByChecklistId(checklistId);
+////        int totalMembers = Integer.parseInt(checklist.getGroup().getMaxMember());
+//
+//        if (totalMembers == 0) return 0;
+//        return (int) ((double) submittedCount / totalMembers * 100);
+//    }
 }
