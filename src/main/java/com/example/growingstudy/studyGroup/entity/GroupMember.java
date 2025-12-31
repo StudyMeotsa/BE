@@ -1,36 +1,34 @@
-package com.example.growingstudy.studyTime.entity;
+package com.example.growingstudy.studyGroup.entity;
 
 import com.example.growingstudy.auth.entity.Account;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudyTime {
+public class GroupMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Integer time;
+    private String role;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private String nickname;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Account member;
+    @JoinColumn(name = "group_id", nullable = false)
+    private StudyGroup group;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 }

@@ -1,7 +1,5 @@
-package com.example.growingstudy.group.entity;
+package com.example.growingstudy.studyGroup.entity;
 
-import com.example.growingstudy.coffee.entity.CoffeeLevel;
-import com.example.growingstudy.coffee.entity.CoffeeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +33,7 @@ public class GroupNotice {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    private StudyGroup group;
 
     @PrePersist
     public void prePersist() {

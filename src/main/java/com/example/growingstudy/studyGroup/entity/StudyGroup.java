@@ -1,19 +1,20 @@
-package com.example.growingstudy.group.entity;
+package com.example.growingstudy.studyGroup.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
-@Table(name = "groups")
-public class Group {
+@Table(name = "study_group")
+public class StudyGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,12 +46,8 @@ public class Group {
     @Column(nullable = false)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="owner_id", nullable = false)
-    private Account owner;
-
 // 생성하기 시
-    public Group(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
+    public StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
         this.name = name;
         this.weekSession = weekSession;
         this.startDay = startDay;
@@ -59,6 +56,5 @@ public class Group {
         this.maxMember = maxMember;
         this.description = description;
         this.code = UUID.randomUUID().toString().substring(0, 8);
-        this.owner = account; // 로그인 정보 활용으로 변경 필요
     }
 }

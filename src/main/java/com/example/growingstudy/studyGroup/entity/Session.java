@@ -1,6 +1,5 @@
-package com.example.growingstudy.group.entity;
+package com.example.growingstudy.studyGroup.entity;
 
-import com.example.growingstudy.auth.entity.Account;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,20 +11,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupMember {
-
+public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String nickname;
+    private String title;
+
+    @Column(nullable = false)
+    private Integer sessionOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    private StudyGroup group;
 }
