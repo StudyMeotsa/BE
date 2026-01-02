@@ -20,35 +20,34 @@ public class Checklist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 체크리스트 고유 ID
+    private Long id; // id BIGINT (PK)
 
     @Column(nullable = false)
-    private String content; // 체크리스트 항목 내용
+    private String content; // content VARCHAR
 
     @Column(columnDefinition = "TEXT")
-    private String description; // 상세 설명
+    private String description; // description TEXT
 
     @Column(nullable = false)
-    private boolean completed = false; // 완료 여부
+    private boolean completed = false; // completed BOOLEAN
 
     @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime; // 세션 시작 시간
+    private LocalDateTime startTime; // start_time DATETIME
 
     @Column(name = "end_time", nullable = false)
-    private LocalDateTime endTime; // 세션 종료 시간
+    private LocalDateTime endTime; // end_time DATETIME
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group; // 연결된 그룹 ID
+    private Group group; // group_id BIGINT (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
-    private Session session; // 연결된 세션 ID
+    private Session session; // session_id BIGINT (FK)
 
     @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>();
 
-    // 생성자
     public Checklist(String content, String description, LocalDateTime startTime, LocalDateTime endTime, 
                      Group group, Session session) {
         this.content = content;
@@ -57,6 +56,5 @@ public class Checklist {
         this.endTime = endTime;
         this.group = group;
         this.session = session;
-        this.completed = false;
     }
 }
