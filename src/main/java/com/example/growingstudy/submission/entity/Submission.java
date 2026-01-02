@@ -1,7 +1,7 @@
 package com.example.growingstudy.submission.entity;
 
 import com.example.growingstudy.checklist.entity.Checklist;
-import com.example.growingstudy.auth.entity.Account;
+import com.example.growingstudy.group.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,35 +17,38 @@ public class Submission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 제출 고유 ID
+    private Long id; // id BIGINT (PK)
 
-    @Column(columnDefinition = "TEXT")
-    private String content; // 제출 내용 (텍스트)
+    @Column(columnDefinition = "TEXT", name = "submission_data")
+    private String submissionData; // submission_data VARCHAR
 
     @Column(name = "image_path")
-    private String imagePath; // S3 상대 경로
+    private String imagePath; // image_path VARCHAR
+
+    @Column(name = "is_verified", nullable = false)
+    private boolean isVerified = false; // is_verified BOOLEAN
 
     @Column(name = "submitted_at")
-    private LocalDateTime submittedAt; // 제출 시간
+    private LocalDateTime submittedAt; // submitted_at DATETIME
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checklist_id", nullable = false)
-    private Checklist checklist; // 연결된 체크리스트 ID
+    private Checklist checklist; // checklist_id BIGINT (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submitter_id", nullable = false)
-    private Account submitter; // group_member fk
+    private GroupMember submitter; // submitter_id BIGINT (FK/group_member)
 
     @PrePersist
-    public void onSubmit() { this.submittedAt = LocalDateTime.now(); }
+    public void prePersist() {
+        this.submittedAt = LocalDateTime.now();
+    }
 
-    public Submission(String content, String imagePath, Checklist checklist, Account submitter) {
-        this.content = content;
+    public Submission(String submissionData, String imagePath, Checklist checklist, GroupMember submitter, boolean isVerified) {
+        this.submissionData = submissionData;
         this.imagePath = imagePath;
         this.checklist = checklist;
         this.submitter = submitter;
+        this.isVerified = isVerified;
     }
-
-    // 로직용 Enum (Checklist 필드에서는 제거됨)
-    public enum SubmissionType { PHOTO, CHAT, TIMER }
 }
