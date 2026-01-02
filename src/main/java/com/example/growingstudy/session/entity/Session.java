@@ -14,20 +14,21 @@ public class Session {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 세션 고유 ID
+    private Long id; // id BIGINT (PK)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group; // 연결된 Group ID
+    private Group group; // group_id BIGINT (FK)
 
     @Column(nullable = false)
-    private String title; // 세션 제목
+    private String title; // title VARCHAR
 
-    private Integer week; // 주차
+    @Column(name = "session_order")
+    private Integer sessionOrder; // session_order INT (주차/순서)
 
-    public Session(Group group, String title, Integer week) {
+    public Session(Group group, String title, Integer sessionOrder) {
         this.group = group;
         this.title = title;
-        this.week = week;
+        this.sessionOrder = sessionOrder;
     }
 }
