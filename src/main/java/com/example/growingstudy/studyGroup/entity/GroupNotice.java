@@ -1,6 +1,7 @@
 package com.example.growingstudy.studyGroup.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupNotice {
     @Id
     private Long id;
@@ -43,5 +43,12 @@ public class GroupNotice {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public GroupNotice(GroupMember member, StudyGroup group, String title, String content) {
+        this.member = member;
+        this.group = group;
+        this.title = title;
+        this.content = content;
     }
 }

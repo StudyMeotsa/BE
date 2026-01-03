@@ -1,7 +1,7 @@
-package com.example.growingstudy.submission.controller;
+package com.example.growingstudy.session.controller;
 
-import com.example.growingstudy.submission.entity.Submission;
-import com.example.growingstudy.submission.service.SubmissionService;
+import com.example.growingstudy.session.entity.Submission;
+import com.example.growingstudy.session.service.SubmissionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

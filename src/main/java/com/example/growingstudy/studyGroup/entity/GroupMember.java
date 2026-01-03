@@ -2,16 +2,12 @@ package com.example.growingstudy.studyGroup.entity;
 
 import com.example.growingstudy.auth.entity.Account;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupMember {
 
     @Id
@@ -31,4 +27,11 @@ public class GroupMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    public GroupMember(String role, String nickname, StudyGroup group, Account account) {
+        this.role = role;
+        this.nickname = nickname;
+        this.group = group;
+        this.account = account;
+    }
 }

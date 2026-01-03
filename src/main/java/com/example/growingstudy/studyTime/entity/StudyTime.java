@@ -1,7 +1,9 @@
 package com.example.growingstudy.studyTime.entity;
 
 import com.example.growingstudy.auth.entity.Account;
+import com.example.growingstudy.session.entity.Session;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyTime {
 
     @Id
@@ -19,18 +20,26 @@ public class StudyTime {
     private Long id;
 
     @Column(nullable = false)
-    private Integer time;
+    private Integer total_time;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Account member;
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = false)
+    private Session session;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
+    public StudyTime(Integer total_time, Account account, Session session) {
+        this.total_time = total_time;
+        this.account = account;
+        this.session = session;
+    }
 }

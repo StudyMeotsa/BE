@@ -1,6 +1,6 @@
-package com.example.growingstudy.checklist.dto;
+package com.example.growingstudy.session.dto;
 
-import com.example.growingstudy.checklist.entity.Checklist;
+import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.group.entity.Group;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

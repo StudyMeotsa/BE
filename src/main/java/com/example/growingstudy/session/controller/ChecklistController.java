@@ -1,9 +1,9 @@
-package com.example.growingstudy.checklist.controller;
+package com.example.growingstudy.session.controller;
 
-import com.example.growingstudy.checklist.dto.ChecklistCreateDto;
-import com.example.growingstudy.checklist.dto.ChecklistResponseDto;
-import com.example.growingstudy.checklist.entity.Checklist;
-import com.example.growingstudy.checklist.service.ChecklistService;
+import com.example.growingstudy.session.dto.ChecklistCreateDto;
+import com.example.growingstudy.session.dto.ChecklistResponseDto;
+import com.example.growingstudy.session.entity.Checklist;
+import com.example.growingstudy.session.service.ChecklistService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
