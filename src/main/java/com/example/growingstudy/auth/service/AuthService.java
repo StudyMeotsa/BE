@@ -42,8 +42,9 @@ public class AuthService {
         logger.trace("새 회원 데이터를 생성");
         Account account = new Account();
         account.setUsername(request.getUsername());
+        account.setEmail(request.getEmail());
         account.setPassword(passwordEncoder.encode(request.getPassword()));
-        account.setNickname(request.getNickname());
+        account.setSex(request.getSex());
         logger.trace("새 회원 데이터 생성됨");
 
         logger.trace("DB에 회원 데이터를 저장");
