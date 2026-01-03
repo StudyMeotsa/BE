@@ -21,7 +21,7 @@ public class Submission {
     private Long id; // id BIGINT (PK)
 
     @Column(name = "content", columnDefinition = "TEXT")
-    private String content; // content TEXT (제출 내용/타이머 목표치)
+    private String content; // content TEXT (제출 내용)
 
     @Column(name = "image_path", length = 255)
     private String imagePath; // image_path VARCHAR(255)
