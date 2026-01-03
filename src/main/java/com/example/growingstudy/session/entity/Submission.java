@@ -1,8 +1,8 @@
-package com.example.growingstudy.submission.entity;
+package com.example.growingstudy.session.entity;
 
-import com.example.growingstudy.checklist.entity.Checklist;
-import com.example.growingstudy.group.entity.GroupMember;
+import com.example.growingstudy.studyGroup.entity.GroupMember;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +10,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter 
-@Setter
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "submission")
 public class Submission {
 
@@ -45,11 +44,11 @@ public class Submission {
         this.submittedAt = LocalDateTime.now(); // 제출 시간 자동 생성
     }
 
-    public Submission(String content, String imagePath, Checklist checklist, GroupMember submitter, boolean isVerified) {
+    public Submission(String content, String imagePath, Checklist checklist, GroupMember submitter) {
         this.content = content;
         this.imagePath = imagePath;
         this.checklist = checklist;
         this.submitter = submitter;
-        this.isVerified = isVerified;
+        this.isVerified = false;    // 제출 시 초기값은 false
     }
 }

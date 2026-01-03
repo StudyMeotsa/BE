@@ -1,6 +1,6 @@
-package com.example.growingstudy.submission.repository;
+package com.example.growingstudy.session.repository;
 
-import com.example.growingstudy.submission.entity.Submission;
+import com.example.growingstudy.session.entity.Submission;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -26,7 +26,7 @@ public interface GroupsRepository extends JpaRepository<StudyGroup, Long> {
             (SELECT COUNT(*) FROM group_member gm2 WHERE gm2.group_id = g.id) AS currentMember,
             g.max_member                       AS maxMember,
 
-            (SELECT s.order
+            (SELECT s.id
                FROM session s
               WHERE s.group_id = g.id)                         AS sessionId,
 

@@ -1,6 +1,6 @@
-package com.example.growingstudy.checklist.repository;
+package com.example.growingstudy.session.repository;
 
-import com.example.growingstudy.checklist.entity.Checklist;
+import com.example.growingstudy.session.entity.Checklist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

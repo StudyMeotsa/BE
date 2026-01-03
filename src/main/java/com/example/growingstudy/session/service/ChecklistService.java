@@ -1,11 +1,11 @@
-package com.example.growingstudy.checklist.service;
+package com.example.growingstudy.session.service;
 
-import com.example.growingstudy.checklist.dto.ChecklistCreateDto;
-import com.example.growingstudy.checklist.entity.Checklist;
-import com.example.growingstudy.checklist.repository.ChecklistRepository;
+import com.example.growingstudy.session.dto.ChecklistCreateDto;
+import com.example.growingstudy.session.entity.Checklist;
+import com.example.growingstudy.session.repository.ChecklistRepository;
 import com.example.growingstudy.group.entity.Group;
 import com.example.growingstudy.group.repository.JpaGroupRepository;
-import com.example.growingstudy.submission.repository.SubmissionRepository;
+import com.example.growingstudy.session.repository.SubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

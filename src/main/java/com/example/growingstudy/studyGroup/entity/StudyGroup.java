@@ -1,6 +1,7 @@
 package com.example.growingstudy.studyGroup.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
@@ -11,8 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "study_group")
 public class StudyGroup {
 
@@ -42,11 +42,9 @@ public class StudyGroup {
     @Column(nullable = false)
     private String description;
 
-    // UUID활용, 8자리
     @Column(nullable = false)
     private String code;
 
-// 생성하기 시
     public StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
         this.name = name;
         this.weekSession = weekSession;
