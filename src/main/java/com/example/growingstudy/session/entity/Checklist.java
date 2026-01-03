@@ -2,6 +2,7 @@ package com.example.growingstudy.session.entity;
 
 import com.example.growingstudy.studyGroup.entity.StudyGroup;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "checklist")
 public class Checklist {
 

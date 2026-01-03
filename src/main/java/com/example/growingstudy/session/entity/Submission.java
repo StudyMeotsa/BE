@@ -2,6 +2,7 @@ package com.example.growingstudy.session.entity;
 
 import com.example.growingstudy.studyGroup.entity.GroupMember;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter 
-@Setter
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "submission")
 public class Submission {
 
