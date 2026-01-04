@@ -26,7 +26,7 @@ public class Account {
     private String sex;
 
     @Column(name = "image_path")
-    private String image_path;
+    private String imagePath;
 
     public Account(String name, String email, String password, String sex) {
         this.name = name;
