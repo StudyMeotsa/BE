@@ -36,7 +36,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: deploy-artifact-${{ gituhb.sha }}
+          name: deploy-artifact-${{ github.sha }}
           path: ./build/libs/${{ env.ARTIFACT_FILE }}
 
   deploy:
