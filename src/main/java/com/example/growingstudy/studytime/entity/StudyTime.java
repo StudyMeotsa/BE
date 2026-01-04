@@ -2,6 +2,7 @@ package com.example.growingstudy.studytime.entity;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.session.entity.Session;
+import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,8 +26,8 @@ public class StudyTime {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @JoinColumn(name = "member_id", nullable = false)
+    private GroupMember member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
@@ -37,9 +38,9 @@ public class StudyTime {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public StudyTime(Integer totalTime, Account account, Session session) {
+    public StudyTime(Integer totalTime, GroupMember member, Session session) {
         this.totalTime = totalTime;
-        this.account = account;
+        this.member = member;
         this.session = session;
     }
 }

@@ -31,10 +31,6 @@ public class GroupNotice {
     @JoinColumn(name = "member_id", nullable = false)
     private GroupMember member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private StudyGroup group;
-
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -45,9 +41,8 @@ public class GroupNotice {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public GroupNotice(GroupMember member, StudyGroup group, String title, String content) {
+    public GroupNotice(GroupMember member, String title, String content) {
         this.member = member;
-        this.group = group;
         this.title = title;
         this.content = content;
     }
