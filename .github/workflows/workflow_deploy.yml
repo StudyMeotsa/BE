@@ -1,0 +1,99 @@
+name: Deployment
+on:
+  # 메인 브랜치 코드 업데이트
+  push:
+    branches: ["main"]
+
+# 두 작업 모두에 쓰는 전역 변수
+env:
+  ARTIFACT_FILE: growingstudy-0.0.1-SNAPSHOT.jar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Grant execution permission
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      # deploy 작업에서 사용할 수 있도록 아티팩트 업로드
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: deploy-artifact-${{ gituhb.sha }}
+          path: ./build/libs/${{ env.ARTIFACT_FILE }}
+
+  deploy:
+    # 빌드 성공 시에만 실행
+    needs: build
+
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
+      APPLICATION_DIRECTORY: /opt/studymeotsa
+      ARTIFACT_VERSION_DIRECTORY: artifacts/${{ github.sha }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@main
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # build 작업에서 업로드한 아티팩트 다운로드
+      - name: Download Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: deploy-artifact-${{ github.sha }}
+
+      # 다운로드한 아티팩트를 S3에 업로드
+      - name: Upload Artifact to S3
+        env:
+          LOCAL_PATH: ${{ env.ARTIFACT_FILE }}
+
+          # 버킷 경로: s3://버킷명/artifacts/(sha)/growingstudy-0.0.1-SNAPSHOT.jar
+          BUCKET_PATH: s3://${{ env.BUCKET_NAME }}/${{ env.ARTIFACT_VERSION_DIRECTORY }}/${{ env.ARTIFACT_FILE }}
+        run: aws s3 cp ${{ env.LOCAL_PATH }} ${{ env.BUCKET_PATH }}
+
+      # 실행 과정: S3에서 아티팩트(jar) 다운로드, 심볼릭 링크를 해당 아티팩트로 교체, 배포 스크립트 실행
+      # 스크립트 내용: 서비스 활성화 여부 체크 후 활성화, 서비스 재시작
+      - name: Download the Artifact from S3, Change the Symbolic Link, and Run the Deployment Script on EC2
+        env:
+          # 로컬 경로: /opt/studymeotsa/artifactts/(sha)/growingstudy-0.0.1-SNAPSHOT.jar
+          LOCAL_PATH: ${{ env.APPLICATION_DIRECTORY }}/${{ env.ARTIFACT_VERSION_DIRECTORY }}/${{ env.ARTIFACT_FILE }}
+
+          # 버킷 경로: S3 업로드 부분과 동일
+          BUCKET_PATH: s3://${{ env.BUCKET_NAME }}/${{ env.ARTIFACT_VERSION_DIRECTORY }}/${{ env.ARTIFACT_FILE }}
+
+          # 심볼릭 링크 경로: /opt/studymeotsa/application.jar
+          SYMBOL_PATH: ${{ env.APPLICATION_DIRECTORY }}/application.jar
+
+        # EC2에 원격 커맨드 전송(다운로드 -> 심볼릭 링크 교체 -> 스크립트 실행)
+        run: |
+          aws ssm send-command \
+              --instance-ids ${{ env.INSTANCE_ID }} \
+              --document-name "AWS-RunShellScript" \
+              --parameters 'commands=["aws s3 cp ${{ env.BUCKET_PATH }} ${{ env.LOCAL_PATH }}", \
+                                      "ln -Tfs ${{ env.LOCAL_PATH }}, ${{ env.SYMBOL_PATH }}", \
+                                      "${{ env.APPLICATION_DIRECTORY }}/script.sh"]'
