@@ -1,7 +1,7 @@
-package com.example.growingstudy.studyGroup.service;
+package com.example.growingstudy.studygroup.service;
 
-import com.example.growingstudy.studyGroup.dto.GroupsListView;
-import com.example.growingstudy.studyGroup.repository.GroupsRepository;
+import com.example.growingstudy.studygroup.dto.GroupsListView;
+import com.example.growingstudy.studygroup.repository.GroupsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

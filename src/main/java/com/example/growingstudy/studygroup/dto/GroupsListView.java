@@ -1,4 +1,4 @@
-package com.example.growingstudy.studyGroup.dto;
+package com.example.growingstudy.studygroup.dto;
 
 import java.time.LocalDate;
 

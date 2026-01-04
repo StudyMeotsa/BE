@@ -1,8 +1,7 @@
-package com.example.growingstudy.studyGroup.service;
+package com.example.growingstudy.studygroup.service;
 
-import com.example.growingstudy.studyGroup.dto.GroupsListView;
-import com.example.growingstudy.studyGroup.repository.GroupsRepository;
-import com.example.growingstudy.studyGroup.service.GroupService;
+import com.example.growingstudy.studygroup.dto.GroupsListView;
+import com.example.growingstudy.studygroup.repository.GroupsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

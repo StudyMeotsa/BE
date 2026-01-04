@@ -1,11 +1,10 @@
-package com.example.growingstudy.studyGroup.entity;
+package com.example.growingstudy.studygroup.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,28 +20,28 @@ public class StudyGroup {
     private Long id;
 
     // 생성 시 입력 사항
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "start_day", nullable = false)
     private LocalDateTime startDay;
 
-    @Column(nullable = false)
+    @Column(name = "week_session", nullable = false)
     private Integer weekSession;
 
-    @Column(nullable = false)
+    @Column(name = "total_week", nullable = false)
     private Integer totalWeek;
 
-    @Column(nullable = false)
+    @Column(name = "max_member", nullable = false)
     private Integer maxMember;
 
-    @Column(nullable = false)
+    @Column(name = "session_hour", nullable = false)
     private Integer sessionHour;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 8)
     private String code;
 
     public StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {

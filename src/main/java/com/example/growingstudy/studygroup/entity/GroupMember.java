@@ -1,4 +1,4 @@
-package com.example.growingstudy.studyGroup.entity;
+package com.example.growingstudy.studygroup.entity;
 
 import com.example.growingstudy.auth.entity.Account;
 import jakarta.persistence.*;
@@ -13,10 +13,11 @@ public class GroupMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    //enum으로?
+    @Column(nullable = false, length = 30)
     private String role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String nickname;
 
     @ManyToOne(fetch = FetchType.LAZY)

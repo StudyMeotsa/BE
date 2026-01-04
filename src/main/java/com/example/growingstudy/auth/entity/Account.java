@@ -7,19 +7,29 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "Account")
+@Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // H2에서 AtomicLong 오류 나서 long으로 뒀음
-    private String username;
-    private String email;
-    private String password;
-    private String sex;
-    private String image;
 
-    public Account(String username, String email, String password, String sex) {
-        this.username = username;
+    @Column(nullable = false, length = 30)
+    private String name;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(length = 10, nullable = false)
+    private String sex;
+
+    @Column(name = "image_path")
+    private String image_path;
+
+    public Account(String name, String email, String password, String sex) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.sex = sex;

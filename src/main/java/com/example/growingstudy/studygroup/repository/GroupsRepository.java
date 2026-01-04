@@ -1,7 +1,7 @@
-package com.example.growingstudy.studyGroup.repository;
+package com.example.growingstudy.studygroup.repository;
 
-import com.example.growingstudy.studyGroup.dto.GroupsListView;
-import com.example.growingstudy.studyGroup.entity.StudyGroup;
+import com.example.growingstudy.studygroup.dto.GroupsListView;
+import com.example.growingstudy.studygroup.entity.StudyGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

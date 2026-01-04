@@ -1,9 +1,7 @@
-package com.example.growingstudy.studyTime.entity;
+package com.example.growingstudy.studytime.entity;
 
-import com.example.growingstudy.auth.entity.Account;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +19,7 @@ public class TimeLog {
     @Column(nullable = false)
     private Integer time;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

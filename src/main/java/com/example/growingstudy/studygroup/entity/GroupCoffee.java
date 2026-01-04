@@ -1,9 +1,8 @@
-package com.example.growingstudy.studyGroup.entity;
+package com.example.growingstudy.studygroup.entity;
 
 import com.example.growingstudy.coffee.entity.CoffeeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupCoffee {
     @Id
-    private Long groupId;
+    private Long id;
 
     // pk = fk
     @MapsId
@@ -24,24 +23,24 @@ public class GroupCoffee {
     @JoinColumn(name = "type_id", nullable = false)
     private CoffeeType type;
 
-    @Column(nullable = false)
+    @Column(name = "required_all", nullable = false)
     private Integer requiredAll;
 
-    @Column(nullable = false)
+    @Column(name = "required_per_level", nullable = false)
     private Integer requiredPerLevel;
 
     @Column(nullable = false)
-    private Integer cureent;
+    private Integer current;
 
     @Column(nullable = false)
     private Integer level;
 
-    public GroupCoffee(StudyGroup group, CoffeeType type, Integer requiredAll, Integer requiredPerLevel, Integer cureent, Integer level) {
+    public GroupCoffee(StudyGroup group, CoffeeType type, Integer requiredAll, Integer requiredPerLevel, Integer current, Integer level) {
         this.group = group;
         this.type = type;
         this.requiredAll = requiredAll;
         this.requiredPerLevel = requiredPerLevel;
-        this.cureent = cureent;
+        this.current = current;
         this.level = level;
     }
 }

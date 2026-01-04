@@ -1,18 +1,18 @@
 package com.example.growingstudy.session.entity;
 
-import com.example.growingstudy.studyGroup.entity.StudyGroup;
+import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "checklist")
 public class Checklist {
@@ -21,13 +21,13 @@ public class Checklist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // id BIGINT (PK)
 
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false)
     private String content; // content VARCHAR
 
     @Column(columnDefinition = "TEXT")
     private String description; // description TEXT
 
-    @Column(nullable = false)
+    @Column(name = "completed", nullable = false)
     private boolean completed = false; // completed BOOLEAN
 
     @ManyToOne(fetch = FetchType.LAZY)

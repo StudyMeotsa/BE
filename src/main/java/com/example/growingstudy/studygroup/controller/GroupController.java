@@ -1,10 +1,8 @@
-package com.example.growingstudy.studyGroup.controller;
+package com.example.growingstudy.studygroup.controller;
 
-import com.example.growingstudy.studyGroup.dto.GroupsListView;
-import com.example.growingstudy.studyGroup.service.GroupService;
+import com.example.growingstudy.studygroup.dto.GroupsListView;
+import com.example.growingstudy.studygroup.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

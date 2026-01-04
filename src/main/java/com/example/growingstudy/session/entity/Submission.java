@@ -1,11 +1,10 @@
 package com.example.growingstudy.session.entity;
 
-import com.example.growingstudy.studyGroup.entity.GroupMember;
+import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +21,7 @@ public class Submission {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content; // content TEXT (제출 내용)
 
-    @Column(name = "image_path", length = 255)
+    @Column(name = "image_path")
     private String imagePath; // image_path VARCHAR(255)
 
     @Column(name = "is_verified", nullable = false)

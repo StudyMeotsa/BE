@@ -1,10 +1,9 @@
-package com.example.growingstudy.studyTime.entity;
+package com.example.growingstudy.studytime.entity;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.session.entity.Session;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,9 +18,10 @@ public class StudyTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Integer total_time;
+    @Column(name = "total_time", nullable = false)
+    private Integer totalTime;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,8 +37,8 @@ public class StudyTime {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public StudyTime(Integer total_time, Account account, Session session) {
-        this.total_time = total_time;
+    public StudyTime(Integer totalTime, Account account, Session session) {
+        this.totalTime = totalTime;
         this.account = account;
         this.session = session;
     }

@@ -1,6 +1,6 @@
 package com.example.growingstudy.session.entity;
 
-import com.example.growingstudy.studyGroup.entity.StudyGroup;
+import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +14,7 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false, length = 150)
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
