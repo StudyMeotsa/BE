@@ -12,7 +12,8 @@ public class RegisterRequestDto {
 
     // 이메일, 비밀번호, 닉네임
     @NotBlank private String username;
+    @NotBlank private String email;
     @NotBlank private String password;
     @NotBlank private String passwordConfirm;
-    @NotBlank private String nickname;
+    @NotBlank private String sex;
 }

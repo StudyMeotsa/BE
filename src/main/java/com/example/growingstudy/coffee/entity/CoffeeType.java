@@ -1,24 +1,30 @@
 package com.example.growingstudy.coffee.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "coffee_type")
 public class CoffeeType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 30)
     private String name;
-    private String coffeePath;
+
+    @Column(nullable = false)
+    private Integer level;
+
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
+
+    public CoffeeType(String name, Integer level, String imagePath) {
+        this.name = name;
+        this.level = level;
+        this.imagePath = imagePath;
+    }
 }

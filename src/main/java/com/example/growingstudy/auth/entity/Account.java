@@ -1,25 +1,37 @@
 package com.example.growingstudy.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Table(name = "Account")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "account")
 public class Account {
-
-    // 필드들은 대략적인 것으로, 나중에 변경될 수 있음
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // H2에서 AtomicLong 오류 나서 long으로 뒀음
-    private String username;
+
+    @Column(nullable = false, length = 30)
+    private String name;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String password;
-    private String nickname;
+
+    @Column(length = 10, nullable = false)
+    private String sex;
+
+    @Column(name = "image_path")
+    private String imagePath;
+
+    public Account(String name, String email, String password, String sex) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.sex = sex;
+    }
 }

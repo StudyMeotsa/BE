@@ -1,34 +1,36 @@
 package com.example.growingstudy.session.entity;
 
-import com.example.growingstudy.group.entity.Group;
+import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor
-@Table(name = "session")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Session {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // id BIGINT (PK)
+    private Long id;
+
+    @Column(name = "title", nullable = false, length = 150)
+    private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group; // group_id BIGINT (FK)
+    private StudyGroup group;
 
-    @Column(nullable = false)
-    private String title; // title VARCHAR
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime; // start_time DATETIME
 
-    @Column(name = "session_order")
-    private Integer sessionOrder; // session_order INT (주차/순서)
+    @Column(name = "end_time", nullable = false)
+    private LocalDateTime endTime; // end_time DATETIME
 
-    public Session(Group group, String title, Integer sessionOrder) {
-        this.group = group;
+    public Session(String title, StudyGroup group, LocalDateTime startTime, LocalDateTime endTime) {
         this.title = title;
-        this.sessionOrder = sessionOrder;
+        this.group = group;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }
