@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -28,14 +29,17 @@ public class SecurityConfig {
     private final JsonAuthenticationProcessingFilter jsonAuthenticationProcessingFilter; // JSON 방식의 로그인 필터
     private final CheckAccessTokenFilter checkAccessTokenFilter; // 액세스 토큰 여부 확인 필터
     private final RegenerateTokensFilter regenerateTokensFilter; // 토큰 재발급 필터
+    private final UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource; // CORS 구성
 
     @Autowired
     public SecurityConfig(LogoutHandler logoutHandler, JsonAuthenticationProcessingFilter jsonAuthenticationProcessingFilter,
-                          CheckAccessTokenFilter checkAccessTokenFilter, RegenerateTokensFilter regenerateTokensFilter) {
+                          CheckAccessTokenFilter checkAccessTokenFilter, RegenerateTokensFilter regenerateTokensFilter,
+                          UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource) {
         this.logoutHandler = logoutHandler;
         this.jsonAuthenticationProcessingFilter = jsonAuthenticationProcessingFilter;
         this.checkAccessTokenFilter = checkAccessTokenFilter;
         this.regenerateTokensFilter = regenerateTokensFilter;
+        this.urlBasedCorsConfigurationSource = urlBasedCorsConfigurationSource;
     }
 
     // H2 콘솔 및 스웨거에 대해 시큐리티 미적용 설정 (로컬 테스트용)
@@ -56,6 +60,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors((cors) -> cors.configurationSource(urlBasedCorsConfigurationSource))
                 .csrf((csrf) -> csrf.disable())
                 .logout((logout) -> logout
                         .logoutUrl("/api/auth/logout")
