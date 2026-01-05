@@ -1,6 +1,5 @@
 package com.example.growingstudy.auth.entity;
 
-import com.example.growingstudy.auth.enums.SexEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +20,7 @@ public class Account {
     private String email;
     private String password;
     private String name;
-    @Enumerated(EnumType.STRING) private SexEnum sex;
+    private String sex;
 
     @Column(name = "image_path")
     private String imagePath;

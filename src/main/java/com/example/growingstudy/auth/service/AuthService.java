@@ -4,7 +4,6 @@ import com.example.growingstudy.auth.dto.MyPageResponseDto;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.enums.RegisterFailedType;
-import com.example.growingstudy.auth.enums.SexEnum;
 import com.example.growingstudy.auth.exception.RegisterFailedException;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
-                .sex(SexEnum.valueOf(request.getSex()))
+                .sex(request.getSex())
                 .build();
 
         logger.trace("새 회원 데이터 생성됨");
