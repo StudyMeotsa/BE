@@ -1,59 +1,50 @@
-//package com.example.growingstudy.session.service;
-//
-//import com.example.growingstudy.session.dto.ChecklistCreateDto;
-//import com.example.growingstudy.session.entity.Checklist;
-//import com.example.growingstudy.session.entity.Session;
-//import com.example.growingstudy.session.repository.ChecklistRepository;
-//import com.example.growingstudy.session.repository.SessionRepository;
-//import com.example.growingstudy.session.repository.SubmissionRepository;
-//import com.example.growingstudy.studygroup.entity.StudyGroup;
-//import com.example.growingstudy.studygroup.repository.GroupsRepository;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//@SuppressWarnings("null")
-//@Service
-//@Transactional
-//@RequiredArgsConstructor
-//public class ChecklistService {
-//
-//    private final ChecklistRepository checklistRepository;
-//    private final SessionRepository sessionRepository;
-//    private final GroupsRepository groupsRepository;
-//    private final SubmissionRepository submissionRepository;
-//
-//    /**
-//     * 새로운 세션 체크리스트 생성
-//     */
-//    public Checklist createChecklist(ChecklistCreateDto dto) {
-//        Session session = sessionRepository.findById(dto.getSessionId()).orElseThrow();
-//
-//        return checklistRepository.save(new Checklist(dto.getContent(), dto.getDescription()session));
-//    }
-//
-//    /**
-//     * 체크리스트 수동으로 완료 처리
-//     */
-//    public void markComplete(Long id) {
-//        checklistRepository.findById(id).ifPresent(c -> c.setCompleted(true));
-//    }
-//
-//    /**
-//     * 해당 체크리스트의 전체 스터디원 대비 제출률 계산.
-//     * 계산식: (현재 제출 인원 / 그룹 최대 인원) * 100
-//     */
-//    public int calculateProgressRate(Long checklistId) {
-//        // 1. 체크리스트 정보 조회
-//        Checklist checklist = checklistRepository.findById(checklistId).orElseThrow();
-//
-//        // 2. 현재까지 제출된 인증물 개수 카운트
-//        long count = submissionRepository.countByChecklistId(checklistId);
-//
-//        // 3. 그룹 설정 정보에서 최대 인원수(maxMember) 추출
-//        Integer max = checklist.getGroup().getMaxMember();
-//
-//        // 4. 0으로 나누기 방지 및 백분율 계산
-//        return (max == null || max == 0) ? 0 : (int)((double)count / max * 100);
-//    }
-//}
+package com.example.growingstudy.session.service;
+
+import com.example.growingstudy.session.dto.ChecklistCreateDto;
+import com.example.growingstudy.session.dto.ChecklistResponseDto;
+import com.example.growingstudy.session.entity.Checklist;
+import com.example.growingstudy.session.entity.Session;
+import com.example.growingstudy.session.repository.ChecklistRepository;
+import com.example.growingstudy.session.repository.SessionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class ChecklistService {
+
+    private final ChecklistRepository checklistRepository;
+    private final SessionRepository sessionRepository;
+
+    /**
+     * 체크리스트 생성
+     */
+    public Long createChecklist(ChecklistCreateDto dto) {
+        // 1. 세션 존재 확인
+        Session session = sessionRepository.findById(dto.getSessionId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 세션을 찾을 수 없습니다. ID: " + dto.getSessionId()));
+
+        // 2. DTO의 toEntity 기능을 사용하여 엔티티 생성
+        Checklist checklist = dto.toEntity(session);
+
+        // 3. 저장 및 ID 반환
+        return checklistRepository.save(checklist).getId();
+    }
+
+    /**
+     * 특정 세션에 속한 모든 체크리스트 조회
+     */
+    @Transactional(readOnly = true)
+    public List<ChecklistResponseDto> getChecklistsBySession(Long sessionId) {
+        // 엔티티 리스트를 조회하여 DTO로 변환 (제공된 ChecklistResponseDto.from 사용)
+        return checklistRepository.findAll().stream()
+                .filter(c -> c.getSession().getId().equals(sessionId))
+                .map(ChecklistResponseDto::from)
+                .collect(Collectors.toList());
+    }
+}
