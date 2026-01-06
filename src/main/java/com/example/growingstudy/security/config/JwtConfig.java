@@ -26,10 +26,10 @@ import java.util.UUID;
 @Configuration
 public class JwtConfig {
 
-    @Value("classpath:private_key.pem")
+    @Value("${resource.privateKey.file}")
     private Resource privateKeyPem;
 
-    @Value("classpath:public_key.pem")
+    @Value("${resource.publicKey.file}")
     private Resource publicKeyPem;
 
     @Bean
