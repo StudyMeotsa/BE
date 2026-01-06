@@ -91,10 +91,9 @@ jobs:
           SYMBOL_PATH: ${{ env.APPLICATION_DIRECTORY }}/application.jar
 
         # EC2에 원격 커맨드 전송(다운로드 -> 심볼릭 링크 교체 -> 스크립트 실행)
+        # 커맨드 여러 줄 작성 시 오류 나서, 임시로 한 줄로 이어 작성
         run: |
           aws ssm send-command \
               --instance-ids ${{ env.INSTANCE_ID }} \
               --document-name "AWS-RunShellScript" \
-              --parameters 'commands=["aws s3 cp ${{ env.BUCKET_PATH }} ${{ env.LOCAL_PATH }}", \
-                                      "ln -Tfs ${{ env.LOCAL_PATH }} ${{ env.SYMBOL_PATH }}", \
-                                      "${{ env.APPLICATION_DIRECTORY }}/script.sh"]'
+              --parameters 'commands=["aws s3 cp ${{ env.BUCKET_PATH }} ${{ env.LOCAL_PATH }}", "ln -Tfs ${{ env.LOCAL_PATH }} ${{ env.SYMBOL_PATH }}", "${{ env.APPLICATION_DIRECTORY }}/script.sh"]'
