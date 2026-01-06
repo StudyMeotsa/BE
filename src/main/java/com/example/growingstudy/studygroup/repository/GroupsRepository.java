@@ -33,7 +33,7 @@ public interface GroupsRepository extends JpaRepository<StudyGroup, Long> {
             ct.name                            AS coffee,
             gc.level                           AS coffeeLevel
         FROM group_member gm
-        JOIN groups g
+        JOIN study_group g
           ON g.id = gm.group_id
 
         LEFT JOIN group_coffee gc
@@ -41,14 +41,14 @@ public interface GroupsRepository extends JpaRepository<StudyGroup, Long> {
         LEFT JOIN coffee_type ct
           ON ct.id = gc.type_id
 
-        WHERE gm.member_id = :memberId
+        WHERE gm.account_id = :accountId
           AND g.start_day <= :now
           AND DATE_ADD(g.start_day, INTERVAL g.total_week WEEK) >= :now
 
         ORDER BY g.start_day DESC
         """, nativeQuery = true)
     List<GroupsListView> findGroupsByMember(
-            @Param("memberId") Long memberId,
+            @Param("accountId") Long accountId,
             @Param("now") LocalDateTime now
     );
 }
