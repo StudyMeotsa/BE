@@ -23,8 +23,8 @@ public class ChecklistResponseDto {
                 .session_id(entity.getSession().getId()) 
                 .content(entity.getContent())
                 .description(entity.getDescription())
-                .start_time(entity.getSession().getStartTime())
-                .end_time(entity.getSession().getEndTime())
+                .start_time(entity.getSession().getStartTime()) // Session의 start_time
+                .end_time(entity.getSession().getEndTime())     // Session의 end_time
                 .completed(entity.isCompleted())
                 .build();
     }
