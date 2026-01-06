@@ -1,6 +1,6 @@
 package com.example.growingstudy.studygroup.repository;
 
-import com.example.growingstudy.studygroup.dto.GroupsListView;
+import com.example.growingstudy.studygroup.dto.GroupListView;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface GroupsRepository extends JpaRepository<StudyGroup, Long> {
+public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
     Optional<StudyGroup> findByCode(String Code);
     boolean existsByCode(String Code);
+    boolean existsByName(String name);
+
 
     @Query(value = """
         SELECT
@@ -47,7 +49,7 @@ public interface GroupsRepository extends JpaRepository<StudyGroup, Long> {
 
         ORDER BY g.start_day DESC
         """, nativeQuery = true)
-    List<GroupsListView> findGroupsByMember(
+    List<GroupListView> findGroupsByMember(
             @Param("accountId") Long accountId,
             @Param("now") LocalDateTime now
     );

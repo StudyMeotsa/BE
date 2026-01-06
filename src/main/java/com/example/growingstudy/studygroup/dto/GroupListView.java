@@ -2,7 +2,7 @@ package com.example.growingstudy.studygroup.dto;
 
 import java.time.LocalDate;
 
-public interface GroupsListView {
+public interface GroupListView {
     Long getGroupId();
     String getName();
     LocalDate getStartDay();

@@ -19,7 +19,7 @@ public class StudyGroup {
     private Long id;
 
     // 생성 시 입력 사항
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String name;
 
     @Column(name = "start_day", nullable = false)
@@ -43,14 +43,35 @@ public class StudyGroup {
     @Column(nullable = false, length = 8)
     private String code;
 
-    public StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer sessionHour, Integer maxMember, String description, Account account) {
+    private StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer sessionHour, String description) {
         this.name = name;
         this.weekSession = weekSession;
         this.startDay = startDay;
         this.totalWeek = totalWeek;
-        this.sessionHour = sessionHour;
         this.maxMember = maxMember;
+        this.sessionHour = sessionHour;
         this.description = description;
         this.code = UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    public static StudyGroup create(
+            String name,
+            LocalDateTime startDay,
+            Integer weekSession,
+            Integer totalWeek,
+            Integer maxMember,
+            Integer sessionHour,
+            String description
+    ) {
+        //검증 로직 추가 필요
+        return new StudyGroup(
+                name,
+                startDay,
+                weekSession,
+                totalWeek,
+                maxMember,
+                sessionHour,
+                description
+        );
     }
 }
