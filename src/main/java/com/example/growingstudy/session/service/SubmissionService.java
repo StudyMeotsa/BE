@@ -1,6 +1,7 @@
 package com.example.growingstudy.session.service;
 
 import com.example.growingstudy.session.dto.SubmissionCreateDto;
+import com.example.growingstudy.session.dto.SubmissionResponseDto;
 import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.session.entity.Submission;
 import com.example.growingstudy.session.repository.ChecklistRepository;
@@ -10,39 +11,45 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("all")
 @Service
-@Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 public class SubmissionService {
-
     private final SubmissionRepository submissionRepository;
     private final ChecklistRepository checklistRepository;
-    private final EntityManager em; // 별도의 Repository가 없는 GroupMember 조회를 위해 사용
+    private final EntityManager em;
 
-    /**
-     * 사용자의 체크리스트 인증 제출물 저장
-     */
-    public Submission createSubmission(Long checklistId, SubmissionCreateDto dto) {
-        // 1. 제출 대상이 되는 체크리스트 존재 여부 확인
+    @Transactional
+    public Long createSubmission(Long checklistId, SubmissionCreateDto dto) {
+        // 1. 체크리스트 조회
         Checklist checklist = checklistRepository.findById(checklistId)
-                .orElseThrow(() -> new IllegalArgumentException("Checklist not found"));
-        
-        // 2. DTO의 memberId를 이용해 제출자(GroupMember) 정보 조회
-        GroupMember submitter = em.find(GroupMember.class, dto.getMemberId());
-        if (submitter == null) throw new IllegalArgumentException("Member not found");
+                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트가 없습니다. ID: " + checklistId));
 
-        // 3. 인증 제출물 엔티티 생성 및 저장
-        return submissionRepository.save(new Submission(dto.getContent(), dto.getImagePath(), checklist, submitter));
+        // 2. 제출자(GroupMember) 조회
+        GroupMember submitter = em.find(GroupMember.class, dto.getMemberId());
+        if (submitter == null) {
+            throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다. ID: " + dto.getMemberId());
+        }
+
+        // 3. 빌더를 이용한 엔티티 생성
+        Submission submission = Submission.builder()
+                .content(dto.getContent())
+                .imagePath(dto.getImagePath())
+                .checklist(checklist)
+                .submitter(submitter)
+                .build();
+
+        return submissionRepository.save(submission).getId();
     }
 
-    /**
-     * 특정 체크리스트에 제출된 모든 인증물 목록 조회
-     */
     @Transactional(readOnly = true)
-    public List<Submission> getSubmissionsByChecklist(Long checklistId) {
-        return submissionRepository.findByChecklistId(checklistId);
+    public List<SubmissionResponseDto> getSubmissionsByChecklist(Long checklistId) {
+        // 엔티티 리스트를 DTO 리스트로 변환하여 반환 (순환 참조 방지)
+        return submissionRepository.findByChecklistId(checklistId).stream()
+                .map(SubmissionResponseDto::from)
+                .collect(Collectors.toList());
     }
 }
