@@ -17,9 +17,9 @@ public class GroupService {
         this.groupsRepository = groupsRepository;
     }
 
-    public List<GroupsListView> getGroupsList(Long memberID) {
+    public List<GroupsListView> getGroupsList(Long accountID) {
         return groupsRepository.findGroupsByMember(
-                memberID,
+                accountID,
                 LocalDateTime.now()
         );
     }

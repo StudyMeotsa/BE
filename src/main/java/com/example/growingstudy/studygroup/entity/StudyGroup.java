@@ -1,7 +1,6 @@
 package com.example.growingstudy.studygroup.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
@@ -11,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "study_group")
 public class StudyGroup {
 

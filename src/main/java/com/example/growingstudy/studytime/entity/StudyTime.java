@@ -1,6 +1,5 @@
 package com.example.growingstudy.studytime.entity;
 
-import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
