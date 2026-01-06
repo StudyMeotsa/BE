@@ -13,17 +13,17 @@ import java.util.Optional;
 public interface AccountRepository extends CrudRepository<Account, Long> {
 
     /**
-     * 해당 username을 가진 회원을 조회
-     * @param username 조회 대상 유저의 username
+     * 해당 이메일을 가진 회원을 조회
+     * @param email 조회 대상 유저의 이메일
      * @return Optional로 감싸진 유저 조회 결과
      */
-    @Query("select a from Account a where a.username = :username")
-    Optional<Account> findByUsername(@Param("username") String username);
+    @Query("select a from Account a where a.email = :email")
+    Optional<Account> findByEmail(@Param("email") String email);
 
     /**
-     * 해당 username을 가진 회원의 존재 여부 반환
-     * @param username 조회 대상 유저의 username
+     * 해당 이메일을 가진 회원의 존재 여부 반환
+     * @param email 조회 대상 유저의 이메일
      * @return 회원 존재 여부
      */
-    boolean existsByUsername(@Param("username") String username);
+    boolean existsByEmail(@Param("email") String email);
 }

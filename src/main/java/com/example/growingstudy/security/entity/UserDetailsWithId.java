@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class UserDetailsWithId implements UserDetails, CredentialsContainer {
 
-    private final String username;
+    private final String username; // UserDetails 스펙상 getUsername 필요하여 필드명 유지
     private String password;
     private final long userId; // Account의 id
 
