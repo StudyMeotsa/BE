@@ -17,8 +17,8 @@ public class GroupController {
 
     @GetMapping
     //테스트용
-    public List<GroupsListView> getStudyRooms(@RequestParam Long memberId) {
-        return groupService.getGroupsList(memberId);
+    public List<GroupsListView> getStudyRooms(@RequestParam Long accountId) {
+        return groupService.getGroupsList(accountId);
     }
 
 

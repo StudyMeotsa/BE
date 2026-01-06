@@ -6,7 +6,13 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "coffee_type")
+@Table(name = "coffee_type",
+        indexes = {
+        @Index(
+                name = "idx_coffee_type_name_level",
+                columnList = "name, level"
+        )
+})
 public class CoffeeType {
 
     @Id
