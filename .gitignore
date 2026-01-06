@@ -41,3 +41,6 @@ out/
 ### 공개 키, 개인 키 ###
 /src/main/resources/private_key.pem
 /src/main/resources/public_key.pem
+
+### 개발용 프로퍼티 파일 ###
+/src/main/resources/application-dev.properties

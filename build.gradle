@@ -28,8 +28,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	developmentOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j' // 로컬에서도 드라이버 바꿔서 MySQL 쓸 수 있음
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
