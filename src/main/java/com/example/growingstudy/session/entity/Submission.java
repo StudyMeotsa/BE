@@ -15,10 +15,10 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // id BIGINT (PK)
 
-    @Column(name = "content", length = 2000)
+    @Column(length = 2000)
     private String content; // content VARCHAR(2000)
 
-    @Column(name = "image_path")
+    @Column(name = "image_path", length = 255)
     private String imagePath; // image_path VARCHAR(255)
 
     @Column(name = "is_verified", nullable = false)
@@ -44,8 +44,8 @@ public class Submission {
     public Submission(String content, String imagePath, Checklist checklist, GroupMember submitter) {
         this.content = content;
         this.imagePath = imagePath;
-        this.isVerified = false; 
         this.checklist = checklist;
         this.submitter = submitter;
+        this.isVerified = false; // 초기값
     }
 }
