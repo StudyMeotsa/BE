@@ -18,18 +18,19 @@ public class AccountRepositoryUserDetailsService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
+    // ERD 변경에 따라 parameter는 email로 변경하였으나 UserDetailsService 스펙으로 메소드 이름은 그대로 유지
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.info("DB에서 유저 정보 획득 시작");
         Account account =
                 accountRepository
-                        .findByUsername(username)
-                        .orElseThrow(() -> new UsernameNotFoundException(username));
+                        .findByEmail(email)
+                        .orElseThrow(() -> new UsernameNotFoundException(email));
 
         logger.info("UserDetails 빌드");
         UserDetails user =
                 UserDetailsWithId.builder()
-                        .username(username)
+                        .username(email)
                         .password(account.getPassword())
                         .userId(account.getId())
                         .build();

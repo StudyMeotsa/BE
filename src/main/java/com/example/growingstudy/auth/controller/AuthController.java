@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.controller;
 
+import com.example.growingstudy.auth.dto.MyPageResponseDto;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.service.AuthService;
 import org.slf4j.Logger;
@@ -7,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +30,15 @@ public class AuthController {
         logger.debug("회원가입 요청 처리 시작");
 
         authService.register(request);
-        logger.info("유저 {}가 회원가입", request.getUsername());
+        logger.info("유저 {}가 회원가입", request.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MyPageResponseDto> me(@AuthenticationPrincipal Jwt token) {
+        long userId = Long.parseLong(token.getSubject());
+        MyPageResponseDto response = authService.retrieveUserInfo(userId);
+
+        return ResponseEntity.ok(response);
     }
 }

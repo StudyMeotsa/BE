@@ -1,5 +1,6 @@
 package com.example.growingstudy.auth.service;
 
+import com.example.growingstudy.auth.dto.MyPageResponseDto;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.dto.RegisterRequestDto;
 import com.example.growingstudy.auth.enums.RegisterFailedType;
@@ -40,11 +41,13 @@ public class AuthService {
         validateUniqueness(request);
         logger.trace("유효성 검증 성공");
         logger.trace("새 회원 데이터를 생성");
-        Account account = new Account();
-        account.setUsername(request.getUsername());
-        account.setEmail(request.getEmail());
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        account.setSex(request.getSex());
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .sex(request.getSex())
+                .build();
+
         logger.trace("새 회원 데이터 생성됨");
 
         logger.trace("DB에 회원 데이터를 저장");
@@ -60,9 +63,27 @@ public class AuthService {
 
         // 유저 중복 확인
         logger.trace("유저 중복 여부 확인");
-        if (accountRepository.existsByUsername(request.getUsername())) {
+        if (accountRepository.existsByEmail(request.getEmail())) {
             logger.debug("이미 해당 유저가 존재");
             throw new RegisterFailedException(RegisterFailedType.USERNAME_NOT_UNIQUE);
         }
+    }
+
+    /**
+     * id에 해당하는 유저의 정보를 찾아 이름, 성별, 이메일 정보가 담긴 객체를 반환
+     * @param userId 정보를 찾을 유저의 id (Account.id)
+     * @return 이름, 성별, 이메일 정보가 담긴 객체
+     */
+    public MyPageResponseDto retrieveUserInfo(long userId) {
+        Account account = accountRepository.findById(userId)
+                .orElseThrow();
+
+        MyPageResponseDto response = MyPageResponseDto.builder()
+                .name(account.getName())
+                .sex(String.valueOf(account.getSex()))
+                .email(account.getEmail())
+                .build();
+
+        return response;
     }
 }

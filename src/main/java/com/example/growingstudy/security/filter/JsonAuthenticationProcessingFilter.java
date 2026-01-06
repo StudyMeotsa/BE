@@ -45,11 +45,11 @@ public class JsonAuthenticationProcessingFilter extends AbstractAuthenticationPr
         String jsonString = ServletRequestConverter.convertRequestToString(request);
         LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-        String username = obtainUsername(loginRequest);
+        String email = obtainEmail(loginRequest);
         String password = obtainPassword(loginRequest);
 
         UsernamePasswordAuthenticationToken token =
-                UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+                UsernamePasswordAuthenticationToken.unauthenticated(email, password);
 
         Authentication result = this.getAuthenticationManager().authenticate(token);
         logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
@@ -62,8 +62,8 @@ public class JsonAuthenticationProcessingFilter extends AbstractAuthenticationPr
         successHandler.onAuthenticationSuccess(request, response, chain, authResult);
     }
 
-    protected String obtainUsername(LoginRequestDto loginRequestDto) {
-        return loginRequestDto.getUsername();
+    protected String obtainEmail(LoginRequestDto loginRequestDto) {
+        return loginRequestDto.getEmail();
     }
 
     protected String obtainPassword(LoginRequestDto loginRequestDto) {
