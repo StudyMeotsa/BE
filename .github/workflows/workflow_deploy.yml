@@ -96,5 +96,5 @@ jobs:
               --instance-ids ${{ env.INSTANCE_ID }} \
               --document-name "AWS-RunShellScript" \
               --parameters 'commands=["aws s3 cp ${{ env.BUCKET_PATH }} ${{ env.LOCAL_PATH }}", \
-                                      "ln -Tfs ${{ env.LOCAL_PATH }}, ${{ env.SYMBOL_PATH }}", \
+                                      "ln -Tfs ${{ env.LOCAL_PATH }} ${{ env.SYMBOL_PATH }}", \
                                       "${{ env.APPLICATION_DIRECTORY }}/script.sh"]'
