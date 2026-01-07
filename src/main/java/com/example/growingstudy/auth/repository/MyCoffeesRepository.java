@@ -11,7 +11,7 @@ public interface MyCoffeesRepository extends JpaRepository<StudyGroup, Long> {
 
     /**
      * 해당 유저 id의 진행중 또는 완료된 스터디 목록과 커피 현황을 조회
-     * @param account_id 유저 id
+     * @param accountId 유저 id
      * @return 스터디 목록과 커피 현황
      */
     // MySQL 네이티브 쿼리 사용
@@ -30,7 +30,7 @@ public interface MyCoffeesRepository extends JpaRepository<StudyGroup, Long> {
         JOIN study_group sg ON gm.group_id = sg.id
         JOIN group_coffee gc ON sg.id = gc.group_id
         JOIN coffee_type ct ON gc.type_id = ct.id
-    WHERE gm.account_id = :account_id AND NOW() >= sg.start_day;
+    WHERE gm.account_id = :accountId AND NOW() >= sg.start_day;
     """, nativeQuery = true)
-    List<MyCoffeeResponseDto> findMyCoffees(Long account_id);
+    List<MyCoffeeResponseDto> findCoffeesByAccountId(Long accountId);
 }

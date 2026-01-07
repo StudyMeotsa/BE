@@ -28,7 +28,7 @@ public class MyCoffeesService {
      * @return 진행중, 완료 스터디 목록 및 그 스터디의 커피 현황
      */
     public Map<String, List<MyCoffeeResponseDto>> getMyCoffees(long accountId) {
-        List<MyCoffeeResponseDto> myCoffees = myCoffeesRepository.findMyCoffees(accountId);
+        List<MyCoffeeResponseDto> myCoffees = myCoffeesRepository.findCoffeesByAccountId(accountId);
 
         Map<String, List<MyCoffeeResponseDto>> myCoffeesMap = myCoffees.stream().collect(
                 Collectors.groupingBy(
