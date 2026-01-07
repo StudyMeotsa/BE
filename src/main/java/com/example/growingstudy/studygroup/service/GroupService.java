@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class GroupService {
 
     private final AccountRepository accountRepository;
@@ -28,7 +28,7 @@ public class GroupService {
     private final SessionRepository sessionRepository;
 
     //그룹 생성
-    public String createGroup(long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
+    public String createGroup(Long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
 
         if (groupRepository.existsByName(name)) {
             throw new IllegalStateException("이미 존재하는 그룹 이름입니다.");
@@ -41,7 +41,6 @@ public class GroupService {
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
         //세션 생성
-        int totalSession = group.getWeekSession() * group.getTotalWeek();
         LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
 
         sessionRepository.save(Session.createFirst(startDay, endDay, group));
@@ -50,7 +49,7 @@ public class GroupService {
     }
 
     //그룹 나가기
-    public void deleteGroup(long accountId, long groupId) {
+    public void deleteGroup(Long accountId, Long groupId) {
 
         GroupMember groupMember = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));
@@ -83,7 +82,7 @@ public class GroupService {
     }
 
     // 그룹 정보
-    public GroupInfoResponse getGroupInfo(long groupId) {
+    public GroupInfoResponse getGroupInfo(Long groupId) {
 
         StudyGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
@@ -92,7 +91,7 @@ public class GroupService {
     }
 
     // 입장코드로 그룹 등록
-    public void joinGroup(long accountId, String code) {
+    public void joinGroup(Long accountId, String code) {
 
         StudyGroup group = groupRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 그룹이 없습니다."));

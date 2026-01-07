@@ -1,4 +1,4 @@
-package com.example.growingstudy.studytime.entity;
+package com.example.growingstudy.groupsub.entity;
 
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.studygroup.entity.GroupMember;
@@ -12,7 +12,13 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudyTime {
+@Table(
+        name = "total_study_time",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"member_id", "session_id"})
+        }
+)
+public class TotalStudyTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +38,19 @@ public class StudyTime {
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public StudyTime(Integer totalTime, GroupMember member, Session session) {
-        this.totalTime = totalTime;
+    private TotalStudyTime(LocalDateTime createdAt, GroupMember member, Session session) {
+        this.totalTime = 0;
+        this.updatedAt = createdAt;
         this.member = member;
         this.session = session;
+    }
+
+    public static TotalStudyTime create(LocalDateTime createdAt, GroupMember member, Session session) {
+        return new TotalStudyTime(createdAt, member, session);
+    }
+
+    public void addMinutes(Integer time, LocalDateTime createdAt) {
+        this.totalTime += time;
+        this.updatedAt = createdAt;
     }
 }

@@ -1,5 +1,6 @@
-package com.example.growingstudy.studygroup.entity;
+package com.example.growingstudy.groupsub.entity;
 
+import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +35,10 @@ public class GroupNotice {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
     @PreUpdate
@@ -42,9 +46,22 @@ public class GroupNotice {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public GroupNotice(GroupMember member, String title, String content) {
-        this.member = member;
+    private GroupNotice(String title, String content, GroupMember member) {
         this.title = title;
         this.content = content;
+        this.member = member;
+    }
+
+    public static GroupNotice create(String title, String content, GroupMember member) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("제목은 필수입니다.");
+        }
+        if (title.trim().length() > 150) {
+            throw new IllegalArgumentException("제목은 150자 이하여야 합니다.");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("내용은 필수입니다.");
+        }
+        return new GroupNotice(title, content, member);
     }
 }

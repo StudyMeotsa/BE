@@ -7,6 +7,9 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "group_member",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"group_id", "account_id"})}
+)
 public class GroupMember {
 
     @Id

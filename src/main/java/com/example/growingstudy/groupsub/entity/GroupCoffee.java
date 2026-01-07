@@ -1,6 +1,7 @@
-package com.example.growingstudy.studygroup.entity;
+package com.example.growingstudy.groupsub.entity;
 
 import com.example.growingstudy.coffee.entity.CoffeeType;
+import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "group_coffee")
 public class GroupCoffee {
     @Id
     private Long id;

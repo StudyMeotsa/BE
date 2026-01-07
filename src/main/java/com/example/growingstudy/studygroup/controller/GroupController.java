@@ -3,7 +3,6 @@ package com.example.growingstudy.studygroup.controller;
 import com.example.growingstudy.studygroup.dto.*;
 import com.example.growingstudy.studygroup.service.GroupService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +18,6 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    @Autowired
     public GroupController(GroupService groupService) {this.groupService = groupService;}
 
     /**
@@ -31,6 +29,7 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<CreateGroupResponse> createStudyRoom(
             @AuthenticationPrincipal Jwt auth,
+            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid CreateGroupRequest request
     ) {
         Long accountId = Long.valueOf(auth.getSubject());
@@ -99,9 +98,16 @@ public class GroupController {
                 .ok(groupService.getGroupInfo(groupId));
     }
 
+    /**
+     * 초대코드로 그룹 조인
+     * @param auth jwt 엑세스토큰
+     * @param request 초대코드
+     * @return 성공 or 400
+     */
     @PostMapping("/join")
     public ResponseEntity<Map<String, Boolean>> joinStudyRoom(
             @AuthenticationPrincipal Jwt auth,
+            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid JoinGroupRequest request) {
 
         Long accountId = Long.parseLong(auth.getSubject());
