@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +13,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "study_time",
+        name = "total_study_time",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"member_id", "session_id"})
         }
 )
-public class StudyTime {
+public class TotalStudyTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,15 +38,15 @@ public class StudyTime {
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    private StudyTime (LocalDateTime createdAt, GroupMember member, Session session) {
+    private TotalStudyTime(LocalDateTime createdAt, GroupMember member, Session session) {
         this.totalTime = 0;
-        this.updatedAt = createdAt; // 장
+        this.updatedAt = createdAt;
         this.member = member;
         this.session = session;
     }
 
-    public static StudyTime create(LocalDateTime createdAt, GroupMember member, Session session) {
-        return new StudyTime(createdAt, member, session);
+    public static TotalStudyTime create(LocalDateTime createdAt, GroupMember member, Session session) {
+        return new TotalStudyTime(createdAt, member, session);
     }
 
     public void addMinutes(Integer time, LocalDateTime createdAt) {

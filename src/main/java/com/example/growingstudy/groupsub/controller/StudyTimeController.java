@@ -25,6 +25,7 @@ public class StudyTimeController {
             @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId,
             @PathVariable Long sessionId,
+            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid LogStudyTimeRequest request) {
 
         Long accountId = Long.parseLong(auth.getSubject());

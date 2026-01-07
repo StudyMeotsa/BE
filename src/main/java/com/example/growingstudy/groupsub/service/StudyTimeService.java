@@ -1,7 +1,7 @@
 package com.example.growingstudy.groupsub.service;
 
-import com.example.growingstudy.groupsub.entity.StudyTime;
-import com.example.growingstudy.groupsub.entity.TimeLog;
+import com.example.growingstudy.groupsub.entity.TotalStudyTime;
+import com.example.growingstudy.groupsub.entity.StudyTimeLog;
 import com.example.growingstudy.groupsub.repository.StudyTimeRepository;
 import com.example.growingstudy.groupsub.repository.TimeLogRepository;
 import com.example.growingstudy.session.entity.Session;
@@ -26,6 +26,7 @@ public class StudyTimeService {
     private final StudyTimeRepository studyTimeRepository;
     private final TimeLogRepository timeLogRepository;
 
+    // StudyTime 저장
     public void logStudyTime (Long accountId, Long groupId, Long sessionId, Integer time, LocalDateTime createdAt) {
 
         GroupMember member = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
@@ -34,14 +35,15 @@ public class StudyTimeService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 세션이 없습니다."));
 
-        StudyTime totalStudyTime = studyTimeRepository.findByMemberAndSession(member, session)
-                .orElseGet(() -> studyTimeRepository.save(StudyTime.create(createdAt ,member, session))); // 없으면 생성
+        TotalStudyTime totalStudyTime = studyTimeRepository.findByMemberAndSession(member, session)
+                .orElseGet(() -> studyTimeRepository.save(TotalStudyTime.create(createdAt ,member, session))); // 없으면 생성
 
-        timeLogRepository.save(TimeLog.create(time, createdAt, totalStudyTime));
+        timeLogRepository.save(StudyTimeLog.create(time, createdAt, totalStudyTime));
 
         totalStudyTime.addMinutes(time, createdAt);
     }
 
+    // StudyTimeLog 조회
     public List<TimeLogsResponse> getStudyTimeLogs(Long accountId, Long groupId, Long sessionId) {
         GroupMember member = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));

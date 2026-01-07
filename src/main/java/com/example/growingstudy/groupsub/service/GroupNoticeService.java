@@ -22,6 +22,7 @@ public class GroupNoticeService {
     private final SessionRepository sessionRepository;
 
     // 공지글 생성
+    // Todo: 방장 여부 확인
     public void createNotice (Long accountId, Long groupId, String title, String content) {
 
         GroupMember member = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)

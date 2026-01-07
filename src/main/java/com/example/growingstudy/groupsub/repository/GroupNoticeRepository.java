@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface GroupNoticeRepository extends JpaRepository<GroupNotice, Integer> {
 
+    // Todo: 가시성을 위해 native 쿼리로 작성하는 게 좋을 듯
     Optional<GroupNotice> findTopByMember_Group_IdOrderByCreatedAtDesc(Long groupId);
 }
