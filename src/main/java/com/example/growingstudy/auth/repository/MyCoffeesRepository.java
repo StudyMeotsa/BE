@@ -25,7 +25,7 @@ public interface MyCoffeesRepository extends JpaRepository<StudyGroup, Long> {
         JOIN study_group sg ON gm.group_id = sg.id
         JOIN group_coffee gc ON sg.id = gc.group_id
         JOIN coffee_type ct ON gc.type_id = ct.id
-    WHERE gm.account_id = :account_id AND start_day >= NOW();
+    WHERE gm.account_id = :account_id AND NOW() >= sg.start_day;
     """, nativeQuery = true)
     List<MyCoffeeResponseDto> findMyCoffees(Long account_id);
 }
