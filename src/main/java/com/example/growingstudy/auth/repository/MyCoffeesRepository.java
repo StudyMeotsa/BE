@@ -9,6 +9,11 @@ import java.util.List;
 
 public interface MyCoffeesRepository extends JpaRepository<StudyGroup, Long> {
 
+    /**
+     * 해당 유저 id의 진행중 또는 완료된 스터디 목록과 커피 현황을 조회
+     * @param account_id 유저 id
+     * @return 스터디 목록과 커피 현황
+     */
     // MySQL 네이티브 쿼리 사용
     @Query(value = """
     SELECT
