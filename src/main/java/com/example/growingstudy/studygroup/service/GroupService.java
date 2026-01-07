@@ -2,11 +2,11 @@ package com.example.growingstudy.studygroup.service;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
-import com.example.growingstudy.groupsub.dto.CurrentNoticeResponse;
+import com.example.growingstudy.session.entity.Session;
+import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.dto.GroupInfoResponse;
 import com.example.growingstudy.studygroup.dto.GroupListInfoResponse;
 import com.example.growingstudy.studygroup.entity.GroupMember;
-import com.example.growingstudy.groupsub.entity.GroupNotice;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import com.example.growingstudy.studygroup.repository.GroupRepository;
@@ -25,6 +25,7 @@ public class GroupService {
     private final AccountRepository accountRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final SessionRepository sessionRepository;
 
     //그룹 생성
     public String createGroup(Long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
@@ -37,10 +38,13 @@ public class GroupService {
 
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
-        GroupMember groupMember = GroupMember.of("ADMIN", group, account);
-        groupMemberRepository.save(groupMember);
+        groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
-        //세션 만드는 로직 추가 필요
+        //세션 생성
+        int totalSession = group.getWeekSession() * group.getTotalWeek();
+        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
+
+        sessionRepository.save(Session.createFirst(startDay, endDay, group));
 
         return group.getCode();
     }
