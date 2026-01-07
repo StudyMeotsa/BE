@@ -8,6 +8,6 @@ public record CreateGroupRequest(
         Integer weekSession,
         Integer totalWeek,
         Integer maxMember,
-        Integer sessionHour,
+        Integer studyTimeAim,
         String description
 ) {}

@@ -9,7 +9,7 @@ public interface GroupListView {
     LocalDate getEndDay();
     Integer getWeekSession();
     Integer getTotalSessions();
-    Integer getSessionHour();
+    Integer getStudyTimeAim();
     Long getCurrentMember();
     Integer getMaxMember();
     Long getSessionId();

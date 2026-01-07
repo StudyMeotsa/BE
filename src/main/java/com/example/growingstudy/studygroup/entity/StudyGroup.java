@@ -34,8 +34,8 @@ public class StudyGroup {
     @Column(name = "max_member", nullable = false)
     private Integer maxMember;
 
-    @Column(name = "session_hour", nullable = false)
-    private Integer sessionHour;
+    @Column(name = "study_time_aim", nullable = false)
+    private Integer studyTimeAim;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
@@ -43,13 +43,13 @@ public class StudyGroup {
     @Column(nullable = false, length = 8)
     private String code;
 
-    private StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer sessionHour, String description) {
+    private StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description) {
         this.name = name;
         this.weekSession = weekSession;
         this.startDay = startDay;
         this.totalWeek = totalWeek;
         this.maxMember = maxMember;
-        this.sessionHour = sessionHour;
+        this.studyTimeAim = studyTimeAim;
         this.description = description;
         this.code = UUID.randomUUID().toString().substring(0, 8);
     }

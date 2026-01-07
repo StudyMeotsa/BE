@@ -24,7 +24,7 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
             DATE_ADD(g.start_day, INTERVAL g.total_week WEEK) AS endDay,
             g.week_session                     AS weekSession,
             (g.total_week * g.week_session)    AS totalSessions,
-            g.session_hour                     AS sessionHour,
+            g.study_time_aim                     AS studyTimeAim,
             (SELECT COUNT(*) FROM group_member gm2 WHERE gm2.group_id = g.id) AS currentMember,
             g.max_member                       AS maxMember,
 
@@ -49,7 +49,7 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
 
         ORDER BY g.start_day DESC
         """, nativeQuery = true)
-    List<GroupListView> findGroupsByMember(
+    List<GroupListView> findGroupsByAccountId(
             @Param("accountId") Long accountId,
             @Param("now") LocalDateTime now
     );

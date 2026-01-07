@@ -1,9 +1,6 @@
 package com.example.growingstudy.studygroup.controller;
 
-import com.example.growingstudy.studygroup.dto.CreateGroupRequest;
-import com.example.growingstudy.studygroup.dto.CreateGroupResponse;
-import com.example.growingstudy.studygroup.dto.GroupListResponse;
-import com.example.growingstudy.studygroup.dto.GroupListView;
+import com.example.growingstudy.studygroup.dto.*;
 import com.example.growingstudy.studygroup.service.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +11,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/studyrooms")
 public class GroupController {
+
     private final GroupService groupService;
 
     @Autowired
@@ -43,7 +42,7 @@ public class GroupController {
                         request.startDay(),
                         request.weekSession(),
                         request.totalWeek(),
-                        request.sessionHour(),
+                        request.studyTimeAim(),
                         request.maxMember(),
                         request.description()
                 );
@@ -60,9 +59,56 @@ public class GroupController {
      * @return 그룹 리스트
      */
     @GetMapping
-    public List<GroupListResponse> getStudyRoomList(@AuthenticationPrincipal Jwt auth) {
+    public ResponseEntity<List<GroupListInfoResponse>> getStudyRoomList(
+            @AuthenticationPrincipal Jwt auth) {
+
         Long accountId = Long.parseLong(auth.getSubject());
-        return groupService.getGroupsList(accountId);
+
+        return ResponseEntity
+                .ok(groupService.getGroupList(accountId));
     }
 
+    /**
+     * 그룹 나가기
+     * @param auth JWT 엑세스 토큰
+     * @param groupId 그룹 ID
+     * @return 성공 or 400
+     */
+    @DeleteMapping("/{groupId}/leave")
+    public ResponseEntity<Map<String, Boolean>> deleteStudyRoom(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable Long groupId) {
+
+        Long accountId = Long.parseLong(auth.getSubject());
+        groupService.deleteGroup(accountId, groupId);
+
+        return ResponseEntity
+                .ok(Map.of("success", true));
+    }
+
+    /**
+     * 그룹 정보 조회
+     * @param groupId 그룹 아이디
+     * @return 그룹 정보
+     */
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupInfoResponse> getStudyRoom(
+            @PathVariable Long groupId) {
+
+        return ResponseEntity
+                .ok(groupService.getGroupInfo(groupId));
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<Map<String, Boolean>> joinStudyRoom(
+            @AuthenticationPrincipal Jwt auth,
+            @RequestBody @Valid JoinGroupRequest request) {
+
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        groupService.joinGroup(accountId, request.code());
+
+        return ResponseEntity
+                .ok(Map.of("success", true));
+    }
 }
