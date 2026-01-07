@@ -9,15 +9,12 @@ import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import com.example.growingstudy.groupsub.dto.TimeLogsResponse;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
