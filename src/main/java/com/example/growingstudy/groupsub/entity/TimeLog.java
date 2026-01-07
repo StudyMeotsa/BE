@@ -26,13 +26,13 @@ public class TimeLog {
     @JoinColumn(name = "study_time_id", nullable = false)
     private StudyTime studyTime;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    private TimeLog(Integer time, LocalDateTime createdAt, StudyTime studyTime) {
+        this.time = time;
+        this.createdAt = createdAt;
+        this.studyTime = studyTime;
     }
 
-    public TimeLog(Integer time, StudyTime studyTime) {
-        this.time = time;
-        this.studyTime = studyTime;
+    public static TimeLog create(Integer time, LocalDateTime createdAt, StudyTime studyTime) {
+        return new TimeLog(time, createdAt, studyTime);
     }
 }

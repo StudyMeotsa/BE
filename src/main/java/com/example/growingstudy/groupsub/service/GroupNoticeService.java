@@ -3,23 +3,25 @@ package com.example.growingstudy.groupsub.service;
 import com.example.growingstudy.groupsub.dto.CurrentNoticeResponse;
 import com.example.growingstudy.groupsub.entity.GroupNotice;
 import com.example.growingstudy.groupsub.repository.GroupNoticeRepository;
+import com.example.growingstudy.session.entity.Session;
+import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
+import com.example.growingstudy.studygroup.repository.GroupRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class GroupNoticeService {
 
     private final GroupNoticeRepository groupNoticeRepository;
     private final GroupMemberRepository groupMemberRepository;
-
-    public GroupNoticeService(GroupNoticeRepository groupNoticeRepository, GroupMemberRepository groupMemberRepository) {
-        this.groupNoticeRepository = groupNoticeRepository;
-        this.groupMemberRepository = groupMemberRepository;
-    }
-
+    private final SessionRepository sessionRepository;
 
     // 공지글 생성
     public void createNotice (Long accountId, Long groupId, String title, String content) {

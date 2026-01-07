@@ -4,6 +4,7 @@ import com.example.growingstudy.groupsub.dto.CreateNoticeRequest;
 import com.example.growingstudy.groupsub.dto.CurrentNoticeResponse;
 import com.example.growingstudy.groupsub.service.GroupNoticeService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,14 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/studyrooms/{groupId}/notice")
 public class GroupNoticeController {
 
     private final GroupNoticeService groupNoticeService;
-
-    public GroupNoticeController(GroupNoticeService groupNoticeService) {
-        this.groupNoticeService = groupNoticeService;
-    }
 
     @PostMapping
     public ResponseEntity<Map<String, Boolean>> createNotice(

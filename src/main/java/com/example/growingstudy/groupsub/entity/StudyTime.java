@@ -6,12 +6,19 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "study_time",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"member_id", "session_id"})
+        }
+)
 public class StudyTime {
 
     @Id
@@ -32,14 +39,19 @@ public class StudyTime {
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public StudyTime(Integer totalTime, GroupMember member, Session session) {
-        this.totalTime = totalTime;
+    private StudyTime (LocalDateTime createdAt, GroupMember member, Session session) {
+        this.totalTime = 0;
+        this.updatedAt = createdAt; // 장
         this.member = member;
         this.session = session;
+    }
+
+    public static StudyTime create(LocalDateTime createdAt, GroupMember member, Session session) {
+        return new StudyTime(createdAt, member, session);
+    }
+
+    public void addMinutes(Integer time, LocalDateTime createdAt) {
+        this.totalTime += time;
+        this.updatedAt = createdAt;
     }
 }

@@ -11,6 +11,7 @@ import com.example.growingstudy.studygroup.entity.StudyGroup;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import com.example.growingstudy.studygroup.repository.GroupRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,17 +19,12 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class GroupService {
 
     private final AccountRepository accountRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
-
-    public GroupService(AccountRepository accountRepository, GroupRepository groupRepository, GroupMemberRepository groupMemberRepository) {
-        this.accountRepository = accountRepository;
-        this.groupRepository = groupRepository;
-        this.groupMemberRepository = groupMemberRepository;
-    }
 
     //그룹 생성
     public String createGroup(Long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
@@ -43,6 +39,8 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
         GroupMember groupMember = GroupMember.of("ADMIN", group, account);
         groupMemberRepository.save(groupMember);
+
+        //세션 만드는 로직 추가 필요
 
         return group.getCode();
     }

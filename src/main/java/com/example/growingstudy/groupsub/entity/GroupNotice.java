@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +34,19 @@ public class GroupNotice {
     @JoinColumn(name = "member_id", nullable = false)
     private GroupMember member;
 
+    @PrePersist
+    public void prePersist() {
+
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     private GroupNotice(String title, String content, GroupMember member) {
         this.title = title;
         this.content = content;
@@ -50,15 +64,5 @@ public class GroupNotice {
             throw new IllegalArgumentException("내용은 필수입니다.");
         }
         return new GroupNotice(title, content, member);
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 }

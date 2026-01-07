@@ -97,6 +97,12 @@ public class GroupController {
                 .ok(groupService.getGroupInfo(groupId));
     }
 
+    /**
+     * 초대코드로 그룹 조인
+     * @param auth jwt 엑세스토큰
+     * @param request 초대코드
+     * @return 성공 or 400
+     */
     @PostMapping("/join")
     public ResponseEntity<Map<String, Boolean>> joinStudyRoom(
             @AuthenticationPrincipal Jwt auth,
