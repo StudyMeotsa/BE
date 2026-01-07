@@ -23,7 +23,8 @@ public class JwtService {
 
     // 상수 영역
     private static final String ISSUER = "http://example.com"; // 추후에 도메인 정해지면 변경
-    private static final long ACCESS_TOKEN_DURATION_MINUTES = 5;
+//    private static final long ACCESS_TOKEN_DURATION_MINUTES = 5; // 개발을 위해 주석처리
+    private static final long ACCESS_TOKEN_DURATION_MINUTES = 60;
     private static final long REFRESH_TOKEN_DURATION_HOURS = 1;
 
     private final Logger logger = LoggerFactory.getLogger(JwtService.class);

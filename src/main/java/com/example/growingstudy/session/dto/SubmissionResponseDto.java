@@ -25,7 +25,7 @@ public class SubmissionResponseDto {
                 .isVerified(entity.isVerified())
                 .submittedAt(entity.getSubmittedAt())
                 .submitterId(entity.getSubmitter().getId())
-                .submitterNickname(entity.getSubmitter().getNickname())
+                .submitterNickname(entity.getSubmitter().getAccount().getName())
                 .build();
     }
 }

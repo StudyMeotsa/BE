@@ -13,12 +13,9 @@ public class GroupMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //enum으로?
+    //ADMIN, MEMBER 나중에 ENUM으로 변경
     @Column(nullable = false, length = 30)
     private String role;
-
-    @Column(nullable = false, length = 30)
-    private String nickname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -28,10 +25,13 @@ public class GroupMember {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    public GroupMember(String role, String nickname, StudyGroup group, Account account) {
+    private GroupMember(String role, StudyGroup group, Account account) {
         this.role = role;
-        this.nickname = nickname;
         this.group = group;
         this.account = account;
+    }
+
+    public static GroupMember of(String role, StudyGroup group, Account account) {
+        return new GroupMember(role, group, account);
     }
 }

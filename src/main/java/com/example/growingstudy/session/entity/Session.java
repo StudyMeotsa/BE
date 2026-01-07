@@ -14,24 +14,31 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // id BIGINT (PK)
 
-    @Column(name = "title", nullable = false, length = 150)
+    @Column(name = "session_order", nullable = false)
+    private Integer sessionOrder;
+
+    @Column(name = "title", length = 150)
     private String title; // title VARCHAR(150)
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private LocalDateTime startTime; // start_time DATETIME
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime; // end_time DATETIME
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private StudyGroup group; // group_id BIGINT (FK)
 
-    @Builder
-    public Session(String title, StudyGroup group, LocalDateTime startTime, LocalDateTime endTime) {
+    private Session(Integer sessionOrder, String title, LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
+        this.sessionOrder = sessionOrder;
         this.title = title;
-        this.group = group;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.group = group;
+    }
+
+    public static Session createFirst(LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
+        return new Session(1, null , startTime, endTime, group);
     }
 }
