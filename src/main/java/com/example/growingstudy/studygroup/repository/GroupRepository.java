@@ -12,9 +12,7 @@ import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
     Optional<StudyGroup> findByCode(String Code);
-    boolean existsByCode(String Code);
     boolean existsByName(String name);
-
 
     @Query(value = """
         SELECT
