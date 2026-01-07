@@ -3,14 +3,11 @@ package com.example.growingstudy.groupsub.service;
 import com.example.growingstudy.groupsub.dto.CurrentNoticeResponse;
 import com.example.growingstudy.groupsub.entity.GroupNotice;
 import com.example.growingstudy.groupsub.repository.GroupNoticeRepository;
-import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -19,7 +16,6 @@ public class GroupNoticeService {
 
     private final GroupNoticeRepository groupNoticeRepository;
     private final GroupMemberRepository groupMemberRepository;
-    private final SessionRepository sessionRepository;
 
     // 공지글 생성
     // Todo: 방장 여부 확인
