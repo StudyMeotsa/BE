@@ -23,12 +23,18 @@ public class GroupController {
     @Autowired
     public GroupController(GroupService groupService) {this.groupService = groupService;}
 
+    /**
+     * 그룹 생성
+     * @param auth JWT 엑세스 토큰
+     * @param request 그룹 생성 요청 정보
+     * @return code
+     */
     @PostMapping
     public ResponseEntity<CreateGroupResponse> createStudyRoom(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal Jwt auth,
             @RequestBody @Valid CreateGroupRequest request
     ) {
-        Long accountId = Long.valueOf(jwt.getSubject());
+        Long accountId = Long.valueOf(auth.getSubject());
 
         String code =
                 groupService.createGroup(

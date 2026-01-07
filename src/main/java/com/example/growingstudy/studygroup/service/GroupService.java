@@ -20,15 +20,13 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
 
-    /**
-     * 그룹 생성 및 DB 저장
-     */
     public GroupService(AccountRepository accountRepository, GroupRepository groupRepository, GroupMemberRepository groupMemberRepository) {
         this.accountRepository = accountRepository;
         this.groupRepository = groupRepository;
         this.groupMemberRepository = groupMemberRepository;
     }
 
+    //그룹 생성
     public String createGroup(long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer sessionHour, String description){
         if (groupRepository.existsByName(name)) {
             throw new IllegalStateException("이미 존재하는 그룹 이름입니다.");
@@ -44,6 +42,7 @@ public class GroupService {
         return group.getCode();
     }
 
+    // 그룹 리스트
     public List<GroupListResponse> getGroupsList(Long accountId) {
         return groupRepository.findGroupsByMember(
                         accountId,
