@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class MyCoffeeResponseDto {
 
     // 분류 위해 사용하되 응답엔 포함하지 않음
@@ -22,5 +21,12 @@ public class MyCoffeeResponseDto {
         private final String type;
         private final int level;
         private final String imageUrl;
+    }
+
+    public MyCoffeeResponseDto(String status, Long groupId, String groupName, String type, int Level, String imageUrl) {
+        this.status = status;
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.coffee = new CoffeeInfo(type, Level, imageUrl);
     }
 }
