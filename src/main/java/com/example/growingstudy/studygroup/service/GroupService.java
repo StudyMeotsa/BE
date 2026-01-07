@@ -10,11 +10,10 @@ import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import com.example.growingstudy.studygroup.repository.GroupRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
