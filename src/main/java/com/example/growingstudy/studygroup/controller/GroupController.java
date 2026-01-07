@@ -3,7 +3,6 @@ package com.example.growingstudy.studygroup.controller;
 import com.example.growingstudy.studygroup.dto.*;
 import com.example.growingstudy.studygroup.service.GroupService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +18,6 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    @Autowired
     public GroupController(GroupService groupService) {this.groupService = groupService;}
 
     /**

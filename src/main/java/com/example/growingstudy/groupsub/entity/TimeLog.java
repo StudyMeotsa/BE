@@ -1,4 +1,4 @@
-package com.example.growingstudy.studytime.entity;
+package com.example.growingstudy.groupsub.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,4 +1,4 @@
-package com.example.growingstudy.studytime.entity;
+package com.example.growingstudy.groupsub.entity;
 
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.studygroup.entity.GroupMember;
