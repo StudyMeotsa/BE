@@ -49,7 +49,7 @@ public class StudyTimeService {
                 .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));
 
         return timeLogRepository
-                .findByStudyTimeMemberIdAndStudyTimeSessionId(member.getId(), sessionId)
+                .findByTotalStudyTimeMemberIdAndTotalStudyTimeSessionId(member.getId(), sessionId)
                 .stream()
                 .map(v ->new TimeLogsResponse(
                         v.getId(),

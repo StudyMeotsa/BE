@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TimeLogRepository extends JpaRepository<StudyTimeLog, Long> {
-    List<StudyTimeLog> findByStudyTimeMemberIdAndStudyTimeSessionId(Long memberId, Long sessionId);
+    List<StudyTimeLog> findByTotalStudyTimeMemberIdAndTotalStudyTimeSessionId(Long memberId, Long sessionId);
 }
