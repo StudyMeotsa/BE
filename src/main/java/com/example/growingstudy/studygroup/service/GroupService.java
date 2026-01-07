@@ -41,7 +41,6 @@ public class GroupService {
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
         //세션 생성
-        int totalSession = group.getWeekSession() * group.getTotalWeek();
         LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
 
         sessionRepository.save(Session.createFirst(startDay, endDay, group));
