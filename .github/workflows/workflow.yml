@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
+      checks: write
 
     # 테스트를 위한 로컬 MySQL 서버 세팅
     services:
