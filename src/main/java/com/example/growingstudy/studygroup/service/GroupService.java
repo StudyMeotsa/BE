@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -74,7 +74,7 @@ public class GroupService {
 
         return groupRepository.findGroupsByAccountId(
                         accountId,
-                        LocalDateTime.now()
+                        LocalDate.now()
                 ).stream()
                 .map(v -> new GroupListInfoResponse(
                         v.getGroupId(),
