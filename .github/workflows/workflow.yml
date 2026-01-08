@@ -19,6 +19,18 @@ jobs:
     permissions:
       contents: read
 
+    # 테스트를 위한 로컬 MySQL 서버 세팅
+    services:
+      mysql:
+        image: mysql:8.0.43
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21
