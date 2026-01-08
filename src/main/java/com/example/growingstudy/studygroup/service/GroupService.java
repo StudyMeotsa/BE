@@ -2,6 +2,10 @@ package com.example.growingstudy.studygroup.service;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.coffee.entity.CoffeeType;
+import com.example.growingstudy.coffee.entity.GroupCoffee;
+import com.example.growingstudy.coffee.repository.CoffeeTypeRepository;
+import com.example.growingstudy.coffee.repository.GroupCoffeeRepository;
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.dto.CreateGroupRequest;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.random.RandomGenerator;
 
 @Service
 @Transactional
@@ -26,6 +31,8 @@ public class GroupService {
     private final AccountRepository accountRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final CoffeeTypeRepository coffeeTypeRepository;
+    private final GroupCoffeeRepository groupCoffeeRepository;
 
     //그룹 생성
     public String createGroup(Long accountId, CreateGroupRequest request){
@@ -50,7 +57,7 @@ public class GroupService {
 
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
-        // Todo: 그룹 커피 생성 로직 필요
+        assignRandomCoffee(group);
 
         // 세션 자동 생성 -> 그룹 생성 후 세션 추가로 대체
 //        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
@@ -118,5 +125,24 @@ public class GroupService {
 
         GroupMember groupMember = GroupMember.of("MEMBER", group, account);
         groupMemberRepository.save(groupMember);
+    }
+
+    // private 메소드
+    private void assignRandomCoffee(StudyGroup group) {
+        // 랜덤 커피 선택
+        List<Long> level1CoffeeTypeIds = coffeeTypeRepository.findAllIdsLevel1CoffeeType();
+        int idx = RandomGenerator.getDefault().nextInt(level1CoffeeTypeIds.size());
+
+        Long coffeeTypeId = level1CoffeeTypeIds.get(idx);
+
+        // 그룹 커피 정보 계산
+        int totalSessions = group.getTotalWeek() * group.getWeekSession();
+        int requiredBeansAll = totalSessions * 20;
+        int requiredBeansPerLevel = requiredBeansAll / 5; // 레벨 개수 5로 고정
+
+        // 그룹 커피 등록
+        CoffeeType ctRef = coffeeTypeRepository.getReferenceById(coffeeTypeId); // 로딩 없이 참조만
+        GroupCoffee gc = new GroupCoffee(group, ctRef, requiredBeansAll, requiredBeansPerLevel, 0, 1);
+        groupCoffeeRepository.save(gc);
     }
 }
