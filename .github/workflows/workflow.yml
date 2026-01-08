@@ -48,7 +48,9 @@ jobs:
       - name: Create Private Key and Public Key
         run: |
           sudo openssl genpkey -algorithm RSA -out /private_key.pem -pkeyopt rsa_keygen_bits:2048
+          sudo chmod 600 /private_key.pem
           sudo openssl rsa -in /private_key.pem -pubout -out /public_key.pem
+          sudo chmod 644 /public_key.pem
 
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
