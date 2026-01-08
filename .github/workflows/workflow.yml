@@ -49,9 +49,9 @@ jobs:
         run: |
           mkdir -p ./keys
           openssl genpkey -algorithm RSA -out ./keys/private_key.pem -pkeyopt rsa_keygen_bits:2048
-          chmod 600 ./private_key.pem
+          chmod 600 ./keys/private_key.pem
           openssl rsa -in /private_key.pem -pubout -out ./keys/public_key.pem
-          chmod 644 /.public_key.pem
+          chmod 644 ./keys/public_key.pem
 
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
