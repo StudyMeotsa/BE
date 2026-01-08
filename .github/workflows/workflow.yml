@@ -21,7 +21,7 @@ jobs:
       actions: read
       checks: write
 
-    # 테스트를 위한 로컬 MySQL 서버, Redis 서버 세팅
+    # 테스트를 위한 로컬 MySQL 서버 세팅
     services:
       mysql:
         image: mysql:8.0.43
@@ -33,10 +33,12 @@ jobs:
         ports:
           - 3306:3306
 
-      redis:
-        image: redis:7
-
     steps:
+      # 테스트를 위한 로컬 Redis 서버 세팅
+      - uses: supercharge/redis-github-action@1.8.1
+        with:
+          redis-version: 7
+
       - uses: actions/checkout@v4
       - name: Set up JDK 21
         uses: actions/setup-java@v4
