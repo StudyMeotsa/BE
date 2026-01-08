@@ -11,7 +11,9 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +22,11 @@ import java.util.stream.Collectors;
 public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final ChecklistRepository checklistRepository;
+    private final S3Service s3Service;
     private final EntityManager em;
 
     @Transactional
-    public Long createSubmission(Long checklistId, SubmissionCreateDto dto) {
+    public Long createSubmission(Long checklistId, SubmissionCreateDto dto, MultipartFile image) throws IOException { // MultipartFile 추가
         // 1. 체크리스트 조회
         Checklist checklist = checklistRepository.findById(checklistId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트가 없습니다. ID: " + checklistId));
@@ -34,10 +37,18 @@ public class SubmissionService {
             throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다. ID: " + dto.getMemberId());
         }
 
-        // 3. 빌더를 이용한 엔티티 생성
+        // 3. 이미지 파일이 있으면 S3에 업로드
+        String imageUrl = null;
+        if (image != null && !image.isEmpty()) {
+            // S3Service에 정의한 메서드명 'uploadFile'로 호출하거나, 
+            // S3Service의 메서드명을 'upload'로 바꾸어 사용하세요.
+            imageUrl = s3Service.uploadFile(image); 
+        }
+
+        // 4. 빌더를 이용한 엔티티 생성
         Submission submission = Submission.builder()
                 .content(dto.getContent())
-                .imagePath(dto.getImagePath())
+                .imagePath(imageUrl)
                 .checklist(checklist)
                 .submitter(submitter)
                 .build();
@@ -47,7 +58,6 @@ public class SubmissionService {
 
     @Transactional(readOnly = true)
     public List<SubmissionResponseDto> getSubmissionsByChecklist(Long checklistId) {
-        // 엔티티 리스트를 DTO 리스트로 변환하여 반환 (순환 참조 방지)
         return submissionRepository.findByChecklistId(checklistId).stream()
                 .map(SubmissionResponseDto::from)
                 .collect(Collectors.toList());
