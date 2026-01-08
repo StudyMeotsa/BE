@@ -47,6 +47,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 	reports {
 		junitXml.required.set(true)
+		junitXml.outputLocation = layout.buildDirectory.dir("test-junit-xml")
 		html.required.set(true)
 	}
 }

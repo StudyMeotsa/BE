@@ -62,7 +62,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: test-results
-          path: '**/build/test-results/*.xml'
+          path: '**/build/test-results/test-junit-xml/*.xml'
           reporter: java-junit
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
