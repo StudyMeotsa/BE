@@ -1,7 +1,7 @@
-package com.example.growingstudy.auth.service;
+package com.example.growingstudy.coffee.service;
 
-import com.example.growingstudy.auth.dto.MyCoffeeResponseDto;
-import com.example.growingstudy.auth.repository.MyCoffeesRepository;
+import com.example.growingstudy.coffee.dto.MyCoffeeResponseDto;
+import com.example.growingstudy.coffee.repository.MyCoffeesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

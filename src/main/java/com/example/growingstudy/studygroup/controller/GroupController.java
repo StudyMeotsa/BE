@@ -58,13 +58,12 @@ public class GroupController {
      * @return 그룹 리스트
      */
     @GetMapping
-    public ResponseEntity<List<GroupListInfoResponse>> getStudyRoomList(
+    public List<GroupListInfoResponse> getStudyRoomList(
             @AuthenticationPrincipal Jwt auth) {
 
         Long accountId = Long.parseLong(auth.getSubject());
 
-        return ResponseEntity
-                .ok(groupService.getGroupList(accountId));
+        return groupService.getGroupList(accountId);
     }
 
     /**
@@ -91,11 +90,10 @@ public class GroupController {
      * @return 그룹 정보
      */
     @GetMapping("/{groupId}")
-    public ResponseEntity<GroupInfoResponse> getStudyRoom(
+    public GroupInfoResponse getStudyRoom(
             @PathVariable Long groupId) {
 
-        return ResponseEntity
-                .ok(groupService.getGroupInfo(groupId));
+        return groupService.getGroupInfo(groupId);
     }
 
     /**

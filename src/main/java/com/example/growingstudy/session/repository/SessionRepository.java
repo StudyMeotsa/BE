@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
-    List<Session> findByGroupId(Long groupId);
+    Optional<Session> findByIdAndGroup_Id(Long sessionId, Long groupId);
 }

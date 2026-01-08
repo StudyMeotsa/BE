@@ -40,7 +40,9 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
-        //세션 생성
+        // Todo: 그룹 커피 생성 로직 필요
+
+        // 세션 생성
         LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
 
         sessionRepository.save(Session.createFirst(startDay, endDay, group));

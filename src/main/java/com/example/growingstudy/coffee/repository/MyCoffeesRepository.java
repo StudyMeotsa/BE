@@ -1,6 +1,6 @@
-package com.example.growingstudy.auth.repository;
+package com.example.growingstudy.coffee.repository;
 
-import com.example.growingstudy.auth.dto.MyCoffeeResponseDto;
+import com.example.growingstudy.coffee.dto.MyCoffeeResponseDto;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

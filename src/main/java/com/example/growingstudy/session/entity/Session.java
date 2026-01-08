@@ -1,5 +1,7 @@
 package com.example.growingstudy.session.entity;
 
+import com.example.growingstudy.session.dto.SessionInfoRequest;
+import com.example.growingstudy.session.dto.SessionInfoResponse;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "session")
+@Table(name = "session", uniqueConstraints = @UniqueConstraint(columnNames={"group_id","session_order"}))
 public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,19 @@ public class Session {
         this.group = group;
     }
 
+    public static Session of(Integer sessionOrder, String title, LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
+        return new Session(sessionOrder, title, startTime, endTime, group);
+    }
+
     public static Session createFirst(LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
         return new Session(1, null , startTime, endTime, group);
     }
+//
+//    public void update(SessionInfoRequest request, StudyGroup group) {
+//                this.sessionOrder = request.sessionOrder();
+//                this.title = request.title();
+//                this.startTime = request.startTime();
+//                this.endTime = request.endTime();
+//                this.group = group;
+//    }
 }
