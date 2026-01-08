@@ -18,7 +18,7 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final GroupRepository groupRepository;
-    private final GroupMemberRepository groupMemberRepository;  // 멤버 검증용
+    private final GroupMemberRepository groupMemberRepository;
 
     public SessionInfoResponse getSessionInfo(Long accountId, Long groupId, Long sessionId) {
 

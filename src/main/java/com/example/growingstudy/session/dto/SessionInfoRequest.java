@@ -2,11 +2,11 @@ package com.example.growingstudy.session.dto;
 
 import com.example.growingstudy.session.entity.Session;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record SessionInfoRequest(
         Integer sessionOrder,
         String title,
-        LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDate startTime,
+        LocalDate endTime
 ){}

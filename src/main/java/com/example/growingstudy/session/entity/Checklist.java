@@ -24,9 +24,9 @@ public class Checklist {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     private Session session; // session_id BIGINT (FK)
-
-    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
-    private List<Submission> submissions = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
+//    private List<Submission> submissions = new ArrayList<>();
 
     @Builder
     private Checklist(String content, Session session) {
