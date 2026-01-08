@@ -60,7 +60,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Test with Gradle Wrapper
-        run: ./gradlew test
+        run: ./gradlew test --scan
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2.5.0
