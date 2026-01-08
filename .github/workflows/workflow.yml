@@ -47,10 +47,11 @@ jobs:
       # 테스트를 위해 개인 키 및 공개 키 생성 (테스트 전용, 해당 워크플로우에서만 사용되는 일회성)
       - name: Create Private Key and Public Key
         run: |
-          sudo openssl genpkey -algorithm RSA -out /private_key.pem -pkeyopt rsa_keygen_bits:2048
-          sudo chmod 600 /private_key.pem
-          sudo openssl rsa -in /private_key.pem -pubout -out /public_key.pem
-          sudo chmod 644 /public_key.pem
+          mkdir -p ./keys
+          openssl genpkey -algorithm RSA -out ./keys/private_key.pem -pkeyopt rsa_keygen_bits:2048
+          chmod 600 ./private_key.pem
+          openssl rsa -in /private_key.pem -pubout -out ./keys/public_key.pem
+          chmod 644 /.public_key.pem
 
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
