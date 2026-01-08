@@ -1,5 +1,6 @@
 package com.example.growingstudy.session.entity;
 
+import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,7 +34,7 @@ public class Submission {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submitter_id", nullable = false)
-    private GroupMember submitter; // submitter_id BIGINT (FK)
+    private Account submitter; // submitter_id BIGINT (FK)
 
     @PrePersist
     public void prePersist() {
@@ -41,7 +42,7 @@ public class Submission {
     }
 
     @Builder
-    public Submission(String content, String imagePath, Checklist checklist, GroupMember submitter) {
+    public Submission(String content, String imagePath, Checklist checklist, Account submitter) {
         this.content = content;
         this.imagePath = imagePath;
         this.checklist = checklist;

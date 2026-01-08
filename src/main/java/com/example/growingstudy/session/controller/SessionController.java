@@ -4,6 +4,7 @@ import com.example.growingstudy.session.dto.SessionInfoRequest;
 import com.example.growingstudy.session.dto.SessionInfoResponse;
 import com.example.growingstudy.session.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -41,7 +42,8 @@ public class SessionController {
         sessionService.createSession(accountId, groupId, request);
 
         return ResponseEntity
-                .ok(Map.of("success", true));
+                .status(HttpStatus.CREATED)
+                .body(Map.of("success", true));
     }
 
 //    업데이트 만들긴 했는데 안쓸거 같아서 주석처리

@@ -4,6 +4,7 @@ import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.session.repository.SessionRepository;
+import com.example.growingstudy.studygroup.dto.CreateGroupRequest;
 import com.example.growingstudy.studygroup.dto.GroupInfoResponse;
 import com.example.growingstudy.studygroup.dto.GroupListInfoResponse;
 import com.example.growingstudy.studygroup.entity.GroupMember;
@@ -25,27 +26,36 @@ public class GroupService {
     private final AccountRepository accountRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
-    private final SessionRepository sessionRepository;
 
     //그룹 생성
-    public String createGroup(Long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
-
-        if (groupRepository.existsByName(name)) {
-            throw new IllegalStateException("이미 존재하는 그룹 이름입니다.");
-        }
-        StudyGroup group= StudyGroup.create(name, startDay, weekSession, totalWeek, maxMember, studyTimeAim, description);
-        groupRepository.save(group);
+    public String createGroup(Long accountId, CreateGroupRequest request){
 
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
+
+        if (groupRepository.existsByName(request.name())) {
+            throw new IllegalStateException("이미 존재하는 그룹 이름입니다.");
+        }
+
+        StudyGroup group= StudyGroup.create(
+                request.name(),
+                request.startDay(),
+                request.weekSession(),
+                request.totalWeek(),
+                request.studyTimeAim(),
+                request.maxMember(),
+                request.description());
+
+        groupRepository.save(group);
+
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
         // Todo: 그룹 커피 생성 로직 필요
 
-        // 세션 생성
-        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
-
-        sessionRepository.save(Session.createFirst(startDay, endDay, group));
+        // 세션 자동 생성 -> 그룹 생성 후 세션 추가로 대체
+//        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
+//
+//        sessionRepository.save(Session.createFirst(startDay, endDay, group));
 
         return group.getCode();
     }
@@ -68,6 +78,7 @@ public class GroupService {
                 ).stream()
                 .map(v -> new GroupListInfoResponse(
                         v.getGroupId(),
+                        v.getSessionId(),
                         v.getName(),
                         v.getStartDay(),
                         v.getEndDay(),
@@ -76,7 +87,7 @@ public class GroupService {
                         v.getStudyTimeAim(),
                         v.getCurrentMember(),
                         v.getMaxMember(),
-                        v.getSessionId(),
+                        v.getSessionOrder(),
                         v.getCoffee(),
                         v.getCoffeeLevel()
                 ))
@@ -84,7 +95,11 @@ public class GroupService {
     }
 
     // 그룹 정보
-    public GroupInfoResponse getGroupInfo(Long groupId) {
+    public GroupInfoResponse getGroupInfo(Long accountId, Long groupId) {
+
+        if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
+            throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
+        }
 
         StudyGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));

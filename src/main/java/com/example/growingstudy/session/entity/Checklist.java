@@ -15,14 +15,11 @@ public class Checklist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // id BIGINT (PK)
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String content; // content VARCHAR(255)
 
-    @Column(columnDefinition = "TEXT")
-    private String description; // description TEXT
-
     @Column(nullable = false)
-    private boolean completed = false; // completed BOOLEAN
+    private boolean completed; // completed BOOLEAN
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
@@ -32,10 +29,13 @@ public class Checklist {
     private List<Submission> submissions = new ArrayList<>();
 
     @Builder
-    public Checklist(String content, String description, Session session) {
+    private Checklist(String content, Session session) {
         this.content = content;
-        this.description = description;
         this.session = session;
         this.completed = false; // 기본값
+    }
+
+    public static Checklist create(String content, Session session) {
+        return new Checklist(content, session);
     }
 }

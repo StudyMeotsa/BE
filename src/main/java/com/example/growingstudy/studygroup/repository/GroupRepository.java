@@ -17,6 +17,13 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
     @Query(value = """
         SELECT
             g.id                               AS groupId,
+            (SELECT s.id
+            FROM session s
+            WHERE s.group_id = g.id
+            AND s.start_time <= :now
+            AND s.end_time   >= :now
+            ORDER BY s.start_time DESC
+            LIMIT 1)  AS sessionId,
             g.name                             AS name,
             g.start_day                        AS startDay,
             DATE_ADD(g.start_day, INTERVAL g.total_week WEEK) AS endDay,
@@ -27,12 +34,12 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
             g.max_member                       AS maxMember,
 
             (SELECT s.session_order
-               FROM session s
-              WHERE s.group_id = g.id
-                AND s.start_time <= :now
-                AND s.end_time   >= :now
-                ORDER BY s.start_time DESC
-                LIMIT 1)  AS sessionId,
+            FROM session s
+            WHERE s.group_id = g.id
+            AND s.start_time <= :now
+            AND s.end_time   >= :now
+            ORDER BY s.start_time DESC
+            LIMIT 1)  AS sessionOrder,
 
             ct.name                            AS coffee,
             gc.level                           AS coffeeLevel

@@ -38,9 +38,12 @@ public class GroupNoticeController {
 
     @GetMapping
     public ResponseEntity<CurrentNoticeResponse> getNotice(
+            @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId) {
 
+        Long accountId = Long.parseLong(auth.getSubject());
+
         return ResponseEntity
-                .ok(groupNoticeService.getCurrentNotice(groupId));
+                .ok(groupNoticeService.getCurrentNotice(accountId, groupId));
     }
 }

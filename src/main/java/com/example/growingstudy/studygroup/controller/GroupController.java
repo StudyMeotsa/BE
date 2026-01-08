@@ -34,17 +34,7 @@ public class GroupController {
     ) {
         Long accountId = Long.valueOf(auth.getSubject());
 
-        String code =
-                groupService.createGroup(
-                        accountId,
-                        request.name(),
-                        request.startDay(),
-                        request.weekSession(),
-                        request.totalWeek(),
-                        request.studyTimeAim(),
-                        request.maxMember(),
-                        request.description()
-                );
+        String code = groupService.createGroup(accountId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -91,9 +81,12 @@ public class GroupController {
      */
     @GetMapping("/{groupId}")
     public GroupInfoResponse getStudyRoom(
+            @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId) {
 
-        return groupService.getGroupInfo(groupId);
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        return groupService.getGroupInfo(accountId, groupId);
     }
 
     /**
@@ -113,6 +106,7 @@ public class GroupController {
         groupService.joinGroup(accountId, request.code());
 
         return ResponseEntity
-                .ok(Map.of("success", true));
+                .status(HttpStatus.CREATED)
+                .body(Map.of("success", true));
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public interface GroupListView {
     Long getGroupId();
+    Long getSessionId();
     String getName();
     LocalDate getStartDay();
     LocalDate getEndDay();
@@ -12,7 +13,7 @@ public interface GroupListView {
     Integer getStudyTimeAim();
     Long getCurrentMember();
     Integer getMaxMember();
-    Long getSessionId();
+    Integer getSessionOrder();
     String getCoffee();
     Integer getCoffeeLevel();
 }

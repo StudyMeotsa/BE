@@ -5,6 +5,7 @@ import com.example.growingstudy.session.dto.SessionInfoRequest;
 import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
+import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import com.example.growingstudy.studygroup.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,13 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;  // 멤버 검증용
 
     public SessionInfoResponse getSessionInfo(Long accountId, Long groupId, Long sessionId) {
 
-        // Todo: 멤버 검증 로직 추가(accountId, groupId)
+        if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
+            throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
+        }
 
         Session session = sessionRepository.findByIdAndGroup_Id(sessionId, groupId)
                 .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
@@ -30,7 +34,9 @@ public class SessionService {
 
     public void createSession(Long accountId, Long groupId, SessionInfoRequest request) {
 
-        // Todo: 멤버 검증 로직 추가(accountId, groupId)
+        if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
+            throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
+        }
 
         StudyGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹이 존재하지 않습니다."));
@@ -43,6 +49,8 @@ public class SessionService {
                 group);
 
         sessionRepository.save(session);
+
+        // Todo: 생성 시 첫번째 checklist로 time 넣어야 함
     }
 
 //    업데이트긴 한데 안쓸거같아서 주석처리

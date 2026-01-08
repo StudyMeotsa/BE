@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public record GroupListInfoResponse(
         Long groupId,
+        Long sessionId,
         String name,
         LocalDate startDay,
         LocalDate endDay,
@@ -12,7 +13,7 @@ public record GroupListInfoResponse(
         Integer studyTimeAim,
         Long currentMember,
         Integer maxMember,
-        Long sessionId,
+        Integer sessionOrder,
         String coffee,
         Integer coffeeLevel
 ){}

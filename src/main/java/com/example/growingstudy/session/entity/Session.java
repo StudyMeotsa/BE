@@ -44,9 +44,9 @@ public class Session {
         return new Session(sessionOrder, title, startTime, endTime, group);
     }
 
-    public static Session createFirst(LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
-        return new Session(1, null , startTime, endTime, group);
-    }
+//    public static Session createFirst(LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
+//        return new Session(1, null , startTime, endTime, group);
+//    }
 //
 //    public void update(SessionInfoRequest request, StudyGroup group) {
 //                this.sessionOrder = request.sessionOrder();
