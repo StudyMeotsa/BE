@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class GroupService {
     private final SessionRepository sessionRepository;
 
     //그룹 생성
-    public String createGroup(Long accountId, String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
+    public String createGroup(Long accountId, String name, LocalDate startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description){
 
         if (groupRepository.existsByName(name)) {
             throw new IllegalStateException("이미 존재하는 그룹 이름입니다.");
@@ -39,11 +40,6 @@ public class GroupService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
-
-        //세션 생성
-        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
-
-        sessionRepository.save(Session.createFirst(startDay, endDay, group));
 
         return group.getCode();
     }
@@ -62,7 +58,7 @@ public class GroupService {
 
         return groupRepository.findGroupsByAccountId(
                         accountId,
-                        LocalDateTime.now()
+                        LocalDate.now()
                 ).stream()
                 .map(v -> new GroupListInfoResponse(
                         v.getGroupId(),

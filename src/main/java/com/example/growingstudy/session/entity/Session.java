@@ -37,8 +37,4 @@ public class Session {
         this.endTime = endTime;
         this.group = group;
     }
-
-    public static Session createFirst(LocalDateTime startTime, LocalDateTime endTime, StudyGroup group) {
-        return new Session(1, null , startTime, endTime, group);
-    }
 }
