@@ -39,6 +39,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      # 테스트를 위해 개인 키 및 공개 키 생성 (테스트 전용, 해당 워크플로우에서만 사용되는 일회성)
+      - name: Create Private Key and Public Key
+        run: |
+          sudo openssl genpkey -algorithm RSA -out /private_key.pem -pkeyopt rsa_keygen_bits:2048
+          sudo openssl rsa -in /private_key.pem -pubout -out /public_key.pem
+
+
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
