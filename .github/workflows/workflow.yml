@@ -21,7 +21,7 @@ jobs:
       actions: read
       checks: write
 
-    # 테스트를 위한 로컬 MySQL 서버 세팅
+    # 테스트를 위한 로컬 MySQL 서버, Redis 서버 세팅
     services:
       mysql:
         image: mysql:8.0.43
@@ -32,6 +32,9 @@ jobs:
           MYSQL_PASSWORD: testpassword
         ports:
           - 3306:3306
+
+      redis:
+        image: redis:7
 
     steps:
       - uses: actions/checkout@v4
