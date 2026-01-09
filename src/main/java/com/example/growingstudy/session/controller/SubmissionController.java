@@ -46,7 +46,23 @@ public class SubmissionController {
 
         Long accountId = Long.parseLong(auth.getSubject());
 
-    return ResponseEntity
-            .ok(submissionService.getSubmissionOverview(accountId, groupId, sessionId, checklistId));
+        return ResponseEntity
+                .ok(submissionService.getSubmissionOverview(accountId, groupId, sessionId, checklistId));
+    }
+
+    @PatchMapping("/submissions/{submissionId}")
+    public ResponseEntity<Map<String, Boolean>> verifySubmission(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable Long groupId,
+            @PathVariable Long sessionId,
+            @PathVariable Long checklistId,
+            @PathVariable Long submissionId) {
+
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        submissionService.verifySubmission(accountId, groupId, sessionId, checklistId, submissionId);
+
+        return ResponseEntity
+                .ok(Map.of("success", true));
     }
 }

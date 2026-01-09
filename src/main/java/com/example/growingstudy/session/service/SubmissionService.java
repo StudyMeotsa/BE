@@ -12,6 +12,7 @@ import com.example.growingstudy.session.entity.Submission;
 import com.example.growingstudy.session.repository.ChecklistRepository;
 import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.session.repository.SubmissionRepository;
+import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -75,4 +76,26 @@ public class SubmissionService {
     }
 
 //    public List<SubmissionViewResponse> get
+
+    public void verifySubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, Long submissionId) {
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
+
+        GroupMember groupMember = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
+                .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));
+
+        if (!groupMember.getRole().equals("ADMIN")) {
+            throw new IllegalArgumentException("해당 그룹의 방장이 아닙니다."); // 추후에 예외 타입 수정
+        }
+
+        Checklist checklist = checklistRepository.findById(checklistId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다."));
+
+        Submission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 제출 데이터를 찾을 수 없습니다."));
+
+        submission.setIsVerifiedTrue();
+        submissionRepository.save(submission);
+    }
 }
