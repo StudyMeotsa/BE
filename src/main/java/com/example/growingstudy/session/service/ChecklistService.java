@@ -85,6 +85,7 @@ public class ChecklistService {
                         DoneMemberCountView::getChecklistId,
                         DoneMemberCountView::getDoneMember
                 ));
+
         // 4) mySubmissions
         Set<Long> mySubmissions = new HashSet<>(
                 submissionRepository.findMySubmissions(checklistIds, accountId)

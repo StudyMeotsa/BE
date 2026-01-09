@@ -22,6 +22,7 @@ public class Session {
     @Column(name = "title", length = 150)
     private String title; // title VARCHAR(150)
 
+    //필요하면 startDay로 이름 변경
     @Column(name = "start_time")
     private LocalDate startTime; // start_time DATETIME
 
