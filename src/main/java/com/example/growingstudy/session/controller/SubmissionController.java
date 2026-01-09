@@ -42,4 +42,20 @@ public class SubmissionController {
 //    List<SubmissionResponseDto> response = submissionService.getSubmissionsByChecklist(checklistId);
 //    return ResponseEntity.ok(response);
 //    }
+
+    @PatchMapping("/submissions/{submissionId}")
+    public ResponseEntity<Map<String, Boolean>> verifySubmission(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable Long groupId,
+            @PathVariable Long sessionId,
+            @PathVariable Long checklistId,
+            @PathVariable Long submissionId) {
+
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        submissionService.verifySubmission(accountId, groupId, sessionId, checklistId, submissionId);
+
+        return ResponseEntity
+                .ok(Map.of("success", true));
+    }
 }
