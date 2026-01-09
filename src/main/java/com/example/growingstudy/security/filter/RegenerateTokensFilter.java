@@ -35,7 +35,11 @@ public class RegenerateTokensFilter extends OncePerRequestFilter {
         String requestBody = ServletRequestConverter.convertRequestToString(request);
         RefreshOrLogoutRequestDto dto = ServletRequestConverter.mapJsonToDto(requestBody, RefreshOrLogoutRequestDto.class);
 
-        JwtResponseDto jwtResponseDto = jwtService.refreshTokens(dto.getRefreshToken());
-        JsonResponseWriter.writeResponseWithDto(response, jwtResponseDto);
+        try {
+            JwtResponseDto jwtResponseDto = jwtService.refreshTokens(dto.getRefreshToken());
+            JsonResponseWriter.writeResponseWithDto(response, jwtResponseDto);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 }

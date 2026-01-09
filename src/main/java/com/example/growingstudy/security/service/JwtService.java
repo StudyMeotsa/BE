@@ -83,7 +83,7 @@ public class JwtService {
 
         if (!jwt.getClaim("type").equals("refresh")) {
             logger.debug("리프레쉬 토큰이 아님");
-            throw new RuntimeException("Not a refresh token");
+            throw new IllegalArgumentException("리프레쉬 토큰이 아님");
         }
 
         String jid = jwt.getId();
