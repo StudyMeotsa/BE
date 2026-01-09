@@ -1,10 +1,10 @@
 package com.example.growingstudy.studygroup.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record CreateGroupRequest(
         String name,
-        LocalDateTime startDay,
+        LocalDate startDay,
         Integer weekSession,
         Integer totalWeek,
         Integer maxMember,

@@ -45,6 +45,7 @@ public class StudyTimeService {
 
     // StudyTimeLog 조회
     public List<TimeLogsResponse> getStudyTimeLogs(Long accountId, Long groupId, Long sessionId) {
+
         GroupMember member = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));
 

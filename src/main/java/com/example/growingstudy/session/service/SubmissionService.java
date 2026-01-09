@@ -1,65 +1,56 @@
 package com.example.growingstudy.session.service;
 
-import com.example.growingstudy.session.dto.SubmissionCreateDto;
-import com.example.growingstudy.session.dto.SubmissionResponseDto;
+import com.example.growingstudy.auth.entity.Account;
+import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.session.entity.Submission;
 import com.example.growingstudy.session.repository.ChecklistRepository;
 import com.example.growingstudy.session.repository.SubmissionRepository;
-import com.example.growingstudy.studygroup.entity.GroupMember;
+import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-@RequiredArgsConstructor 
+@Transactional
+@RequiredArgsConstructor
 public class SubmissionService {
+
+    private final AccountRepository accountRepository;
     private final SubmissionRepository submissionRepository;
     private final ChecklistRepository checklistRepository;
-    private final S3Service s3Service;
+    private final GroupMemberRepository groupMemberRepository;
     private final EntityManager em;
 
-    @Transactional
-    public Long createSubmission(Long checklistId, SubmissionCreateDto dto, MultipartFile image) throws IOException { // MultipartFile 추가
-        // 1. 체크리스트 조회
+    public void createSubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, String content, MultipartFile file) {
+
+        if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
+            throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
+        }
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
+
         Checklist checklist = checklistRepository.findById(checklistId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트가 없습니다. ID: " + checklistId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다."));
 
-        // 2. 제출자(GroupMember) 조회
-        GroupMember submitter = em.find(GroupMember.class, dto.getMemberId());
-        if (submitter == null) {
-            throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다. ID: " + dto.getMemberId());
-        }
+        String imagePath = null;
+        // Todo: 변환 로직 추가
 
-        // 3. 이미지 파일이 있으면 S3에 업로드
-        String imageUrl = null;
-        if (image != null && !image.isEmpty()) {
-            // S3Service에 정의한 메서드명 'uploadFile'로 호출하거나, 
-            // S3Service의 메서드명을 'upload'로 바꾸어 사용하세요.
-            imageUrl = s3Service.uploadFile(image); 
-        }
+        Submission submission = Submission.create(content, imagePath, checklist, account);
 
-        // 4. 빌더를 이용한 엔티티 생성
-        Submission submission = Submission.builder()
-                .content(dto.getContent())
-                .imagePath(imageUrl)
-                .checklist(checklist)
-                .submitter(submitter)
-                .build();
-
-        return submissionRepository.save(submission).getId();
+        submissionRepository.save(submission);
     }
 
-    @Transactional(readOnly = true)
-    public List<SubmissionResponseDto> getSubmissionsByChecklist(Long checklistId) {
-        return submissionRepository.findByChecklistId(checklistId).stream()
-                .map(SubmissionResponseDto::from)
-                .collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    public List<SubmissionResponseDto> getSubmissionsByChecklist(Long checklistId) {
+//        // 엔티티 리스트를 DTO 리스트로 변환하여 반환 (순환 참조 방지)
+//        return submissionRepository.findByChecklistId(checklistId).stream()
+//                .map(SubmissionResponseDto::from)
+//                .collect(Collectors.toList());
+//    }
+
+//    public List<SubmissionViewResponse> get
 }

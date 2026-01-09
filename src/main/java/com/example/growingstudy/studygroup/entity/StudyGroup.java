@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.growingstudy.auth.entity.Account;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class StudyGroup {
     private String name;
 
     @Column(name = "start_day", nullable = false)
-    private LocalDateTime startDay;
+    private LocalDate startDay;
 
     @Column(name = "week_session", nullable = false)
     private Integer weekSession;
@@ -43,7 +44,7 @@ public class StudyGroup {
     @Column(nullable = false, length = 8)
     private String code;
 
-    private StudyGroup(String name, LocalDateTime startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description) {
+    private StudyGroup(String name, LocalDate startDay, Integer weekSession, Integer totalWeek, Integer maxMember, Integer studyTimeAim, String description) {
         this.name = name;
         this.weekSession = weekSession;
         this.startDay = startDay;
@@ -56,7 +57,7 @@ public class StudyGroup {
 
     public static StudyGroup create(
             String name,
-            LocalDateTime startDay,
+            LocalDate startDay,
             Integer weekSession,
             Integer totalWeek,
             Integer maxMember,

@@ -1,7 +1,9 @@
 package com.example.growingstudy.session.repository;
 
+import com.example.growingstudy.session.dto.DoneMemberCountView;
 import com.example.growingstudy.session.entity.Submission;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -12,4 +14,21 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     boolean existsByChecklistId(Long checklistId);
     // 특정 체크리스트의 모든 제출물 조회
     List<Submission> findByChecklistId(Long checklistId);
+
+    @Query(value = """
+    SELECT s.checklist_id AS checklistId,
+           COUNT(*) AS doneMember
+    FROM submission s
+    WHERE s.checklist_id IN (:checklistIds)
+    GROUP BY s.checklist_id
+    """, nativeQuery = true)
+    List<DoneMemberCountView> doneMemberCountByChecklistIds(List<Long> checklistIds);
+
+    @Query(value = """
+    SELECT DISTINCT s.checklist_id
+    FROM submission s
+    WHERE s.checklist_id IN (:checklistIds)
+      AND s.submitter_id = :accountId
+    """, nativeQuery = true)
+    List<Long> findMySubmissions(List<Long> checklistIds, Long accountId);
 }

@@ -1,4 +1,4 @@
-package com.example.growingstudy.auth.dto;
+package com.example.growingstudy.coffee.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

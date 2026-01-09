@@ -29,7 +29,11 @@ public class GroupNoticeService {
     }
 
     // 최근 공지글 조회
-    public CurrentNoticeResponse getCurrentNotice (Long groupId) {
+    public CurrentNoticeResponse getCurrentNotice (Long accountId, Long groupId) {
+
+        if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
+            throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
+        }
 
         GroupNotice groupNotice = groupNoticeRepository.findTopByMember_Group_IdOrderByCreatedAtDesc(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 그룹의 공지글이 없습니다."));
