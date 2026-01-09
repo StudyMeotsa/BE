@@ -3,10 +3,8 @@ package com.example.growingstudy.studygroup.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.example.growingstudy.auth.entity.Account;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity

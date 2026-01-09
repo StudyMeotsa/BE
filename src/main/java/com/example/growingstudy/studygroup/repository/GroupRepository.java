@@ -41,8 +41,7 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
             ORDER BY s.start_time DESC
             LIMIT 1)  AS sessionOrder,
 
-            ct.name                            AS coffee,
-            gc.level                           AS coffeeLevel
+            ct.image_path                            AS coffee_image_path
         FROM group_member gm
         JOIN study_group g
           ON g.id = gm.group_id
@@ -53,7 +52,6 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
           ON ct.id = gc.type_id
 
         WHERE gm.account_id = :accountId
-          AND g.start_day <= :now
           AND DATE_ADD(g.start_day, INTERVAL g.total_week WEEK) >= :now
 
         ORDER BY g.start_day DESC
