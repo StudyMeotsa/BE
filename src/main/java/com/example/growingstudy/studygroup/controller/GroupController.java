@@ -34,17 +34,7 @@ public class GroupController {
     ) {
         Long accountId = Long.valueOf(auth.getSubject());
 
-        String code =
-                groupService.createGroup(
-                        accountId,
-                        request.name(),
-                        request.startDay(),
-                        request.weekSession(),
-                        request.totalWeek(),
-                        request.studyTimeAim(),
-                        request.maxMember(),
-                        request.description()
-                );
+        String code = groupService.createGroup(accountId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -58,13 +48,12 @@ public class GroupController {
      * @return 그룹 리스트
      */
     @GetMapping
-    public ResponseEntity<List<GroupListInfoResponse>> getStudyRoomList(
+    public List<GroupListInfoResponse> getStudyRoomList(
             @AuthenticationPrincipal Jwt auth) {
 
         Long accountId = Long.parseLong(auth.getSubject());
 
-        return ResponseEntity
-                .ok(groupService.getGroupList(accountId));
+        return groupService.getGroupList(accountId);
     }
 
     /**
@@ -91,11 +80,13 @@ public class GroupController {
      * @return 그룹 정보
      */
     @GetMapping("/{groupId}")
-    public ResponseEntity<GroupInfoResponse> getStudyRoom(
+    public GroupInfoResponse getStudyRoom(
+            @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId) {
 
-        return ResponseEntity
-                .ok(groupService.getGroupInfo(groupId));
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        return groupService.getGroupInfo(accountId, groupId);
     }
 
     /**
@@ -115,6 +106,7 @@ public class GroupController {
         groupService.joinGroup(accountId, request.code());
 
         return ResponseEntity
-                .ok(Map.of("success", true));
+                .status(HttpStatus.CREATED)
+                .body(Map.of("success", true));
     }
 }

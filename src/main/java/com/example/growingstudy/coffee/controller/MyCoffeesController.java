@@ -1,7 +1,7 @@
-package com.example.growingstudy.auth.controller;
+package com.example.growingstudy.coffee.controller;
 
-import com.example.growingstudy.auth.dto.MyCoffeeResponseDto;
-import com.example.growingstudy.auth.service.MyCoffeesService;
+import com.example.growingstudy.coffee.dto.MyCoffeeResponseDto;
+import com.example.growingstudy.coffee.service.MyCoffeesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

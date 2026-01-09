@@ -1,6 +1,5 @@
-package com.example.growingstudy.groupsub.entity;
+package com.example.growingstudy.coffee.entity;
 
-import com.example.growingstudy.coffee.entity.CoffeeType;
 import com.example.growingstudy.studygroup.entity.StudyGroup;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
