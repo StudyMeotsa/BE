@@ -16,7 +16,10 @@ public class Checklist {
     private Long id; // id BIGINT (PK)
 
     @Column(nullable = false)
-    private String content; // content VARCHAR(255)
+    private String title; // title VARCHAR(255)
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
     private boolean completed; // completed BOOLEAN
@@ -29,13 +32,14 @@ public class Checklist {
 //    private List<Submission> submissions = new ArrayList<>();
 
     @Builder
-    private Checklist(String content, Session session) {
-        this.content = content;
+    private Checklist(String title, String description, Session session) {
+        this.title = title;
+        this.description = description;
         this.session = session;
         this.completed = false; // 기본값
     }
 
-    public static Checklist create(String content, Session session) {
-        return new Checklist(content, session);
+    public static Checklist create(String content, String description, Session session) {
+        return new Checklist(content, description, session);
     }
 }

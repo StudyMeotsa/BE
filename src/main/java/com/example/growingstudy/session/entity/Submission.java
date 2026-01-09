@@ -16,7 +16,7 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // id BIGINT (PK)
 
-    @Column(length = 2000)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // content VARCHAR(2000)
 
     @Column(name = "image_path", length = 255)
@@ -41,12 +41,22 @@ public class Submission {
         this.submittedAt = LocalDateTime.now();
     }
 
-    @Builder
-    public Submission(String content, String imagePath, Checklist checklist, Account submitter) {
+    private Submission(String content, String imagePath, Checklist checklist, Account submitter) {
         this.content = content;
         this.imagePath = imagePath;
         this.checklist = checklist;
         this.submitter = submitter;
         this.isVerified = false; // 초기값
     }
+
+    public static synchronized Submission create(String content, String imagePath, Checklist checklist, Account submitter) {
+
+        if (content != null && !content.isBlank() && imagePath != null) {
+            throw new IllegalArgumentException("내용 또는 이미지는 반드시 하나 이상 필요합니다.");
+        }
+
+        return new Submission(content, imagePath, checklist, submitter);
+    }
+
+
 }

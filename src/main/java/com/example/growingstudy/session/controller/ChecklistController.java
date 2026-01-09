@@ -1,6 +1,6 @@
 package com.example.growingstudy.session.controller;
 
-import com.example.growingstudy.session.dto.ChecklistCreateRequest;
+import com.example.growingstudy.session.dto.ChecklistInfoDto;
 import com.example.growingstudy.session.dto.ChecklistOverviewResponse;
 import com.example.growingstudy.session.service.ChecklistService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class ChecklistController {
             @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId,
             @PathVariable Long sessionId,
-            @RequestBody ChecklistCreateRequest request) {
+            @RequestBody ChecklistInfoDto request) {
 
         Long accountId = Long.parseLong(auth.getSubject());
 

@@ -1,6 +1,5 @@
 package com.example.growingstudy.session.service;
 
-import com.example.growingstudy.coffee.dto.GroupCoffeeProgressDto;
 import com.example.growingstudy.session.dto.*;
 import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.session.entity.Session;
@@ -33,7 +32,7 @@ public class ChecklistService {
     /**
      * 체크리스트 생성
      */
-    public void createChecklist(Long accountId, Long groupId, Long sessionId, ChecklistCreateRequest request) {
+    public void createChecklist(Long accountId, Long groupId, Long sessionId, ChecklistInfoDto request) {
 
         if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
             throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
@@ -43,7 +42,8 @@ public class ChecklistService {
                 .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
 
         Checklist checklist = Checklist.create(
-                request.content(),
+                request.title(),
+                request.description(),
                 session
         );
 
@@ -95,7 +95,7 @@ public class ChecklistService {
                 .stream()
                 .map(ch -> new ChecklistStatusDto(
                         ch.getId(),
-                        ch.getContent(),
+                        ch.getTitle(),
                         doneMembers.getOrDefault(ch.getId(), 0),
                         maxMember,
                         mySubmissions.contains(ch.getId())

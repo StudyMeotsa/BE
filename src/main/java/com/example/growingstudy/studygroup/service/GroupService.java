@@ -6,8 +6,6 @@ import com.example.growingstudy.coffee.entity.CoffeeType;
 import com.example.growingstudy.coffee.entity.GroupCoffee;
 import com.example.growingstudy.coffee.repository.CoffeeTypeRepository;
 import com.example.growingstudy.coffee.repository.GroupCoffeeRepository;
-// import com.example.growingstudy.session.entity.Session;
-// import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.studygroup.dto.CreateGroupRequest;
 import com.example.growingstudy.studygroup.dto.GroupInfoResponse;
 import com.example.growingstudy.studygroup.dto.GroupListInfoResponse;
@@ -58,11 +56,6 @@ public class GroupService {
         groupMemberRepository.save(GroupMember.of("ADMIN", group, account));
 
         assignRandomCoffee(group);
-
-        // 세션 자동 생성 -> 그룹 생성 후 세션 추가로 대체
-//        LocalDateTime endDay = group.getStartDay().plusWeeks(group.getTotalWeek());
-//
-//        sessionRepository.save(Session.createFirst(startDay, endDay, group));
 
         return group.getCode();
     }
