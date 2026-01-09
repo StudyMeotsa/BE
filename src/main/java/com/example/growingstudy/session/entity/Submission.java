@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "submission")
+@Table(name = "submission", uniqueConstraints = @UniqueConstraint(columnNames={"checklist_id","submitter_id"}))
 public class Submission {
 
     @Id

@@ -32,7 +32,6 @@ public class SubmissionService {
     private final ChecklistRepository checklistRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final SessionRepository sessionRepository;
-    private final EntityManager em;
 
     public void createSubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, String content, MultipartFile file) {
 
@@ -74,8 +73,6 @@ public class SubmissionService {
                 new ChecklistInfoDto(checklist.getTitle(), checklist.getDescription()),
                 submissions);
     }
-
-//    public List<SubmissionViewResponse> get
 
     public void verifySubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, Long submissionId) {
 
