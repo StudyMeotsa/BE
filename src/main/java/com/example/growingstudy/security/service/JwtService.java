@@ -6,6 +6,7 @@ import com.example.growingstudy.security.dto.JwtResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,23 +80,28 @@ public class JwtService {
     public long consumeRefreshToken(String refreshToken) {
         logger.debug("리프레쉬 토큰 만료 처리 시작");
         logger.trace("토큰 문자열로 토큰 객체 생성");
-        Jwt jwt = decodeTokenString(refreshToken);
 
-        if (!jwt.getClaim("type").equals("refresh")) {
-            logger.debug("리프레쉬 토큰이 아님");
-            throw new IllegalArgumentException("리프레쉬 토큰이 아님");
+        try {
+            Jwt jwt = decodeTokenString(refreshToken);
+
+            if (!jwt.getClaim("type").equals("refresh")) {
+                logger.debug("리프레쉬 토큰이 아님");
+                throw new IllegalArgumentException("리프레쉬 토큰이 아님");
+            }
+
+            String jid = jwt.getId();
+
+            logger.trace("해당 리프레쉬 토큰의 유저 id 획득");
+            long userId = refreshTokenRepository.findUidByJid(jid).getUid();
+
+            logger.trace("해당 리프레쉬 토큰 ID를 DB에서 삭제");
+            refreshTokenRepository.deleteById(jid);
+            logger.debug("리프레쉬 토큰 만료 처리 성공");
+
+            return userId;
+        } catch (JwtValidationException e) {
+            throw new OAuth2AuthenticationException(e.getMessage());
         }
-
-        String jid = jwt.getId();
-
-        logger.trace("해당 리프레쉬 토큰의 유저 id 획득");
-        long userId = refreshTokenRepository.findUidByJid(jid).getUid();
-
-        logger.trace("해당 리프레쉬 토큰 ID를 DB에서 삭제");
-        refreshTokenRepository.deleteById(jid);
-        logger.debug("리프레쉬 토큰 만료 처리 성공");
-
-        return userId;
     }
 
     /**

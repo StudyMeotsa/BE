@@ -33,14 +33,16 @@ public class ExpireRefreshTokenOnLogoutHandler implements LogoutHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
-            writeUnmodifiableBadRequestStatusResponse(response);
+            writeUnmodifiableResponseStatusCode(response, HttpServletResponse.SC_BAD_REQUEST);
+        } catch (AuthenticationException e) {
+            writeUnmodifiableResponseStatusCode(response, HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
-    private void writeUnmodifiableBadRequestStatusResponse(HttpServletResponse response) {
+    private void writeUnmodifiableResponseStatusCode(HttpServletResponse response, int statusCode) {
         try {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.flushBuffer();
+            response.setStatus(statusCode);
+            response.flushBuffer(); // 응답 코드를 수정하지 못하게 함 (commit)
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
