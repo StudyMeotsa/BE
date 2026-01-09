@@ -3,7 +3,6 @@ package com.example.growingstudy.session.service;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.session.entity.Checklist;
-import com.example.growingstudy.session.entity.Session;
 import com.example.growingstudy.session.entity.Submission;
 import com.example.growingstudy.session.repository.ChecklistRepository;
 import com.example.growingstudy.session.repository.SubmissionRepository;
