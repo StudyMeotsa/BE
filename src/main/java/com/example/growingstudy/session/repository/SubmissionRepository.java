@@ -2,7 +2,6 @@ package com.example.growingstudy.session.repository;
 
 import com.example.growingstudy.session.dto.DoneMemberCountView;
 import com.example.growingstudy.session.dto.SubmissionInfoDto;
-import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.session.entity.Submission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -47,5 +46,5 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     JOIN account a ON a.id = s.submitter_id
     WHERE s.checklist_id = :checklistId
 """, nativeQuery = true)
-    List<SubmissionInfoDto> findSubmissionsDetailByChecklist_Id(Long checklistId);
+    List<SubmissionInfoDto> findMyVerifiedSubmissionsIdByChecklist_Id(Long checklistId);
 }

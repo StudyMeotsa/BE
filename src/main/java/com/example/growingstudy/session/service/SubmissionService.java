@@ -14,7 +14,6 @@ import com.example.growingstudy.session.repository.SessionRepository;
 import com.example.growingstudy.session.repository.SubmissionRepository;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,9 +63,9 @@ public class SubmissionService {
                 .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
 
         Checklist checklist = checklistRepository.findById(checklistId)
-                .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("체크리스트가 존재하지 않습니다."));
 
-        List<SubmissionInfoDto> submissions = submissionRepository.findSubmissionsDetailByChecklist_Id(checklistId);
+        List<SubmissionInfoDto> submissions = submissionRepository.findMyVerifiedSubmissionsIdByChecklist_Id(checklistId);
 
         return new SubmissionOverviewResponse(
                 SessionInfoResponse.from(session),

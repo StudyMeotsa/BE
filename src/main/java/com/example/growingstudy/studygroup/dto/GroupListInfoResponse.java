@@ -14,6 +14,5 @@ public record GroupListInfoResponse(
         Long currentMember,
         Integer maxMember,
         Integer sessionOrder,
-        String coffee,
-        Integer coffeeLevel
+        String coffeeImagePath
 ){}
