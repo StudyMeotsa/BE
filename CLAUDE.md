@@ -86,7 +86,7 @@ The application uses a custom JWT-based authentication flow with three key filte
 
 3. **`CheckAccessTokenFilter`** (after BearerTokenAuthenticationFilter) - Validates access tokens
    - Runs after Spring's built-in Bearer token processing
-   - Uses `JwtService` to decode and validate access tokens
+   - Retrieve the token object from the SecurityContext and validate the access token
    - Enforces token type is "access" (not "refresh")
 
 **Important Security Details:**
