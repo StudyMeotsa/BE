@@ -182,6 +182,25 @@ class AuthControllerSpringIntegrationTests {
     }
 
     @Test
+    @DisplayName("POST /api/auth/register - Validation 실패 (비밀번호 확인 누락, password만 존재)")
+    void testRegisterEndpointValidationFailurePasswordConfirmNullWithPassword() throws Exception {
+        // given
+        RegisterRequestDto request = new RegisterRequestDto();
+        request.setEmail("test@example.com");
+        request.setPassword("password123"); // password만 존재
+        // passwordConfirm은 null (설정하지 않음)
+        request.setName("테스트유저");
+        request.setSex("M");
+
+        // when & then
+        // NullPointerException이 발생하지 않고 적절한 validation 오류로 처리되어야 함
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("GET /api/auth/me - 내 정보 조회 성공")
     @WithMockUser
     void testMeEndpointSuccess() throws Exception {
