@@ -75,7 +75,7 @@ public class SecurityConfig {
                         .requestMatchers("/**").authenticated()
                 )
                 .addFilterAt(jsonAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(checkAccessTokenFilter, BearerTokenAuthenticationFilter.class)
+                .addFilterAfter(checkAccessTokenFilter, BearerTokenAuthenticationFilter.class)
                 .addFilterBefore(regenerateTokensFilter, JsonAuthenticationProcessingFilter.class)
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(Customizer.withDefaults())

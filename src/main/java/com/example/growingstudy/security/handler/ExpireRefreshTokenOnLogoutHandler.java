@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.io.IOException;
@@ -29,6 +30,19 @@ public class ExpireRefreshTokenOnLogoutHandler implements LogoutHandler {
             RefreshOrLogoutRequestDto dto = ServletRequestConverter.mapJsonToDto(requestString, RefreshOrLogoutRequestDto.class);
 
             jwtService.consumeRefreshToken(dto.getRefreshToken());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            writeUnmodifiableResponseStatusCode(response, HttpServletResponse.SC_BAD_REQUEST);
+        } catch (AuthenticationException e) {
+            writeUnmodifiableResponseStatusCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    private void writeUnmodifiableResponseStatusCode(HttpServletResponse response, int statusCode) {
+        try {
+            response.setStatus(statusCode);
+            response.flushBuffer(); // 응답 코드를 수정하지 못하게 함 (commit)
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

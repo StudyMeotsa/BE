@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,7 +36,13 @@ public class RegenerateTokensFilter extends OncePerRequestFilter {
         String requestBody = ServletRequestConverter.convertRequestToString(request);
         RefreshOrLogoutRequestDto dto = ServletRequestConverter.mapJsonToDto(requestBody, RefreshOrLogoutRequestDto.class);
 
-        JwtResponseDto jwtResponseDto = jwtService.refreshTokens(dto.getRefreshToken());
-        JsonResponseWriter.writeResponseWithDto(response, jwtResponseDto);
+        try {
+            JwtResponseDto jwtResponseDto = jwtService.refreshTokens(dto.getRefreshToken());
+            JsonResponseWriter.writeResponseWithDto(response, jwtResponseDto);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (AuthenticationException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 }
