@@ -3,6 +3,7 @@ package com.example.growingstudy.session.repository;
 import com.example.growingstudy.session.dto.DoneMemberCountView;
 import com.example.growingstudy.session.dto.SubmissionInfoDto;
 import com.example.growingstudy.session.entity.Submission;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -47,4 +48,14 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     WHERE s.checklist_id = :checklistId
 """, nativeQuery = true)
     List<SubmissionInfoDto> findMyVerifiedSubmissionsIdByChecklist_Id(Long checklistId);
+
+    @Query(value = """
+        SELECT NOT EXISTS (
+          SELECT 1
+          FROM submission s
+          WHERE s.checklist_id = :checklistId
+            AND s.is_verified = 0
+        )
+        """, nativeQuery = true)
+    int isAllVerified(@Param("checklistId")Long checklistId);
 }

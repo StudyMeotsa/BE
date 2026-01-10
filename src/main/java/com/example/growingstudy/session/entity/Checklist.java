@@ -40,4 +40,8 @@ public class Checklist {
     public static Checklist create(String content, String description, Session session) {
         return new Checklist(content, description, session);
     }
+
+    public void markCompleted(Checklist checklist) {
+        checklist.completed = true;
+    }
 }

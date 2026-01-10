@@ -44,4 +44,8 @@ public class GroupCoffee {
         this.current = current;
         this.level = level;
     }
+
+    public void increaseCurrentBeans(Integer beans) {
+        this.current += beans;
+    }
 }
