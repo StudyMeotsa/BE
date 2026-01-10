@@ -9,6 +9,6 @@ public class PasswordConfirmConstraintValidator implements ConstraintValidator<P
 
     @Override
     public boolean isValid(RegisterRequestDto value, ConstraintValidatorContext context) {
-        return value.getPasswordConfirm().equals(value.getPassword());
+        return value.getPasswordConfirm() != null && value.getPasswordConfirm().equals(value.getPassword());
     }
 }
