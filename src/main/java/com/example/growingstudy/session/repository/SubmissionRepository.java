@@ -22,6 +22,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
            COUNT(*) AS doneMember
     FROM submission s
     WHERE s.checklist_id IN (:checklistIds)
+        AND s.is_verified = true
     GROUP BY s.checklist_id
     """, nativeQuery = true)
     List<DoneMemberCountView> doneMemberCountByChecklistIds(List<Long> checklistIds);
