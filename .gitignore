@@ -44,3 +44,9 @@ out/
 
 ### 개발용 프로퍼티 파일 ###
 /src/main/resources/application-dev.properties
+
+### 개인용 클로드 코드 가이드라인 ###
+**/CLAUDE-local.md
+
+### 보안 정보 ###
+**/.env
