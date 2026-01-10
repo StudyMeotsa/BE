@@ -20,23 +20,22 @@ public class SubmissionController {
     private final SubmissionService submissionService;
 
     // 통합된 생성 메서드 (MultipartFile 포함)
-    @PostMapping
-    public ResponseEntity<Map<String, Boolean>> createSubmission(
-            @AuthenticationPrincipal Jwt auth,
-            @PathVariable Long groupId,
-            @PathVariable Long sessionId,
-            @PathVariable Long checklistId,
-            @RequestPart(required = false) String content,
-            @RequestPart(required = false) MultipartFile file) {
+    @PostMapping(consumes = {"multipart/form-data"}) 
+        public ResponseEntity<Map<String, Boolean>> createSubmission(
+        @AuthenticationPrincipal Jwt auth,
+        @PathVariable Long groupId, 
+        @PathVariable Long sessionId,
+        @PathVariable Long checklistId,
+        @RequestPart(value = "content", required = false) String content, 
+        @RequestPart(value = "file", required = false) MultipartFile file) { 
 
         Long accountId = Long.parseLong(auth.getSubject());
-
         submissionService.createSubmission(accountId, groupId, sessionId, checklistId, content, file);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(Map.of("success", true));
-    }
+            .status(HttpStatus.CREATED)
+            .body(Map.of("success", true));
+        }
 
     @GetMapping
     public ResponseEntity<SubmissionOverviewResponse> getSubmissionOverview(
