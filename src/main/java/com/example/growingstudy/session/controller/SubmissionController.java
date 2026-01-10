@@ -19,6 +19,7 @@ public class SubmissionController {
 
     private final SubmissionService submissionService;
 
+    // 통합된 생성 메서드 (MultipartFile 포함)
     @PostMapping
     public ResponseEntity<Map<String, Boolean>> createSubmission(
             @AuthenticationPrincipal Jwt auth,
