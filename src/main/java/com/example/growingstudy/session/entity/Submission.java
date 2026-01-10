@@ -1,7 +1,6 @@
 package com.example.growingstudy.session.entity;
 
 import com.example.growingstudy.auth.entity.Account;
-import com.example.growingstudy.studygroup.entity.GroupMember;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -9,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "submission")
+@Table(name = "submission", uniqueConstraints = @UniqueConstraint(columnNames={"checklist_id","submitter_id"}))
 public class Submission {
 
     @Id
@@ -58,5 +57,7 @@ public class Submission {
         return new Submission(content, imagePath, checklist, submitter);
     }
 
-
+    public void setIsVerifiedTrue() {
+        this.isVerified = true;
+    }
 }

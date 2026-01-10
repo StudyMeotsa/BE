@@ -1,5 +1,8 @@
 package com.example.growingstudy.session.service;
 
+import com.example.growingstudy.coffee.dto.GroupCoffeeProgressDto;
+import com.example.growingstudy.coffee.entity.GroupCoffee;
+import com.example.growingstudy.coffee.repository.GroupCoffeeRepository;
 import com.example.growingstudy.session.dto.*;
 import com.example.growingstudy.session.entity.Checklist;
 import com.example.growingstudy.session.entity.Session;
@@ -28,6 +31,7 @@ public class ChecklistService {
     private final SessionRepository sessionRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;  // 멤버검증용
+    private final GroupCoffeeRepository groupCoffeeRepository;
 
     /**
      * 체크리스트 생성
@@ -68,29 +72,36 @@ public class ChecklistService {
         // 1-1) 체크리스트 id
         List<Long> checklistIds = checklists.stream().map(ChecklistsPerSessionView::getId).toList();
 
+        // 2) 커피 정보 가져오기
+        GroupCoffee gc = groupCoffeeRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 그룹의 커피 현황이 없습니다."));
+        GroupCoffeeProgressDto gcDto = new GroupCoffeeProgressDto(
+                gc.getType().getName(), gc.getLevel(), gc.getRequiredPerLevel(), gc.getCurrent()
+        );
+
         // *체크리스트 없을 경우
         if (checklistIds.isEmpty()) {
-            return new ChecklistOverviewResponse(SessionInfoResponse.from(session), List.of());
+            return new ChecklistOverviewResponse(SessionInfoResponse.from(session), gcDto, List.of());
         }
 
-        // 2) maxMember
+        // 3) maxMember
         Integer maxMember = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 그룹이 없습니다."))
                 .getMaxMember();
 
-        // 3) doneMember
+        // 4) doneMember
         Map<Long, Integer> doneMembers = submissionRepository.doneMemberCountByChecklistIds(checklistIds)
                 .stream()
                 .collect(Collectors.toMap(
                         DoneMemberCountView::getChecklistId,
                         DoneMemberCountView::getDoneMember
                 ));
-        // 4) mySubmissions
+        // 5) mySubmissions
         Set<Long> mySubmissions = new HashSet<>(
                 submissionRepository.findMySubmissions(checklistIds, accountId)
         );
 
-        // 5) 합치기
+        // 6) 합치기
         List<ChecklistStatusDto> checklistsDto = checklists
                 .stream()
                 .map(ch -> new ChecklistStatusDto(
@@ -103,15 +114,8 @@ public class ChecklistService {
 
         return new ChecklistOverviewResponse(
                 SessionInfoResponse.from(session),
+                gcDto,
                 checklistsDto
-                );
-
-        //커피 추가 시
-
-//        return new ChecklistOverviewResponse(
-//                SessionInfoResponse.from(session),
-//                GroupCoffeeProgressDto,
-//                checklistsDto
-//        );
+        );
     }
 }
