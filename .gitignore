@@ -46,7 +46,7 @@ out/
 /src/main/resources/application-dev.properties
 
 ### 개인용 클로드 코드 가이드라인 ###
-**/CLAUDE-local.md
+**/CLAUDE.local.md
 
 ### 보안 정보 ###
 **/.env

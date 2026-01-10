@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Additionally, refer to `CLAUDE-local.md` where available for individual guidelines such as code style and commit message conventions.
+Additionally, refer to `CLAUDE.local.md` where available for individual guidelines such as code style and commit message conventions.
 
 ## Project Overview
 
@@ -149,7 +149,7 @@ GitHub Actions workflow (`.github/workflows/workflow.yml`) runs on PRs to `main`
 ## Rules
 
 - Do not perform `git commit` or `git push`; files will be committed manually.
-- Always refer to `CLAUDE-local.md` (if available) for individual code styles, patterns, and commit message conventions.
+- Always refer to `CLAUDE.local.md` (if available) for individual code styles, patterns, and commit message conventions.
 - For security reasons, do not read or access the contents of `.env` (including `.env.*`) or any PEM files(private/public keys).
 - Always ask for clarification whenever there is any ambiguity.
 - Provide a brief summary of changes after completing a task.
