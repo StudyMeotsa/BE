@@ -261,6 +261,27 @@ class AuthControllerSpringIntegrationTests {
     }
 
     @Test
+    @DisplayName("GET /api/auth/me - 내 정보 조회 실패 (액세스 토큰이 아님)")
+    @WithMockUser
+    void testMeEndpointFailureWhenJwtTypeIsNotAccess() throws Exception {
+        // given
+        Account account = Account.builder()
+                .email("typetest@example.com")
+                .password(passwordEncoder.encode("password123"))
+                .name("타입테스트유저")
+                .sex("M")
+                .build();
+        Account savedAccount = accountRepository.save(account);
+
+        // when & then
+        mockMvc.perform(get("/api/auth/me")
+                        .with(jwt().jwt(jwt -> jwt
+                                .subject(String.valueOf(savedAccount.getId()))
+                                .claim("type", "refresh")))) // access가 아닌 refresh로 설정
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @DisplayName("POST /api/auth/register - 회원가입 후 실제 DB 등록 확인")
     void testRegisterThenLoginFlow() throws Exception {
         // given
