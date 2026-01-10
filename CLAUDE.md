@@ -146,8 +146,11 @@ GitHub Actions workflow (`.github/workflows/workflow.yml`) runs on PRs to `main`
 - Runs `./gradlew test -i`
 - Publishes test reports using dorny/test-reporter
 
-## Task Rules
+## Rules
 
 - Do not perform `git commit` or `git push`; files will be committed manually.
 - Always refer to `CLAUDE-local.md` (if available) for individual code styles, patterns, and commit message conventions.
+- For security reasons, do not read or access the contents of `.env` (including `.env.*`) or any PEM files(private/public keys).
 - Always ask for clarification whenever there is any ambiguity.
+- Provide a brief summary of changes after completing a task.
+- If modifying existing code, explain what changed and why.
