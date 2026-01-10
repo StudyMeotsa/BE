@@ -14,6 +14,5 @@ public interface GroupListView {
     Long getCurrentMember();
     Integer getMaxMember();
     Integer getSessionOrder();
-    String getCoffee();
-    Integer getCoffeeLevel();
+    String getCoffeeImagePath();
 }

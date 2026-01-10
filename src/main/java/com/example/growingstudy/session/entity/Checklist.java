@@ -2,8 +2,6 @@ package com.example.growingstudy.session.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

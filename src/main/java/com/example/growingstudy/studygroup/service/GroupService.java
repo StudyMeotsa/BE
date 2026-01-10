@@ -88,8 +88,7 @@ public class GroupService {
                         v.getCurrentMember(),
                         v.getMaxMember(),
                         v.getSessionOrder(),
-                        v.getCoffee(),
-                        v.getCoffeeLevel()
+                        v.getCoffeeImagePath()
                 ))
                 .toList();
     }
