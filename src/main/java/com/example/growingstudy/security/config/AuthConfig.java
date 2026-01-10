@@ -58,8 +58,8 @@ public class AuthConfig {
     }
 
     @Bean
-    CheckAccessTokenFilter checkAccessTokenFilter(JwtService jwtService) {
-        return new CheckAccessTokenFilter(jwtService);
+    CheckAccessTokenFilter checkAccessTokenFilter() {
+        return new CheckAccessTokenFilter();
     }
 
     @Bean
