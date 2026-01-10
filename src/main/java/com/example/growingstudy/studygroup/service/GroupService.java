@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.random.RandomGenerator;
 
 @Service
@@ -121,10 +122,14 @@ public class GroupService {
 
     // private 메소드
     private void assignRandomCoffee(StudyGroup group) {
-        // 랜덤 커피 선택
+        // 커피 타입 가져오기
         List<Long> level1CoffeeTypeIds = coffeeTypeRepository.findAllIdsLevel1CoffeeType();
-        int idx = RandomGenerator.getDefault().nextInt(level1CoffeeTypeIds.size());
 
+        // 커피 타입 테이블에 아무것도 없을 때 예외 처리
+        if (level1CoffeeTypeIds.isEmpty()) throw new NoSuchElementException("배정할 수 있는 커피 타입이 없습니다.");
+
+        // 랜덤 커피 지정
+        int idx = RandomGenerator.getDefault().nextInt(level1CoffeeTypeIds.size());
         Long coffeeTypeId = level1CoffeeTypeIds.get(idx);
 
         // 그룹 커피 정보 계산
