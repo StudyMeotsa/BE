@@ -43,8 +43,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.42'
 
 	// AWS S3 연동을 위한 Spring Cloud AWS
-    implementation platform("software.amazon.awssdk:bom:2.25.70")
-    implementation "software.amazon.awssdk:s3"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1"
 }
 
 tasks.named('test') {
