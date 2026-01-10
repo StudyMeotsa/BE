@@ -18,11 +18,15 @@ public class GroupNoticeService {
     private final GroupMemberRepository groupMemberRepository;
 
     // 공지글 생성
-    // Todo: 방장 여부 확인
+
     public void createNotice (Long accountId, Long groupId, String title, String content) {
 
         GroupMember member = groupMemberRepository.findByAccountIdAndGroupId(accountId, groupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹에 가입되어 있지 않습니다."));
+
+        if (!member.getRole().equals("ADMIN")) {
+            throw new IllegalArgumentException("해당 그룹의 방장이 아닙니다."); // 추후에 예외 타입 수정
+        }
 
         GroupNotice groupNotice = GroupNotice.create(title, content, member);
         groupNoticeRepository.save(groupNotice);
