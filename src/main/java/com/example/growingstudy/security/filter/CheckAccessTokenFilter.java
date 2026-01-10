@@ -28,8 +28,16 @@ public class CheckAccessTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Jwt token = getJwtObject();
-        if (token == null || !token.getClaim("type").equals("access")) throw new RuntimeException("액세스 토큰이 아님");
+        try {
+            Jwt token = getJwtObject();
+
+            if (token.getClaim("type") == null || !token.getClaim("type").equals("access")) {
+                throw new RuntimeException("액세스 토큰이 아님");
+            }
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         filterChain.doFilter(request, response);
     }
 
