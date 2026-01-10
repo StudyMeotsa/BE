@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.growingstudy.global.S3Service;
 
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class SubmissionService {
     private final ChecklistRepository checklistRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final SessionRepository sessionRepository;
+    private final S3Service s3Service;
 
     public void createSubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, String content, MultipartFile file) {
-
         if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
             throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
         }
@@ -45,8 +46,7 @@ public class SubmissionService {
         Checklist checklist = checklistRepository.findById(checklistId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다."));
 
-        String imagePath = null;
-        // Todo: 변환 로직 추가
+        String imagePath = s3Service.upload(file);
 
         Submission submission = Submission.create(content, imagePath, checklist, account);
 
