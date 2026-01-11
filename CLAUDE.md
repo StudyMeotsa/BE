@@ -143,7 +143,7 @@ Swagger UI is available at `/swagger-ui.html` (security is disabled for Swagger 
 GitHub Actions workflow (`.github/workflows/workflow.yml`) runs on PRs to `main` or `dev`:
 - Sets up MySQL 8.0.43 and Redis 7 as services
 - Generates ephemeral JWT keypairs for testing
-- Runs `./gradlew test -i`
+- Runs `./gradlew test`
 - Publishes test reports using dorny/test-reporter
 
 ## Rules
