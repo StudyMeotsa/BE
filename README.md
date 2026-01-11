@@ -26,7 +26,7 @@
 
 ## 배포 서버 인프라 (AWS)
 
-<img src="https://www.notion.so/image/attachment%3A644008bc-77d5-4973-9c46-e69c42b95f58%3Aimage.png?table=block&amp;id=2dcc2acc-dd40-806b-a539-c06d0726c088&amp;spaceId=96fc2acc-dd40-8145-981d-0003630e3e96&amp;width=2000&amp;userId=1b1d872b-594c-81b0-ae6a-00021f727c62&amp;cache=v2"/>
+<img width="2048" height="1647" alt="image" src="https://github.com/user-attachments/assets/0ca87381-9ac0-4aa5-ada2-779d0834c279" />
 
 | 분류             | 기술                          |
 |----------------|-----------------------------|
