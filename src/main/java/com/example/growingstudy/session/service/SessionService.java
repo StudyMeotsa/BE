@@ -64,7 +64,7 @@ public class SessionService {
 
         return new SessionProgressResponse(
                 sessionRepository.countCompletedSessions(groupId),
-                group.getWeekSession() * group.getWeekSession());
+                group.getWeekSession() * group.getTotalWeek());
 
 
     }

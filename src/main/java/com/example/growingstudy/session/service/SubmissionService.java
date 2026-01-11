@@ -1,6 +1,5 @@
 package com.example.growingstudy.session.service;
 
-import ch.qos.logback.classic.Logger;
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
 import com.example.growingstudy.coffee.entity.GroupCoffee;

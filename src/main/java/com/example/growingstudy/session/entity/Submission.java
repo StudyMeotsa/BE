@@ -53,7 +53,7 @@ public class Submission {
             throw new IllegalArgumentException("내용 또는 이미지는 반드시 하나 이상 필요합니다.");
         }
 
-    return new Submission(content, imagePath, checklist, submitter);
+        return new Submission(content, imagePath, checklist, submitter);
     }
 
     public void setIsVerifiedTrue() {
