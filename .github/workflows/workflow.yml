@@ -17,6 +17,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
       actions: read
       checks: write
@@ -54,6 +55,13 @@ jobs:
           chmod 600 ./keys/private_key.pem
           openssl rsa -in ./keys/private_key.pem -pubout -out ./keys/public_key.pem
           chmod 644 ./keys/public_key.pem
+
+      # S3 관련 테스트 위한 AWS Credential 구성
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@main
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
