@@ -15,7 +15,7 @@ public class CorsConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowedOrigins(
-                Arrays.asList("http://localhost:8080", "http://localhost:5173", "http://localhost:80", "https://fe-react-beryl-six.vercel.app:*"));
+                Arrays.asList("http://localhost:8080", "http://localhost:5173", "http://localhost:80", "https://fe-react-beryl-six.vercel.app"));
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
