@@ -14,8 +14,8 @@ public class CorsConfig {
     UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        // 추후에 origin에 프론트 배포 주소 추가
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:5173", "http://localhost:80"));
+        corsConfiguration.setAllowedOrigins(
+                Arrays.asList("http://localhost:8080", "http://localhost:5173", "http://localhost:80", "https://fe-react-beryl-six.vercel.app:*"));
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
