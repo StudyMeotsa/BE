@@ -29,7 +29,6 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<CreateGroupResponse> createStudyRoom(
             @AuthenticationPrincipal Jwt auth,
-            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid CreateGroupRequest request
     ) {
         Long accountId = Long.valueOf(auth.getSubject());
@@ -98,7 +97,6 @@ public class GroupController {
     @PostMapping("/join")
     public ResponseEntity<Map<String, Boolean>> joinStudyRoom(
             @AuthenticationPrincipal Jwt auth,
-            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid JoinGroupRequest request) {
 
         Long accountId = Long.parseLong(auth.getSubject());

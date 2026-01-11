@@ -24,7 +24,6 @@ public class GroupNoticeController {
     public ResponseEntity<Map<String, Boolean>> createNotice(
             @AuthenticationPrincipal Jwt auth,
             @PathVariable Long groupId,
-            //Todo: 검증을 dto로 옮기는 거 고려
             @RequestBody @Valid CreateNoticeRequest request) {
 
         Long accountId = Long.parseLong(auth.getSubject());

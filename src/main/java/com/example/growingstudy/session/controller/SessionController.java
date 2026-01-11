@@ -2,6 +2,7 @@ package com.example.growingstudy.session.controller;
 
 import com.example.growingstudy.session.dto.SessionInfoRequest;
 import com.example.growingstudy.session.dto.SessionInfoResponse;
+import com.example.growingstudy.session.dto.SessionProgressResponse;
 import com.example.growingstudy.session.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,16 @@ public class SessionController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(Map.of("success", true));
+    }
+
+    @GetMapping("/progress")
+    public ResponseEntity<SessionProgressResponse> getSessionProgress(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable Long groupId) {
+
+        Long accountId = Long.parseLong(auth.getSubject());
+
+        return ResponseEntity.ok(sessionService.getSessionProgress(accountId, groupId));
     }
 
 //    업데이트 만들긴 했는데 안쓸거 같아서 주석처리

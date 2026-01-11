@@ -2,6 +2,8 @@ package com.example.growingstudy.session.service;
 
 import com.example.growingstudy.auth.entity.Account;
 import com.example.growingstudy.auth.repository.AccountRepository;
+import com.example.growingstudy.coffee.entity.GroupCoffee;
+import com.example.growingstudy.coffee.repository.GroupCoffeeRepository;
 import com.example.growingstudy.session.dto.ChecklistInfoDto;
 import com.example.growingstudy.session.dto.SessionInfoResponse;
 import com.example.growingstudy.session.dto.SubmissionInfoDto;
@@ -15,15 +17,18 @@ import com.example.growingstudy.session.repository.SubmissionRepository;
 import com.example.growingstudy.studygroup.entity.GroupMember;
 import com.example.growingstudy.studygroup.repository.GroupMemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.growingstudy.global.S3Service;
 
 import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class SubmissionService {
 
     private final AccountRepository accountRepository;
@@ -31,9 +36,10 @@ public class SubmissionService {
     private final ChecklistRepository checklistRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final SessionRepository sessionRepository;
+    private final GroupCoffeeRepository groupCoffeeRepository;
+    private final S3Service s3Service;
 
     public void createSubmission(Long accountId, Long groupId, Long sessionId, Long checklistId, String content, MultipartFile file) {
-
         if (!groupMemberRepository.existsByAccount_IdAndGroup_Id(accountId, groupId)) {
             throw new IllegalArgumentException("그룹에 가입되어 있지 않습니다.");
         }
@@ -44,8 +50,7 @@ public class SubmissionService {
         Checklist checklist = checklistRepository.findById(checklistId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 체크리스트를 찾을 수 없습니다."));
 
-        String imagePath = null;
-        // Todo: 변환 로직 추가
+        String imagePath = s3Service.upload(file);
 
         Submission submission = Submission.create(content, imagePath, checklist, account);
 
@@ -93,5 +98,27 @@ public class SubmissionService {
 
         submission.setIsVerifiedTrue();
         submissionRepository.save(submission);
+
+        // 커피 콩 쌓이는 로직
+        GroupCoffee groupCoffee = groupCoffeeRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 그룹의 커피 현황이 없습니다."));
+
+        boolean checklistCompleted = submissionRepository.isAllVerified(checklistId) == 1;
+
+        // 전체 submission 완료 시
+        if (!checklist.isCompleted() && checklistCompleted) {
+            checklist.markCompleted(checklist);
+
+            boolean sessionCompleted = checklistRepository.isAllCompleted(sessionId) == 1;
+
+            // 전체 checklist 완료 시
+            if (sessionCompleted) {
+                groupCoffee.increaseCurrentBeans(20);
+
+                log.info("[REWARD] 지급 완료 +20 beans groupId={}, sessionId={}", groupId, sessionId);
+            }
+        }
+
+
     }
 }
