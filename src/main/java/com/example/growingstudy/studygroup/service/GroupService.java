@@ -47,8 +47,8 @@ public class GroupService {
                 request.startDay(),
                 request.weekSession(),
                 request.totalWeek(),
-                request.studyTimeAim(),
                 request.maxMember(),
+                request.studyTimeAim(),
                 request.description());
 
         groupRepository.save(group);
