@@ -59,7 +59,7 @@ public class StudyGroup {
             Integer weekSession,
             Integer totalWeek,
             Integer maxMember,
-            Integer sessionHour,
+            Integer studyTimeAim,
             String description
     ) {
         //검증 로직 추가 필요
@@ -69,7 +69,7 @@ public class StudyGroup {
                 weekSession,
                 totalWeek,
                 maxMember,
-                sessionHour,
+                studyTimeAim,
                 description
         );
     }
