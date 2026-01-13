@@ -2,6 +2,7 @@ package com.example.growingstudy.security.filter;
 
 import com.example.growingstudy.security.dto.LoginRequestDto;
 import com.example.growingstudy.security.util.ServletRequestConverter;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,19 +43,26 @@ public class JsonAuthenticationProcessingFilter extends AbstractAuthenticationPr
             throws AuthenticationException, IOException, ServletException {
         logger.debug("인증 프로세스 시작");
 
-        String jsonString = ServletRequestConverter.convertRequestToString(request);
-        LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-        String email = obtainEmail(loginRequest);
-        String password = obtainPassword(loginRequest);
+        try {
+            String jsonString = ServletRequestConverter.convertRequestToString(request);
+            LoginRequestDto loginRequest = ServletRequestConverter.mapJsonToDto(jsonString, LoginRequestDto.class);
 
-        UsernamePasswordAuthenticationToken token =
-                UsernamePasswordAuthenticationToken.unauthenticated(email, password);
+            String email = obtainEmail(loginRequest);
+            String password = obtainPassword(loginRequest);
 
-        Authentication result = this.getAuthenticationManager().authenticate(token);
-        logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+            UsernamePasswordAuthenticationToken token =
+                    UsernamePasswordAuthenticationToken.unauthenticated(email, password);
 
-        return result;
+            Authentication result = this.getAuthenticationManager().authenticate(token);
+            logger.debug(result.isAuthenticated()? "인증 성공" : "인증 실패");
+
+            return result;
+        } catch (MismatchedInputException e) {
+            // 요청 본문 비어서 예외 발생할 경우
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
     }
 
     @Override
